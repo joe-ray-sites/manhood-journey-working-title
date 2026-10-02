@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1A1713" id="metaThemeColor">
+<script>/* Pre-paint: apply the stored theme (or the system preference) before first paint so there is no flash. Key = manhood-theme. */(function(){var t=null;try{t=localStorage.getItem('manhood-theme');}catch(e){}if(t!=='light'&&t!=='dark'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}document.documentElement.setAttribute('data-theme',t);var m=document.getElementById('metaThemeColor');if(m){m.setAttribute('content',t==='light'?'#FBF7EE':'#1A1713');}})();</script>
+<title>Sixteen</title>
+<meta name="description" content="A two-day father-son weekend, ending in a blessing.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sixteen">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<style>
+/* ══ Design tokens ═══════════════════════════════════════════════════════
+   Two blocks: :root = dark, [data-theme="light"] = light. Components read
+   tokens only. Both blocks must match tools/theme.py, whose contrast gate
+   (python3 tools/theme.py) must pass before any palette change ships. */
+:root {
+  --md-sys-color-background: #100E0B;
+  --md-sys-color-surface: #1A1713;
+  --md-sys-color-surface-variant: #24201A;
+  --md-sys-color-surface-container: #1E1A15;
+  --md-sys-color-on-surface: #F1E9DB;
+  --md-sys-color-on-surface-variant: #B8AD9A;
+  --md-sys-color-primary: #E2A04A;
+  --md-sys-color-on-primary: #2A1803;
+  --md-sys-color-primary-container: #4A300C;
+  --md-sys-color-on-primary-container: #F6D9A8;
+  --md-sys-color-outline: #8C8272;
+  --md-sys-color-outline-variant: #332D24;
+  --md-sys-color-error: #E5796B;
+  --md-sys-color-nav-bg: #14110D;
+  --md-sys-color-nav-indicator: #3D2A0E;
+  --md-sys-color-statusbar: #1A1713;
+  --md-sys-color-scrim: rgba(0,0,0,0.6);
+  --md-sys-elevation-1: 0 1px 2px rgba(0,0,0,0.5);
+  --md-sys-elevation-3: 0 10px 28px rgba(0,0,0,0.5);
+}
+[data-theme="light"] {
+  --md-sys-color-background: #F3ECDF;
+  --md-sys-color-surface: #FBF7EE;
+  --md-sys-color-surface-variant: #EAE1D0;
+  --md-sys-color-surface-container: #F6F0E4;
+  --md-sys-color-on-surface: #1B1712;
+  --md-sys-color-on-surface-variant: #5A5145;
+  --md-sys-color-primary: #8A4A06;
+  --md-sys-color-on-primary: #FFF6E6;
+  --md-sys-color-primary-container: #F0D9B0;
+  --md-sys-color-on-primary-container: #4A2A04;
+  --md-sys-color-outline: #7D7263;
+  --md-sys-color-outline-variant: #D9CFBD;
+  --md-sys-color-error: #A4281B;
+  --md-sys-color-nav-bg: #FBF7EE;
+  --md-sys-color-nav-indicator: #EFD9B2;
+  --md-sys-color-statusbar: #1A1713;
+  --md-sys-color-scrim: rgba(27,23,18,0.5);
+  --md-sys-elevation-1: 0 1px 2px rgba(60,40,10,0.12);
+  --md-sys-elevation-3: 0 10px 28px rgba(60,40,10,0.22);
+}
+
+/* ══ Type roles ══════════════════════════════════════════════════════════
+   System fonts only — the app must make NO network requests (it has to work
+   on a trail with no signal). display = headings, body = prose and UI,
+   reading = scripture / blessing / anything read aloud. */
+:root {
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-body: "Avenir Next", Avenir, "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-reading: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+}
+
+/* ══ Base ════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.3s;
+}
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.ico { width: 24px; height: 24px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ══ Top app bar ═════════════════════════════════════════════════════════ */
+.top-app-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--md-sys-color-surface);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  height: calc(56px + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) 8px 0 16px;
+  display: flex; align-items: center; gap: 10px;
+  transition: background 0.3s;
+}
+/* The iOS standalone status bar is black-translucent: its text is ALWAYS white.
+   This strip keeps a dark ground behind it in the light theme too. */
+.top-app-bar::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--md-sys-color-statusbar);
+}
+.app-mark { width: 30px; height: 30px; flex-shrink: 0; color: var(--md-sys-color-primary); }
+.app-title {
+  flex: 1; min-width: 0;
+  font-family: var(--font-display); font-size: 21px; font-weight: 600; letter-spacing: 0.01em;
+  color: var(--md-sys-color-on-surface);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.icon-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--md-sys-color-on-surface-variant); flex-shrink: 0;
+  transition: background 0.2s;
+}
+.icon-btn:active { background: var(--md-sys-color-surface-variant); }
+@media (hover: hover) { .icon-btn:hover { background: var(--md-sys-color-surface-variant); } }
+
+/* ══ Header menu ═════════════════════════════════════════════════════════ */
+.header-menu {
+  position: fixed;
+  top: calc(56px + env(safe-area-inset-top, 0px) + 6px);
+  right: 8px;
+  width: min(240px, calc(100vw - 16px));
+  z-index: 1200;
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 16px;
+  box-shadow: var(--md-sys-elevation-3);
+  padding: 6px;
+  display: none;
+}
+.header-menu.open { display: block; }
+.header-menu-item {
+  display: flex; align-items: center; gap: 14px; width: 100%;
+  padding: 12px 14px; border-radius: 12px;
+  color: var(--md-sys-color-on-surface); font-size: 16px; font-weight: 500; text-align: left;
+}
+.header-menu-item .ico { width: 22px; height: 22px; color: var(--md-sys-color-primary); }
+.header-menu-item:active { background: var(--md-sys-color-surface-variant); }
+@media (hover: hover) { .header-menu-item:hover { background: var(--md-sys-color-surface-variant); } }
+
+/* ══ Main + sections ═════════════════════════════════════════════════════ */
+main { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+.section { display: none; }
+.section.active { display: block; }
+.page { max-width: 640px; margin: 0 auto; padding: 24px 20px 12px; }
+.eyebrow {
+  font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--md-sys-color-primary);
+}
+.page-title { font-family: var(--font-display); font-size: 30px; font-weight: 600; line-height: 1.15; margin-top: 6px; }
+.page-lead { color: var(--md-sys-color-on-surface-variant); margin-top: 12px; }
+.card {
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 18px;
+  box-shadow: var(--md-sys-elevation-1);
+  padding: 20px;
+  margin-top: 20px;
+}
+.stub-note {
+  margin-top: 20px; padding: 14px 16px; border-radius: 14px;
+  background: var(--md-sys-color-surface-container);
+  border: 1px dashed var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface-variant); font-size: 15px;
+}
+
+/* ══ Home ════════════════════════════════════════════════════════════════ */
+.home-hero { text-align: center; padding: 20px 0 4px; }
+.home-mark { width: 76px; height: 76px; color: var(--md-sys-color-primary); }
+.home-hero .eyebrow { margin-top: 14px; }
+.home-title { font-family: var(--font-display); font-size: 46px; font-weight: 600; line-height: 1.05; letter-spacing: 0.005em; margin-top: 6px; }
+.home-subtitle { font-family: var(--font-display); font-style: italic; font-size: 19px; line-height: 1.35; color: var(--md-sys-color-on-surface-variant); margin: 10px auto 0; max-width: 22em; }
+.home-intro { margin-top: 24px; }
+.upnext {
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 18px;
+  box-shadow: var(--md-sys-elevation-1);
+  padding: 18px 14px 18px 18px;
+  margin-top: 20px;
+}
+.upnext:active { background: var(--md-sys-color-surface-variant); }
+.upnext-text { flex: 1; min-width: 0; }
+.upnext-text > span { display: block; }
+.upnext-slot { color: var(--md-sys-color-on-surface-variant); font-size: 15px; margin-top: 4px; }
+.upnext-title { font-family: var(--font-display); font-size: 25px; font-weight: 600; line-height: 1.2; }
+.upnext .ico { color: var(--md-sys-color-primary); }
+.verse-text { font-family: var(--font-reading); font-size: 22px; line-height: 1.45; }
+.verse-ref { margin-top: 12px; }
+.three { list-style: none; margin: 10px 0 0; padding: 0; }
+.three li { font-family: var(--font-display); font-size: 22px; line-height: 1.3; padding: 12px 0; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+.three-under { font-family: var(--font-display); font-style: italic; font-size: 19px; line-height: 1.4; color: var(--md-sys-color-on-surface-variant); margin-top: 14px; }
+.home-foot { margin-top: 26px; text-align: center; color: var(--md-sys-color-on-surface-variant); font-size: 14px; line-height: 1.5; }
+.home-foot p + p { margin-top: 6px; }
+
+/* ══ Bottom nav ══════════════════════════════════════════════════════════ */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: var(--md-sys-color-nav-bg);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  height: calc(68px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: background 0.3s;
+}
+.nav-tab {
+  flex: 1; min-width: 0; position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: color 0.2s;
+}
+.nav-tab .nav-indicator {
+  position: absolute; top: 8px; width: 56px; height: 30px; border-radius: 15px;
+  background: transparent; transition: background 0.2s;
+}
+.nav-tab.active .nav-indicator { background: var(--md-sys-color-nav-indicator); }
+.nav-tab .ico { position: relative; z-index: 1; }
+.nav-tab .nav-label { font-size: 12px; font-weight: 600; letter-spacing: 0.02em; position: relative; z-index: 1; }
+.nav-tab.active { color: var(--md-sys-color-primary); }
+
+/* ══ Bottom sheet (pull down to dismiss — enableSheetDrag) ════════════════ */
+.sheet-overlay {
+  position: fixed; inset: 0; z-index: 1050;
+  background: var(--md-sys-color-scrim);
+  display: none; align-items: flex-end; justify-content: center;
+}
+.sheet-overlay.open { display: flex; }
+.sheet-container {
+  background: var(--md-sys-color-surface);
+  border-radius: 26px 26px 0 0;
+  width: 100%; max-width: 640px;
+  /* 90dvh normally; when the keyboard pins the overlay to the visual viewport
+     (_fitSheets), 100% of that smaller box wins so the sheet never overflows. */
+  max-height: min(90dvh, 100%);
+  display: flex; flex-direction: column;
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.35);
+  animation: sheetUp 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.sheet-drag { width: 38px; height: 4px; border-radius: 2px; background: var(--md-sys-color-outline); margin: 10px auto 2px; flex-shrink: 0; }
+.sheet-header {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  padding: 8px 8px 12px 20px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.sheet-drag, .sheet-header { touch-action: none; }   /* the drag owns these; the body scrolls */
+.sheet-heading { flex: 1; min-width: 0; }
+.sheet-title { font-family: var(--font-display); font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 2px; }
+.sheet-body {
+  flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+  padding: 18px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+}
+.moment-strength { font-family: var(--font-display); font-style: italic; font-size: 20px; line-height: 1.4; }
+.moment-strength b { font-style: normal; font-weight: 600; color: var(--md-sys-color-primary); }
+.moment-context { margin-top: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- SVG sprite: declared once, drawn everywhere with <use>. Every shape is
+     stroke-only and inherits currentColor. #mark mirrors tools/make_icons.py. -->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="mark" viewBox="0 0 100 100" fill="none" stroke="currentColor">
+    <circle cx="50" cy="50" r="46" stroke-width="2.2"/>
+    <circle cx="50" cy="50" r="40.5" stroke-width="1"/>
+    <g stroke-width="3.2" stroke-linejoin="round">
+      <path d="M29 36.6 L45 63.4 M45 36.6 L29 63.4"/>
+      <path d="M49 36.6 L57 63.4 L65 36.6"/>
+      <path d="M71 36.6 V63.4"/>
+    </g>
+    <path d="M26 36 H74 M26 64 H74" stroke-width="1.6"/>
+  </symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 L12 4 L20 11"/><path d="M6 10 V20 H18 V10"/><path d="M10 20 V14 H14 V20"/></symbol>
+  <symbol id="i-peak" viewBox="0 0 24 24"><path d="M2.5 19 L9 7.5 L13 14 L15.5 10.5 L21.5 19 Z"/></symbol>
+  <symbol id="i-sword" viewBox="0 0 24 24"><path d="M12 2.5 V15.5"/><path d="M7.5 15.5 H16.5"/><path d="M12 15.5 V19.5"/><circle cx="12" cy="20.6" r="1.1"/></symbol>
+  <symbol id="i-wheel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/><path d="M12 14.4 V21"/><path d="M9.8 11 L3.4 9.2"/><path d="M14.2 11 L20.6 9.2"/></symbol>
+  <symbol id="i-page" viewBox="0 0 24 24"><path d="M6 3.5 H15 L19 7.5 V20.5 H6 Z"/><path d="M15 3.5 V7.5 H19"/><path d="M9 12 H16"/><path d="M9 15.5 H16"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="18.5" r="1.2"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5.5 L15.5 12 L9 18.5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5 V5 M12 19 V21.5 M2.5 12 H5 M19 12 H21.5 M5.3 5.3 L7 7 M17 17 L18.7 18.7 M18.7 5.3 L17 7 M7 17 L5.3 18.7"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.2 A8.2 8.2 0 1 1 9.8 4 A6.6 6.6 0 0 0 20 14.2 Z"/></symbol>
+</svg>
+
+<header class="top-app-bar">
+  <svg class="app-mark" aria-hidden="true"><use href="#mark"/></svg>
+  <span class="app-title" id="appTitle">Sixteen</span>
+  <button class="icon-btn" id="menuBtn" type="button" aria-label="Menu" aria-haspopup="menu" aria-expanded="false" aria-controls="headerMenu" onclick="toggleHeaderMenu(event)"><svg class="ico" aria-hidden="true"><use href="#i-more"/></svg></button>
+</header>
+
+<div class="header-menu" id="headerMenu" role="menu" aria-label="Menu">
+  <button class="header-menu-item" id="themeMenuItem" type="button" role="menuitem" onclick="closeHeaderMenu(); toggleTheme();"><svg class="ico" aria-hidden="true"><use id="themeMenuIcon" href="#i-sun"/></svg><span id="themeMenuLabel">Light theme</span></button>
+</div>
+
+<main id="main">
+  <section class="section active" id="section-home" aria-label="Home"></section>
+  <section class="section" id="section-friday" aria-label="Friday"></section>
+  <section class="section" id="section-saturday" aria-label="Saturday"></section>
+  <section class="section" id="section-road" aria-label="Road"></section>
+  <section class="section" id="section-blessing" aria-label="Blessing"></section>
+</main>
+
+<nav class="bottom-nav" aria-label="Primary">
+  <button class="nav-tab active" type="button" data-section="home" aria-current="page"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span class="nav-label">Home</span></button>
+  <button class="nav-tab" type="button" data-section="friday"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-peak"/></svg><span class="nav-label">Friday</span></button>
+  <button class="nav-tab" type="button" data-section="saturday"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-sword"/></svg><span class="nav-label">Saturday</span></button>
+  <button class="nav-tab" type="button" data-section="road"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-wheel"/></svg><span class="nav-label">Road</span></button>
+  <button class="nav-tab" type="button" data-section="blessing"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-page"/></svg><span class="nav-label">Blessing</span></button>
+</nav>
+
+<!-- Bottom sheet primitive: one shared sheet, filled by openSheet(). -->
+<div class="sheet-overlay" id="sheet" aria-hidden="true">
+  <div class="sheet-container" id="sheetContainer" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-drag" aria-hidden="true"></div>
+    <div class="sheet-header">
+      <div class="sheet-heading">
+        <div class="eyebrow" id="sheetEyebrow"></div>
+        <h2 class="sheet-title" id="sheetTitle"></h2>
+      </div>
+      <button class="icon-btn" id="sheetClose" type="button" aria-label="Close" onclick="closeSheet()"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ═══ CONTENT ════════════════════════════════════════════════════════════
+   Every word the app shows lives here, so wording can change without touching
+   logic. {son} {dad} {mom} are filled from state.names by fill(). */
+const CONTENT = {
+  title: "Sixteen",
+  eyebrow: "A father-son weekend",
+  subtitle: "{son}’s weekend — the road, the hard thing, and the sword",
+  intro: "Two days, one drive you make yourself, four conversations, and one evening with men who have your back. Nothing to finish, nothing to get right. A few verses, a real question, and your dad going first each time.",
+  verse: {
+    ref: "1 Corinthians 16:13–14",
+    text: "Watch! Stand firm in the faith! Be courageous! Be strong! Let all that you do be done in love."
+  },
+  threeLabel: "The three things",
+  three: ["A battle to fight.", "An adventure to live.", "A beauty to fight for."],
+  threeUnder: "And underneath all three, a Father who already calls you son.",
+  privacy: "Everything you write here stays on this phone. Nothing is sent anywhere.",
+  credit: "Scripture adapted from the World English Bible.",
+  stub: "This screen is built in the next step.",
+  moments: [
+    { id: "battle", title: "The Battle", day: "Friday", slot: "the drive out", feeling: "Fear",
+      strength: "Courage isn’t the absence of fear. It’s going anyway, and knowing whose name you go in.",
+      context: "A teenage shepherd walks out to face a giant the whole army is afraid of. Goliath has armor and a reputation. David has a sling, a history with God, and the one thing that matters: he knows what the fight is actually about." },
+    { id: "adventure", title: "The Adventure", day: "Friday", slot: "after the hard thing", feeling: "Risk",
+      strength: "The appetite for adventure is God-given. What it needs is a father beside it, calibrating the risk instead of removing it.",
+      context: "Joshua has just inherited Moses’ job and a people to lead into a land full of giants. God doesn’t tell him it’ll be easy. He tells him three times in nine verses to be strong and courageous, and then gives him the only reason that works." },
+    { id: "beauty", title: "The Beauty", day: "Friday", slot: "the fire", feeling: "Desire",
+      strength: "A man with a guarded heart isn’t a man with a locked one. He knows what the strength is for, and he brings it to her instead of taking it from her.",
+      context: "Solomon gives his son one instruction above every other, and Paul tells a young leader not to let anyone write him off for being young — but to be the example instead. Both passages are about the same thing: where your life flows from, and who gets to tell you who you are." },
+    { id: "son", title: "The Son", day: "Saturday", slot: "morning coffee", feeling: "Belonging",
+      strength: "Before Jesus did a single public thing, his Father said two sentences over him. He needed to hear them. So do you.",
+      context: "Jesus hasn’t preached a sermon, healed anyone, or picked a fight with a Pharisee yet. He comes up out of the water and heaven opens, and the Father says who he is before he’s done anything to earn it. Everything Jesus does afterward, he does from that, not for it." }
+  ],
+  tabs: {
+    friday:   { eyebrow: "Friday",   title: "The Road and the Hard Thing", lead: "{son} drives. A hard thing done side by side, a skill handed over, and a fire. Three conversations along the way: the Battle, the Adventure, the Beauty." },
+    saturday: { eyebrow: "Saturday", title: "The Son and the Sword", lead: "Morning coffee and the fourth conversation. The drive home. Then an evening with men who have your back." },
+    road:     { eyebrow: "Road",     title: "Questions for the road", lead: "Whoever’s not driving reads. Whoever’s driving answers first." },
+    blessing: { eyebrow: "Blessing", title: "The Blessing", lead: "Written ahead of time, then read aloud on Saturday night." }
+  }
+};
+
+/* ═══ STORAGE ════════════════════════════════════════════════════════════
+   SHARED-ORIGIN RULE: every joe-ray-sites.github.io app shares ONE
+   localStorage pool. Every key this app writes starts with "manhood_" (data)
+   or "manhood-" (device prefs). Never add a key without the prefix. */
+const STORE_KEY = 'manhood_state';            // all weekend data, one JSON blob (schema version in .v)
+const CORRUPT_KEY = 'manhood_state_corrupt';  // raw copy of an unreadable blob, so nothing written is ever silently lost
+const THEME_KEY = 'manhood-theme';            // 'light' | 'dark' — also read by the <head> pre-paint script
+const DEFAULT_STATE = {
+  v: 1,
+  names: { son: "Asa", dad: "Joe", mom: "" },
+  plan: { dates: "", destination: "", hardThing: "", skill: "", responsibility: "", word: "", sword: "", song: "", momRole: "", vigil: true },
+  done: { battle: false, adventure: false, beauty: false, son: false, hardThing: false, skill: false, vigil: false },
+  notes: { battle: "", adventure: "", beauty: "", son: "", hardThing: "" },
+  asked: {},
+  men: [],
+  bless: { see: "", proud: "", two: "", name: "", verse: "" },
+  oath: "",
+  ceremonyStep: 0
+};
+function freshState() { return JSON.parse(JSON.stringify(DEFAULT_STATE)); }
+function isPlainObject(x) { return !!x && typeof x === 'object' && !Array.isArray(x); }
+function loadState() {
+  const base = freshState();
+  let raw = null;
+  try { raw = localStorage.getItem(STORE_KEY); } catch (e) { return base; }
+  if (!raw) return base;
+  try {
+    const saved = JSON.parse(raw);
+    if (!isPlainObject(saved)) throw new Error('not an object');
+    Object.keys(saved).forEach(function (k) {
+      if (isPlainObject(base[k]) && isPlainObject(saved[k])) base[k] = Object.assign({}, base[k], saved[k]);
+      else if (saved[k] !== undefined && saved[k] !== null) base[k] = saved[k];
+    });
+    base.v = DEFAULT_STATE.v;
+  } catch (e) {
+    try { localStorage.setItem(CORRUPT_KEY, raw); } catch (_) {}
+    return freshState();
+  }
+  return base;
+}
+let state = loadState();
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); return true; }
+  catch (e) { console.warn('save failed', e); return false; }
+}
+
+/* ═══ Helpers ════════════════════════════════════════════════════════════ */
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function fill(s) {
+  const n = state.names || {};
+  return String(s).replace(/\{(son|dad|mom)\}/g, function (_, k) { return n[k] || DEFAULT_STATE.names[k] || ''; });
+}
+function txt(s) { return esc(fill(s)); }
+function icon(id) { return '<svg class="ico" aria-hidden="true"><use href="#' + id + '"/></svg>'; }
+
+/* ═══ Home ═══════════════════════════════════════════════════════════════ */
+function nextMoment() {
+  for (let i = 0; i < CONTENT.moments.length; i++) {
+    if (!state.done[CONTENT.moments[i].id]) return CONTENT.moments[i];
+  }
+  return null;
+}
+function anyDone() { return CONTENT.moments.some(function (m) { return !!state.done[m.id]; }); }
+function renderHome() {
+  const m = nextMoment();
+  let up = '';
+  if (m) {
+    up = '<button class="upnext" type="button" id="upNext" onclick="openMoment(\'' + m.id + '\', this)">' +
+           '<span class="upnext-text">' +
+             '<span class="eyebrow">' + (anyDone() ? 'Up next' : 'Start here') + '</span>' +
+             '<span class="upnext-title">' + txt(m.title) + '</span>' +
+             '<span class="upnext-slot">' + txt(m.day + ', ' + m.slot) + '</span>' +
+           '</span>' + icon('i-chevron') +
+         '</button>';
+  }
+  document.getElementById('section-home').innerHTML =
+    '<div class="page">' +
+      '<div class="home-hero">' +
+        '<svg class="home-mark" aria-hidden="true"><use href="#mark"/></svg>' +
+        '<div class="eyebrow">' + txt(CONTENT.eyebrow) + '</div>' +
+        '<h1 class="home-title">' + txt(CONTENT.title) + '</h1>' +
+        '<p class="home-subtitle">' + txt(CONTENT.subtitle) + '</p>' +
+      '</div>' +
+      '<p class="home-intro">' + txt(CONTENT.intro) + '</p>' +
+      up +
+      '<div class="card">' +
+        '<p class="verse-text">' + txt(CONTENT.verse.text) + '</p>' +
+        '<div class="eyebrow verse-ref">' + txt(CONTENT.verse.ref) + '</div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="eyebrow">' + txt(CONTENT.threeLabel) + '</div>' +
+        '<ul class="three">' + CONTENT.three.map(function (t) { return '<li>' + txt(t) + '</li>'; }).join('') + '</ul>' +
+        '<p class="three-under">' + txt(CONTENT.threeUnder) + '</p>' +
+      '</div>' +
+      '<div class="home-foot"><p>' + txt(CONTENT.privacy) + '</p><p>' + txt(CONTENT.credit) + '</p></div>' +
+    '</div>';
+}
+function renderStub(id) {
+  const t = CONTENT.tabs[id];
+  document.getElementById('section-' + id).innerHTML =
+    '<div class="page">' +
+      '<div class="eyebrow">' + txt(t.eyebrow) + '</div>' +
+      '<h1 class="page-title">' + txt(t.title) + '</h1>' +
+      '<p class="page-lead">' + txt(t.lead) + '</p>' +
+      '<p class="stub-note">' + txt(CONTENT.stub) + '</p>' +
+    '</div>';
+}
+function openMoment(id, opener) {
+  const m = CONTENT.moments.filter(function (x) { return x.id === id; })[0];
+  if (!m) return;
+  openSheet({
+    eyebrow: fill(m.day + ' · ' + m.slot),
+    title: fill(m.title),
+    html: '<p class="moment-strength"><b>' + txt(m.feeling) + '.</b> ' + txt(m.strength) + '</p>' +
+          '<p class="moment-context">' + txt(m.context) + '</p>' +
+          '<p class="stub-note">' + txt(CONTENT.stub) + '</p>'
+  }, opener);
+}
+
+/* ═══ Section navigation ═════════════════════════════════════════════════ */
+let activeSection = 'home';
+function showSection(id) {
+  const el = document.getElementById('section-' + id);
+  if (!el) return;
+  document.querySelectorAll('.section').forEach(function (s) { s.classList.toggle('active', s === el); });
+  document.querySelectorAll('.nav-tab').forEach(function (t) {
+    const on = t.dataset.section === id;
+    t.classList.toggle('active', on);
+    if (on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+  });
+  activeSection = id;
+  window.scrollTo(0, 0);   // instant on purpose: scrollTo({behavior:'smooth'}) is a silent no-op in some webviews
+}
+document.querySelectorAll('.nav-tab').forEach(function (tab) {
+  tab.addEventListener('click', function () { closeHeaderMenu(); showSection(tab.dataset.section); });
+});
+
+/* ═══ Header menu ════════════════════════════════════════════════════════ */
+function toggleHeaderMenu(e) {
+  if (e) e.stopPropagation();
+  const m = document.getElementById('headerMenu');
+  const open = m.classList.toggle('open');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeHeaderMenu() {
+  const m = document.getElementById('headerMenu');
+  if (!m.classList.contains('open')) return false;
+  m.classList.remove('open');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', 'false');
+  return true;
+}
+document.addEventListener('click', function (e) {
+  const m = document.getElementById('headerMenu');
+  if (m.classList.contains('open') && !m.contains(e.target)) closeHeaderMenu();
+});
+
+/* ═══ Theme ══════════════════════════════════════════════════════════════ */
+function currentTheme() { return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  const meta = document.getElementById('metaThemeColor');   // browser chrome follows the header surface
+  if (meta) meta.setAttribute('content', t === 'light' ? '#FBF7EE' : '#1A1713');
+  // The menu item names the theme you would switch TO.
+  document.getElementById('themeMenuLabel').textContent = t === 'light' ? 'Dark theme' : 'Light theme';
+  document.getElementById('themeMenuIcon').setAttribute('href', t === 'light' ? '#i-moon' : '#i-sun');
+}
+function toggleTheme() {
+  const t = currentTheme() === 'light' ? 'dark' : 'light';
+  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  applyTheme(t);
+}
+if (window.matchMedia) {
+  // Follow the system setting until the user has picked a theme themselves.
+  const mq = window.matchMedia('(prefers-color-scheme: light)');
+  const follow = function (e) {
+    let stored = null;
+    try { stored = localStorage.getItem(THEME_KEY); } catch (_) {}
+    if (stored !== 'light' && stored !== 'dark') applyTheme(e.matches ? 'light' : 'dark');
+  };
+  if (mq.addEventListener) mq.addEventListener('change', follow); else if (mq.addListener) mq.addListener(follow);
+}
+
+/* ═══ Bottom sheet ═══════════════════════════════════════════════════════
+   One shared sheet. EVERY exit (X, backdrop, Escape, pull-down) goes through
+   closeSheet(), so when autosaving fields arrive their flush lives there. */
+let _sheetOpener = null;
+function openSheet(opts, opener) {
+  const ov = document.getElementById('sheet');
+  _sheetOpener = opener || document.activeElement;
+  document.getElementById('sheetEyebrow').textContent = opts.eyebrow || '';
+  document.getElementById('sheetTitle').textContent = opts.title || '';
+  const body = document.getElementById('sheetBody');
+  body.innerHTML = opts.html || '';
+  body.scrollTop = 0;
+  ov.classList.add('open');
+  ov.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  _fitSheets();
+  document.getElementById('sheetClose').focus({ preventScroll: true });
+}
+function closeSheet() {
+  const ov = document.getElementById('sheet');
+  if (!ov.classList.contains('open')) return false;
+  ov.classList.remove('open');
+  ov.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  _fitSheets();
+  const back = _sheetOpener; _sheetOpener = null;
+  if (back && document.contains(back) && typeof back.focus === 'function') back.focus({ preventScroll: true });
+  return true;
+}
+document.getElementById('sheet').addEventListener('click', function (e) {
+  if (e.target === e.currentTarget) closeSheet();          // backdrop tap
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+  if (closeSheet()) return;
+  if (closeHeaderMenu()) document.getElementById('menuBtn').focus();
+});
+
+/* Pull-down-to-dismiss (lifted from Fellowship Fayetteville). Drags only start
+   on the grab elements, so the sheet body keeps scrolling normally. */
+function enableSheetDrag(container, grabEls, closeFn) {
+  if (!container || !grabEls || !grabEls.length || typeof closeFn !== 'function') return;
+  let startY = 0, dy = 0, dragging = false, active = false, pid = null;
+  const THRESH = 90;                                   // px pulled before it dismisses
+  function inGrab(t) { return grabEls.some(function (g) { return g && g.contains(t); }); }
+  function reset() { container.style.transition = ''; container.style.transform = ''; }
+  container.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (!inGrab(e.target)) return;                      // only from the header / drag handle
+    active = true; dragging = false; startY = e.clientY; dy = 0; pid = e.pointerId;
+  });
+  container.addEventListener('pointermove', function (e) {
+    if (!active || e.pointerId !== pid) return;
+    dy = e.clientY - startY;
+    if (dy < 0) dy = 0;                                 // downward only
+    if (!dragging && dy > 6) { dragging = true; container.style.transition = 'none'; try { container.setPointerCapture(pid); } catch (_) {} }
+    if (dragging) { e.preventDefault(); container.style.transform = 'translateY(' + dy + 'px)'; }
+  });
+  function end(e) {
+    if (!active) return;
+    if (e && e.pointerId != null && pid != null && e.pointerId !== pid) return;
+    active = false;
+    try { container.releasePointerCapture(pid); } catch (_) {}
+    if (!dragging) { pid = null; return; }              // a tap (e.g. the close button) — leave it to the click
+    dragging = false; pid = null;
+    container.style.transition = 'transform 0.26s ease';
+    if (dy > THRESH) {
+      container.style.transform = 'translateY(100%)';
+      setTimeout(function () { closeFn(); reset(); }, 240);
+    } else {
+      container.style.transform = 'translateY(0)';     // snap back
+      setTimeout(reset, 280);
+    }
+  }
+  container.addEventListener('pointerup', end);
+  container.addEventListener('pointercancel', end);
+}
+
+/* Keep an open sheet inside the visible window. iOS raises the keyboard by
+   shrinking the VISUAL viewport while position:fixed stays on the LAYOUT
+   viewport, so without this the sheet header slides off screen. */
+function _fitSheets() {
+  const vv = window.visualViewport;
+  document.querySelectorAll('.sheet-overlay').forEach(function (ov) {
+    if (!vv || !ov.classList.contains('open')) {
+      ov.style.top = ''; ov.style.bottom = ''; ov.style.height = '';
+      return;
+    }
+    ov.style.top = vv.offsetTop + 'px';
+    ov.style.bottom = 'auto';
+    ov.style.height = vv.height + 'px';
+  });
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', _fitSheets);
+  window.visualViewport.addEventListener('scroll', _fitSheets);
+}
+
+/* ═══ Init ═══════════════════════════════════════════════════════════════ */
+function init() {
+  document.getElementById('appTitle').textContent = fill(CONTENT.title);
+  applyTheme(currentTheme());
+  renderHome();
+  ['friday', 'saturday', 'road', 'blessing'].forEach(renderStub);
+  const sc = document.getElementById('sheetContainer');
+  enableSheetDrag(sc, [sc.querySelector('.sheet-drag'), sc.querySelector('.sheet-header')], closeSheet);
+}
+init();
+
+/* ═══ Service worker ═════════════════════════════════════════════════════ */
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function (e) { console.warn('SW reg failed', e); });
+    // Self-heal: sibling apps on this origin can wipe our cache (see sw.js). Ask for a refill on every load.
+    navigator.serviceWorker.ready.then(function (reg) {
+      if (reg.active) reg.active.postMessage('manhood-ensure-cache');
+    }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
