@@ -1,412 +1,1995 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="son">
 <head>
 <meta charset="UTF-8">
+<script>
+/* Pre-paint script: 'manhood-theme' (banner id, whitelisted) -> data-theme, 'manhood-mono' -> data-mono.
+   Runs before first paint so the default theme never flashes. Every flag class on <html> is
+   namespaced mj-: a bare component name matching <html> can hide the whole document. */
+(function () {
+  try {
+    var themes = ['battle', 'adventure', 'beauty', 'son'];
+    var t = localStorage.getItem('manhood-theme');
+    document.documentElement.setAttribute('data-theme', themes.indexOf(t) !== -1 ? t : 'son');
+    if (localStorage.getItem('manhood-mono') === '1') {
+      document.documentElement.setAttribute('data-mono', '1');
+    }
+    /* Splash + onboarding. First run (no 'manhood-onboarded') always gets the splash and lands on
+       Choose Your Banner; afterwards the splash plays once per calendar day ('manhood-splash-date')
+       and lands on the last tab. A cache clear resets neither (they are localStorage). */
+    var onboarded = localStorage.getItem('manhood-onboarded') === '1';
+    var d = new Date(), today = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    if (!onboarded || localStorage.getItem('manhood-splash-date') !== today) document.documentElement.classList.add('mj-splash');
+    if (!onboarded) document.documentElement.classList.add('mj-onboarding');
+    /* Desktop rail (see initRail): expanded before first paint on wide screens — a remembered
+       'manhood-rail', else landscape windows from 1200 px. Phones never match the query. */
+    if (window.matchMedia && window.matchMedia('(min-width: 744px) and (min-height: 500px)').matches && window.innerWidth >= 1024) {
+      var rp = localStorage.getItem('manhood-rail');
+      if (rp === '1' || (rp === null && window.innerWidth >= 1200 && window.innerWidth > window.innerHeight)) document.documentElement.classList.add('mj-rail-open');
+    }
+  } catch (e) {}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#1A1713" id="metaThemeColor">
-<script>/* Pre-paint: apply the stored theme (or the system preference) before first paint so there is no flash. Key = manhood-theme. */(function(){var t=null;try{t=localStorage.getItem('manhood-theme');}catch(e){}if(t!=='light'&&t!=='dark'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}document.documentElement.setAttribute('data-theme',t);var m=document.getElementById('metaThemeColor');if(m){m.setAttribute('content',t==='light'?'#FBF7EE':'#1A1713');}})();</script>
-<title>Sixteen</title>
-<meta name="description" content="A two-day father-son weekend, ending in a blessing.">
+<title>Manhood Journey</title>
+<meta name="description" content="A father and his son, one marked year at a time, from twelve to eighteen.">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#16324A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sixteen">
+<meta name="apple-mobile-web-app-title" content="The Journey">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAASBklEQVR42u1aaXQU15V+79Wr6uqq3tQ0klqttYUkxGbwIBYT2YkJOwbbgH0YT0yWE4gTH+IhM5MET5JjJ3F8ZhKcYzs5wRlnvMw5jI0JizEBY+wYGRA7yEgILa1d3bRavVd1dS3vzY8WQkhiDSRxMnXqh1q1vPu9uvd797vvQodNBJ/lA4HP+IHvxEshAAACeOlPACgFAFBA/5oBQAgQhBljDUINgxqEUjpwiUEwc0IIAACEDlz6ywPI2E0pSGtGSiWEUIyhhccOkc2ysJiBAADdoJGkllT0eErTdYoQNHPIxDIQ3gYk+E80Pa2RpKJhBhZnCzPLHTPKsyYWWrPtnMgzLHM5wDSDSIoRjKn1nYljTZGjTdH2oKwb1MJjE4v+FBjwFlgoY3pKNWTF8Lj4ZTNyV97jLvOIikpa/dK5zkRTT7I3nA7G0opKAAA8h7LtpjynqdxjmVRoLXWLPIeae6R3Dvt3HQv0hBSBZ8wcc2swbhoAg6Bu0JikjcsTn1xSvGK2W0ob+8/07T4ePNoUicYVAAgACGJsEzDLQACAZtC4rFNdz1xy2PiZ5VlLq7LnTR0rmphtR/wvv9fe0ivZRRYz0CD0DgLADIxKuoVnNjzoXbegqDUgb97bsaM2EEvIAOCyfMvkYltpruCycZgZTtC6QUJxtTUgf9oeb+5OAqDbrcKDs3LXLSwqzRU27+vYtMOXVAyHiHWD3n4AGfaIJLQvTnW9uHYyA8GP327ecrDH0LT8bOu8qa7KAguEsCOY8gWknn4lnNQkxdAJAQBghESecVpYzxjemysWZZsppee7kvvPhLqDCYZlV9/r+cEjZQYF61/59IMzoSwre4l6bxMAhKCu05RqfG/luH97uPSVfZ0/fbs5HJOK3fbV93ryXXxdW7ymIewLyIpmMAhyGGEGogytAkABIITqBlV1YhDKs4w3V6ie4JxSYusOKVsO9rT7Y067+PQjZWsXFP7H71uff6fFzDEYQ3ID7nR9AAyCaY1ACH775F1fmDxm7a/qdh7uYTn2q/MKpnntB86G3j/dF5M0gWd4loEQUAooGCUcIQQQwMwNimbIimEX2fnTxs69y3XaF/vd/i5N1Zbf43nlW1M++rT/6y+fpRSYWHTdkLgOAISgqhEIwfaNVe4s00PPnWjqio4vcnxrcXGLX3r9w+6opDlElkHwpjgkw2MGoZnH19yfP84t/mpPe2NHtLzAsX3jdH8k/dBzxykFHIuu/R0Y3sRdYxjDAACC7RurcuzcomeOtfUmFlblrZ1f9NqHXdtqenkTI/KYUnAL9Jd5JPP4x2dDEVlfv9SbNsDR86F3T/StW1C4dEbuW5/0UgLQNfO1awFAECbTxmvrp5a6hUXPHOu6mFxRnb/o7uyN/9PYdlF22jhyS6aPhGERcNtFuaYh/I2FRTyPaxtCu0/2PbGoaGZ51luHenmWobcAACPYn1CffqTs0eq8+T862tabWFGdP81rf/rNRkKByOObJexrHIQCM8ekNfKHk8FHqz1ZNlNtQ2h/XfjHj1WYWLTvVNDC46uNNjoABsGYrN8/xfXS2klffvHskfrgoqq8hXdnP/1mI8cyLIMIvc2ZJaUAMwgi+FFd6IlFxQTAo+f7mgKpTV+dcLw51tgjmTlm1DFHAQAhMAgwsWjb96b/b03vSztbKoscX59ftPHNRkLBnbAeXGJbBkEKQE19+Kll3ia/fOhcn8vOf/uBkjc/6iZXCYZR/sdAGJO1Dcu9CIKfbW028+w3F5e8sq8jKuuZxOvOqRNCqYlFUVl/ZV/HNxeXmHn2Z1ubEQQblntjssYMrCvXBAAhkFUyzi2uW1j07NvNoaj8+NyCFn+ytjHsEG+n31/tMAh1iLi2MdziTz4+tyAUlZ99u3ndwqJxblFWyUgIaOT0y4r+5JLi1oD8Tk1Psds2zWt//cNuh5W7qRTlTzl0gzqs3Osfdk/z2ovdtndqeloD8pNLimVFH/kR0LDpV3TicfErZrs37+1Iq9rqe/MOnA3FJI1BcOhtgwrrNp5DbWMQjEnagbOh1ffmpVVt896OFbPdHhev6MM/Ah5G/FJK+6f78qW0saPW78m25LvMv97TYRfZQeeBEGg6TaY0hGDGa4dJXQgBRJASSgFACFIK6EjHgwBl7qEAQoAQNAwqmjGHYSbEDELtIvv+6b7PTx7vybbsqPV/f+W4B6pyN+9td1o5Y0gc4hFcBlfNce8/0xdLpB6e7a1ri8dkbYyVywBAEMppY3KxdcNyb19cBRRYzBgzkFIKAASAIggVjciKYWIRi2FSMUwsEkzMpRsAABRCqGpESg9cktOGohoum+nF3b66toRgYjI8wSDYn1Dr2uLzp4797/d9+8/0rZrjfnV/xzASQVf4j0aKsoWyPHH38SDD4MoCa01DePCNmcICZmBM1s+2x1fNcX/liwVdodTh8+FTrbETLdHTrfE/ftrPILj+Qe/EQqtu0PXLvaW5wsFz/ada4ydaoidaoqda4zXn+ikA65eVTCywfFzXV+GxrF9a0h9X+2Iqi+HgByWUCiampiFcWWBlGLz7eLAsTyzKFhTtCi/CQ/1HUfWZ5Y60RmovRErcFgiB76IscEMAUMBiGAinn3+r0WLC311ZSin4zXutCLOEUEABQGDZzJxUSn/2raYLPclHPpeX1sh/7esAl8ZECBJdLRg7yTDob9/vfOMDX2WhfXZF1pt/7G4LyC77ZaqgFPAs47soQwhK3JbaC5G0RmaWO7Yc7DVz7KAXXRHEhNAZ5VktfimWUKYU2zqCsqIaw4KGUoAxtFvNv9nX0dCZ3LDcO3+6m8PI7eQxht99eNyyWbk7agMH6/uTKeOMLzan0jmr0inyeKzD5LJzDpHNdVmWTM+5GEmfbYszDMdzCELgtLAci+iIcFJUoyMoTym2xRJKi1+aUZ41LDlFwwJgYqH1XGcCAFKaK/gCMoPgyIWLEMoysCekbNrp4zn01ANeFsNESi91i2sXFvb0KT/f3ooZFJO1Q40Rh4W9u9Qup41MyCYVfbzHUu4RT/tivosyQAMieLCINGyyGAR9Abk0VwCAnOtMTCy0YuYKky4DMCgVzTjbzl3okQBALhvXE1Y4jEYtqOmEOizs1kO9e0/1zZvqWn2vJykp33nQ680VX93fecoXs/AMBPBIYyStkeoJThZDQgEEQNPJnAlOixkfrO9PpQ2E4DWTC8ph1BNWXDYOAHShR8q2c6IZD2UhNCT1p1YzFk2MP5yCGGOMwgl1GNwrORfoBv359takYnxtXuGX55c8PNt9ujW2eV+H1Yw1nZhN6GxbrNUvzShz5I/hVZ0QSkUeV09wxiXt0PkIh9G1RVDGKcIJFWMEMfaHU6KJsZqxYdBBx74EAECD0CwLy2IUjKk2AQMKJIVcY4YMQm1mXNMQfuPD7omFlmdWV3AYbdrpC0TSJowIBRxGgWj6WFOkYKz5rhK7ohmqTktzhakl9vquxPnuJG9iCLm+HJcUAiiwCTgYU1mMsiysQehA6fWKGACARRAAoKiEY2DGRHjtvIVS0cS8sMvX1CPZBLznZHDbYb9DZPVLcUYI+OR8BDPocxOyIICKRmZWZOVkmQ41RKJJDSN4I3XiTJBwDMyUyVgE6Z+nvJ5R5ceaooGIMqfSmWVhIQD3TRqjauRgQ/gGjL/J/QEIgEZophKoGgNr4bXTNwZCKW388zJvuUeMy/rif8hecY87Kg1MLaGUZ5HvolzXFq8ssBZnm51Wdla5wxeQz/hi/JDl5boiAQCgGpTnEABAu9Iv0GC8MwhGkpqmk2w7F5d1AIHIX6siwCAYT+nVE5yP359f35n80ZYLqk42LPfmZpnSl1IuBkFZ0Q81RmwW9q4S28RCa3GuWNsUCUQU0wjWH10hECryCEAQl/VsO6fpJJLUGHR5wUaXGZeBiZQupQ2300x1XdeJ08rpQ+J9pJDFDPyXh0otPPPq/s7X3m/7/RH/tFL7ugVFiZSemTYKAMugQw3hVMq4b9KYRXdnQwgO1vcbBMAbq77oBnVaOV0nVNfdTrOUNhIpnRnCjegKf0jpwZha4REBIKG46nHyqk7gaGNhBKNJbdWcvIV3j91/JrTlYI9F5H+xw+cLSF+bVzit1J5MGQhCQihvYuq7Eo3diTmVzqVVOd3B1PGmKM+iG5FGEEBVJx4nH4qrAJAKjxiMqVLqClWAhsGt70xMKrQCgFoDsjdXMMgoXwBBqOrU4+I3LPemVPLCLp+qU6sZt/ilzXs7PS7+Xx8sJZQiBBCCJhZFktppX8whsmNsbH1XoqMvJZiYTEY9KAMQhCMHghAYhHpzhdaADACaVGit70wMcwo0jHSPNUXGuUW7la9rjxdlC/yIWkDmpfGk8sTCogmF1pfebdt/MkApDcbSlIJNO1rfO35x2czcJVU5oUgqLusxSVPT2q5jF9MaQRDuORlMJJV4So8mtaikaaqmqIRSEE9pmk5H5l08xxRlC3XtcbuVH+cWjzVFhi1NeKig5jnmaFPUxKJZFVkfnL5IKfDmCO1BeTDgBp1ySVX26vs8kqJ39aeWzswzcYgQgBGMyVp9Z2JJVc6Ti4sV1RBMDKBA1UmOw4QgMLHIzKHFMzxmEyIEMAgkUkaFx8JhOHfK2M4+RU4bCIHBsRTN8OYIlII2f/KL03JMLDraFB1GX/gKuCzqCMrNvdLSqux9J3rOdyWqJzgbuhJmjsmkHxBCVSf5Y/ivzC083hxFACyZnoMRJJRmqraZWurWT3oZBJ9cUjJoCyH04/owAGBOpfO+SS5AKYAAUAAgVHWy9bD/85PHfFzff6IlJvIZ9TMgnqonOM93JQxDX1qV3dwrdQRlq5klV1NkmQneesj/1LISu9X8/pm+javK7MJlPUkIFThU1x5f/MzRTJVmoDAKL/M2ggM/CRkUYQDCAUUw8v7MJUIBzyKBu0zcBqF2gZ1SYntua7Pdap43dewvd7UNBAC9iiYmlIpm/O7xwNOrxj04y/36/rbuUGr+tLHvHOp1XlKVmZXFasZ3oihEhywy4YS6ck5edyjVE0yumVcimph3jwdEMx62/KHhQYNRT0jZdsS/bmGRiWO3HOyde5drqKgfHOy2n8MyRbvIzr3LteVgr4lj1y0s2nbE3xNSeIyuqokH8zOBxy+/116aK6ys9rT746d9sTX350cTambT98/RPcDAaEJdc3/+aV+s3R9fWe0pzRVefq9d4K9QAqMDoBQIHGrxS5v3dvzwkTKXQ3jjQNc4t2XWeGdU0hl0xzEwCEYlfdZ45zi35Y0DXS6H8MNHyjbv7WjxSwI3SvaBRk2S7QK7aaePUPD9VWUpRfv1nra1C4ocAs5w+R1sPYEwrRGHgNcuKPr1nraUon1/VRmhYNNOn11gjdGSp9HL65iBiZRxviv5n1+prO+WDp0Lqgb4xqKiP5wMQgSvm6XesvU6oZpOnl9Tub02cKShb9k9+c99afyaX55p6pUEE0PoDe8PUAoEjjnXkcAM+sljFTuP9x09H+J5/Gi156O6EAWAxTeUS96U56g60XTy74+WH26M7DrSW1bg2LFx+gu72l77oMtpYa9WV77qDg2hQDDhA3Whu732bz9Q8u6JvtqGUJbN9MSi4pqGcFzWrjYltxa1cVmzmPHzayoPN0a21XQX5Fh2/2DG0QvRDb9rcIijO8/198gABBihXccDS6py1i0o3H2yr7YhZAD41ANefyTd1JXkTcyodZebmnhKQTimzqjI+t6Kst/XBt490luQY9nzwxmBqPrYplMcgyD6u91mvVRLRLpB3/qkd2ZF1rOPVTQHUofO9X1QF55cbPvSF/LNHNPqlyNJDSHIMgihzH72VY3O3JDWSFzSTSyzbEbu2gVF3f3K8++0BsPy8nvyt2+cfrQp+tgvTmUk9XU3668D4FItEVEC3v6kl2PRL746wWXnjzZFP/n04rku+b5JYx6anVvgMsdlPRhTEyld1QkdyHCuaDVQdSqnDSltUApKcoSHZ7v/8fMezKDf/KHjwCm/w8L/5PEJP/3S+Bd2tX3n1QaWQewNWP930+zxt9Bu8zfS8PS30HI2WtOf/hlr+ruRtksLj0e2XSYV/ba3XcLb1Ts9vPGVfEYaX4cuF5f3rSBAGHIADms9Hrkn+1faOz2kU5r+f/f6dY7/Az+c8F4RVcSNAAAAAElFTkSuQmCC">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet" crossorigin="anonymous">
 <style>
-/* ══ Design tokens ═══════════════════════════════════════════════════════
-   Two blocks: :root = dark, [data-theme="light"] = light. Components read
-   tokens only. Both blocks must match tools/theme.py, whose contrast gate
-   (python3 tools/theme.py) must pass before any palette change ships. */
+/* ── Type stacks (declared once; every rule refers to these variables) ── */
 :root {
-  --md-sys-color-background: #100E0B;
-  --md-sys-color-surface: #1A1713;
-  --md-sys-color-surface-variant: #24201A;
-  --md-sys-color-surface-container: #1E1A15;
-  --md-sys-color-on-surface: #F1E9DB;
-  --md-sys-color-on-surface-variant: #B8AD9A;
-  --md-sys-color-primary: #E2A04A;
-  --md-sys-color-on-primary: #2A1803;
-  --md-sys-color-primary-container: #4A300C;
-  --md-sys-color-on-primary-container: #F6D9A8;
-  --md-sys-color-outline: #8C8272;
-  --md-sys-color-outline-variant: #332D24;
-  --md-sys-color-error: #E5796B;
-  --md-sys-color-nav-bg: #14110D;
-  --md-sys-color-nav-indicator: #3D2A0E;
-  --md-sys-color-statusbar: #1A1713;
-  --md-sys-color-scrim: rgba(0,0,0,0.6);
-  --md-sys-elevation-1: 0 1px 2px rgba(0,0,0,0.5);
-  --md-sys-elevation-3: 0 10px 28px rgba(0,0,0,0.5);
-}
-[data-theme="light"] {
-  --md-sys-color-background: #F3ECDF;
-  --md-sys-color-surface: #FBF7EE;
-  --md-sys-color-surface-variant: #EAE1D0;
-  --md-sys-color-surface-container: #F6F0E4;
-  --md-sys-color-on-surface: #1B1712;
-  --md-sys-color-on-surface-variant: #5A5145;
-  --md-sys-color-primary: #8A4A06;
-  --md-sys-color-on-primary: #FFF6E6;
-  --md-sys-color-primary-container: #F0D9B0;
-  --md-sys-color-on-primary-container: #4A2A04;
-  --md-sys-color-outline: #7D7263;
-  --md-sys-color-outline-variant: #D9CFBD;
-  --md-sys-color-error: #A4281B;
-  --md-sys-color-nav-bg: #FBF7EE;
-  --md-sys-color-nav-indicator: #EFD9B2;
-  --md-sys-color-statusbar: #1A1713;
-  --md-sys-color-scrim: rgba(27,23,18,0.5);
-  --md-sys-elevation-1: 0 1px 2px rgba(60,40,10,0.12);
-  --md-sys-elevation-3: 0 10px 28px rgba(60,40,10,0.22);
+  --font-mono: 'Source Code Pro', ui-monospace, Menlo, monospace;
+  --font-sans: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
 }
 
-/* ══ Type roles ══════════════════════════════════════════════════════════
-   System fonts only — the app must make NO network requests (it has to work
-   on a trail with no signal). display = headings, body = prose and UI,
-   reading = scripture / blessing / anything read aloud. */
+/* manhood-journey colour tokens — GENERATED by tools/theme.py; edit theme.py, not this block. */
 :root {
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-  --font-body: "Avenir Next", Avenir, "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-reading: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --md-sys-color-primary: #16324A;
+  --md-sys-color-on-primary: #F8F1DF;
+  --md-sys-color-primary-container: #D8D5C8;
+  --md-sys-color-secondary: #72560F;
+  --md-sys-color-on-secondary: #F8F1DF;
+  --md-sys-color-secondary-container: #F2E2C0;
+  --md-sys-color-tertiary: #20507A;
+  --md-sys-color-background: #EDE3CB;
+  --md-sys-color-on-background: #1B1710;
+  --md-sys-color-surface: #F7EFDC;
+  --md-sys-color-surface-variant: #E4D9BE;
+  --md-sys-color-surface-container: #F2E9D3;
+  --md-sys-color-on-surface: #1B1710;
+  --md-sys-color-on-surface-variant: #5E5443;
+  --md-sys-color-outline: #7F7460;
+  --md-sys-color-outline-variant: #D9CDB0;
+  --md-sys-color-error: #B3261E;
+  --md-sys-color-nav-bg: #16324A;
+  --md-sys-color-nav-indicator: #38494E;
+  --md-sys-color-shadow: rgba(27,23,16,0.18);
+  --mj-ink: #1B1710;
+  --mj-ink-on: #F8F1DF;
+  --mj-house: #16324A;
+  --mj-house-2: #20507A;
+  --mj-metal: #DDB04E;
+  --mj-metal-on: #16324A;
+  --mj-metal-bg: rgba(221,176,78,0.14);
+  --mj-metal-bg-2: rgba(221,176,78,0.07);
+  --mj-chrome: #16324A;
+  --mj-on-chrome: #F8F1DF;
+  --mj-chrome-muted: #B4B8B2;
+  --mj-chrome-accent: #EBC265;
+  --mj-chrome-indicator: #38494E;
+  --banner-adventure-plate: #1F3A2C;
+  --banner-adventure-metal: #E0B65A;
+  --banner-battle-plate: #5A1A1C;
+  --banner-battle-metal: #D5DADF;
+  --banner-beauty-plate: #3A2248;
+  --banner-beauty-metal: #EDBBA2;
+  --banner-son-plate: #16324A;
+  --banner-son-metal: #EBC265;
+  --banner-plate-ink: #F8F1DF;
+  --md-sys-elevation-1: 0 1px 3px rgba(27,23,16,0.12), 0 1px 2px rgba(27,23,16,0.08);
+  --md-sys-elevation-2: 0 3px 6px rgba(27,23,16,0.12), 0 2px 4px rgba(27,23,16,0.08);
+  --md-sys-elevation-3: 0 6px 12px rgba(27,23,16,0.12), 0 4px 8px rgba(27,23,16,0.08);
 }
+[data-theme="battle"] {
+  --md-sys-color-primary: #5A1A1C;
+  --md-sys-color-on-primary: #F8F1DF;
+  --md-sys-color-primary-container: #E1D1C1;
+  --md-sys-color-secondary: #55606A;
+  --md-sys-color-on-secondary: #F8F1DF;
+  --md-sys-color-secondary-container: #EDE8DA;
+  --md-sys-color-tertiary: #8C2B26;
+  --md-sys-color-nav-bg: #5A1A1C;
+  --md-sys-color-nav-indicator: #6E393B;
+  --mj-house: #5A1A1C;
+  --mj-house-2: #8C2B26;
+  --mj-metal: #C4CAD0;
+  --mj-metal-on: #5A1A1C;
+  --mj-metal-bg: rgba(196,202,208,0.14);
+  --mj-metal-bg-2: rgba(196,202,208,0.07);
+  --mj-chrome: #5A1A1C;
+  --mj-on-chrome: #F8F1DF;
+  --mj-chrome-muted: #C9B0A4;
+  --mj-chrome-accent: #D5DADF;
+  --mj-chrome-indicator: #6E393B;
+}
+[data-theme="adventure"] {
+  --md-sys-color-primary: #1F3A2C;
+  --md-sys-color-on-primary: #F8F1DF;
+  --md-sys-color-primary-container: #D9D6C3;
+  --md-sys-color-secondary: #735511;
+  --md-sys-color-on-secondary: #F8F1DF;
+  --md-sys-color-secondary-container: #EFE0BE;
+  --md-sys-color-tertiary: #2E5A41;
+  --md-sys-color-nav-bg: #1F3A2C;
+  --md-sys-color-nav-indicator: #3E4E33;
+  --mj-house: #1F3A2C;
+  --mj-house-2: #2E5A41;
+  --mj-metal: #CFA348;
+  --mj-metal-on: #1F3A2C;
+  --mj-metal-bg: rgba(207,163,72,0.14);
+  --mj-metal-bg-2: rgba(207,163,72,0.07);
+  --mj-chrome: #1F3A2C;
+  --mj-on-chrome: #F8F1DF;
+  --mj-chrome-muted: #B7BAA9;
+  --mj-chrome-accent: #E0B65A;
+  --mj-chrome-indicator: #3E4E33;
+}
+[data-theme="beauty"] {
+  --md-sys-color-primary: #3A2248;
+  --md-sys-color-on-primary: #F8F1DF;
+  --md-sys-color-primary-container: #DDD2C7;
+  --md-sys-color-secondary: #8A4A33;
+  --md-sys-color-on-secondary: #F8F1DF;
+  --md-sys-color-secondary-container: #F2E1CC;
+  --md-sys-color-tertiary: #5A3470;
+  --md-sys-color-nav-bg: #3A2248;
+  --md-sys-color-nav-indicator: #573A56;
+  --mj-house: #3A2248;
+  --mj-house-2: #5A3470;
+  --mj-metal: #E0A88C;
+  --mj-metal-on: #3A2248;
+  --mj-metal-bg: rgba(224,168,140,0.14);
+  --mj-metal-bg-2: rgba(224,168,140,0.07);
+  --mj-chrome: #3A2248;
+  --mj-on-chrome: #F8F1DF;
+  --mj-chrome-muted: #BFB3B2;
+  --mj-chrome-accent: #EDBBA2;
+  --mj-chrome-indicator: #573A56;
+}
+/* end generated tokens */
 
-/* ══ Base ════════════════════════════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
 body {
-  margin: 0;
-  background: var(--md-sys-color-background);
-  color: var(--md-sys-color-on-surface);
-  font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-sans);
+  /* The theme chrome, not the parchment: iOS Home Screen apps tint the fade under the status bar
+     with the BODY background (not the header, theme-color or <html>), which washes a pale band
+     over a coloured header. The parchment lives on <main class="content"> instead. */
+  background: var(--mj-chrome);
+  color: var(--md-sys-color-on-background);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+img { max-width: 100%; height: auto; display: block; }
+button { font-family: inherit; color: inherit; cursor: pointer; border: none; background: none; }
+a { color: var(--md-sys-color-primary); }
+input, select, textarea { font-family: inherit; font-size: 16px; color: inherit; }
+
+/* ── Icons: inline SVG from the sprite, one 24×24 box (the app makes no icon-font request) ── */
+.ico { width: 24px; height: 24px; display: block; flex-shrink: 0; fill: currentColor; }
+
+/* ── Layout ── */
+.content {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  background: var(--md-sys-color-background);                        /* the page (see body) */
+  min-height: calc(100dvh - 56px - env(safe-area-inset-top, 0px));    /* + the top bar = one screen */
   transition: background 0.3s;
 }
-h1, h2, h3, p { margin: 0; }
-button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
-.ico { width: 24px; height: 24px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.section { display: none; }
+.section.active { display: block; animation: mjFadeIn 0.25s ease; }
+@keyframes mjFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.section-inner { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+.section-inner--pad { padding-top: 20px; }
 
-/* ══ Top app bar ═════════════════════════════════════════════════════════ */
-.top-app-bar {
-  position: sticky; top: 0; z-index: 100;
+/* ── Card (tappable: lifts on press) and Panel (static reading surface: never lifts) ── */
+.card, .panel {
   background: var(--md-sys-color-surface);
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface);
+  border-radius: 16px;
+  box-shadow: var(--md-sys-elevation-1);
+  overflow: hidden;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+.card:active { transform: translateY(-2px); box-shadow: var(--md-sys-elevation-3); }
+@media (hover: hover) {
+  .card:hover { transform: translateY(-2px); box-shadow: var(--md-sys-elevation-3); }
+}
+.card-body { padding: 16px; }
+.panel { padding: 16px 18px; margin-bottom: 14px; }
+.panel .eyebrow { margin-bottom: 4px; }
+.panel-title { font-family: var(--font-serif); font-size: 20px; font-weight: 600; line-height: 1.2; margin: 0 0 8px; }
+.panel p { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); }
+.panel p + p { margin-top: 8px; }
+.panel--flush { padding: 0; }
+.panel--flush > .panel-head { padding: 16px 18px 12px; }
+
+/* ── Type roles ── */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--md-sys-color-primary);
+}
+.eyebrow--rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 16px 8px;
+}
+.eyebrow--rule::before { content: ""; width: 22px; height: 1px; background: currentColor; flex-shrink: 0; }
+.eyebrow--rule::after  { content: ""; flex: 1; height: 1px; background: var(--md-sys-color-outline-variant); }
+.display {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 7.6vw, 34px);
+  line-height: 1.18;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--md-sys-color-on-surface);
+  margin: 0 0 16px;
+}
+.lead {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--md-sys-color-on-surface-variant);
+  margin: 0 0 20px;
+  max-width: 60ch;
+}
+.reading { font-family: var(--font-serif); font-size: 17px; line-height: 1.7; }
+.verse, .panel p.verse { font-family: var(--font-serif); font-size: 19px; line-height: 1.55; color: var(--md-sys-color-on-surface); }
+.panel p.reading { font-family: var(--font-serif); font-size: 17px; line-height: 1.7; color: var(--md-sys-color-on-surface); }
+.meta {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--md-sys-color-secondary);
+}
+.verse + .meta { margin-top: 10px; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px;
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-family: var(--font-mono);
+  font-size: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--md-sys-elevation-2);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn .ico { width: 18px; height: 18px; transition: transform 0.2s; }
+.btn:active { transform: scale(0.97); }
+.btn:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+@media (hover: hover) {
+  .btn:hover .ico:last-child { transform: translateX(4px); }
+}
+.btn-house {
+  background: var(--mj-house-2);
+  color: var(--md-sys-color-on-primary);
+  border-color: var(--mj-house);
+}
+.btn-metal {
+  background: var(--mj-metal);
+  color: var(--mj-metal-on);
+  border-color: var(--mj-metal);
+}
+.btn-block { display: flex; width: 100%; }
+
+/* ── Chip ── */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: var(--md-sys-color-primary-container);
+  border: 1px solid transparent;
+  font-family: var(--font-mono);
+  font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--md-sys-color-primary);
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+button.chip:active { border-color: var(--md-sys-color-primary); }
+@media (hover: hover) { button.chip:hover { border-color: var(--md-sys-color-primary); } }
+.chip.active {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+.chip:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.chip .ico { width: 16px; height: 16px; }
+.chip-row {
+  display: flex;
+  gap: 10px;
+  padding: 4px 16px 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+  scrollbar-width: none;
+}
+.chip-row::-webkit-scrollbar { display: none; }
+.chip-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
+/* ── Metal washes — the only sanctioned use of --mj-metal-bg / -bg-2 ── */
+.wash-metal   { background: var(--mj-metal-bg); }
+.wash-metal-2 { background: var(--mj-metal-bg-2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .section.active { animation: none; }
+  .card, .panel, .btn, .btn .ico, .chip, body, .content { transition: none; }
+}
+
+/* ── Top App Bar — THE THEME IDENTITY LIVES HERE: bar and nav wear the chrome ── */
+.top-app-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--mj-chrome);
+  color: var(--mj-on-chrome);
+  box-shadow: var(--md-sys-elevation-2);
   height: calc(56px + env(safe-area-inset-top, 0px));
   padding: env(safe-area-inset-top, 0px) 8px 0 16px;
-  display: flex; align-items: center; gap: 10px;
-  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s, color 0.3s;
 }
-/* The iOS standalone status bar is black-translucent: its text is ALWAYS white.
-   This strip keeps a dark ground behind it in the light theme too. */
-.top-app-bar::before {
-  content: ""; position: absolute; top: 0; left: 0; right: 0;
-  height: env(safe-area-inset-top, 0px);
-  background: var(--md-sys-color-statusbar);
+.app-mark-btn {
+  background: none; border: none; padding: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  min-width: 48px; min-height: 48px; margin-left: -4px;   /* 46px mark in a 48px target */
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
 }
-.app-mark { width: 30px; height: 30px; flex-shrink: 0; color: var(--md-sys-color-primary); }
-.app-title {
+.app-mark-btn:focus-visible { outline: 2px solid var(--mj-chrome-accent); outline-offset: -2px; }
+.app-mark {
+  width: 46px; height: 46px; flex-shrink: 0;
+  color: var(--mj-metal);
+  display: block;
+}
+.top-app-bar .app-title {
   flex: 1; min-width: 0;
-  font-family: var(--font-display); font-size: 21px; font-weight: 600; letter-spacing: 0.01em;
-  color: var(--md-sys-color-on-surface);
+  display: flex; flex-direction: column; justify-content: center;
+  line-height: 1.12;
+  letter-spacing: 0.005em;
+  font-family: var(--font-sans);
+}
+.app-title-a, .app-title-b {
+  display: block; font-size: 15px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.icon-btn {
-  width: 44px; height: 44px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--md-sys-color-on-surface-variant); flex-shrink: 0;
-  transition: background 0.2s;
-}
-.icon-btn:active { background: var(--md-sys-color-surface-variant); }
-@media (hover: hover) { .icon-btn:hover { background: var(--md-sys-color-surface-variant); } }
+.app-title-a { font-weight: 700; color: var(--mj-on-chrome); }
+.app-title-b { font-weight: 400; color: var(--mj-chrome-muted); }
+.header-actions { display: flex; align-items: center; flex-shrink: 0; }
 
-/* ══ Header menu ═════════════════════════════════════════════════════════ */
+/* ── Icon button ── */
+.icon-btn {
+  width: 48px; height: 48px;
+  min-width: 44px; min-height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.icon-btn:active { background: rgba(128,128,128,0.18); }
+@media (hover: hover) { .icon-btn:hover { background: rgba(128,128,128,0.12); } }
+.icon-btn:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: -2px; }
+.top-app-bar .icon-btn { color: var(--mj-on-chrome); }
+.top-app-bar .icon-btn:focus-visible { outline-color: var(--mj-chrome-accent); }
+
+/* ── Header menu — a card floating on the page, not chrome ── */
+@keyframes mjMenuDrop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 .header-menu {
   position: fixed;
   top: calc(56px + env(safe-area-inset-top, 0px) + 6px);
   right: 8px;
-  width: min(240px, calc(100vw - 16px));
+  width: min(260px, calc(100vw - 16px));
   z-index: 1200;
   background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: 16px;
   box-shadow: var(--md-sys-elevation-3);
   padding: 6px;
   display: none;
+  animation: mjMenuDrop 0.18s ease;
 }
 .header-menu.open { display: block; }
 .header-menu-item {
   display: flex; align-items: center; gap: 14px; width: 100%;
-  padding: 12px 14px; border-radius: 12px;
-  color: var(--md-sys-color-on-surface); font-size: 16px; font-weight: 500; text-align: left;
+  min-height: 44px;
+  padding: 12px 14px; border-radius: 12px; border: none; background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-sans); font-size: 16px; font-weight: 500; line-height: 1.3;
+  cursor: pointer; text-align: left; -webkit-tap-highlight-color: transparent;
 }
 .header-menu-item .ico { width: 22px; height: 22px; color: var(--md-sys-color-primary); }
+.header-menu-item .header-menu-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .header-menu-item:active { background: var(--md-sys-color-surface-variant); }
 @media (hover: hover) { .header-menu-item:hover { background: var(--md-sys-color-surface-variant); } }
+.header-menu-item:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: -2px; }
 
-/* ══ Main + sections ═════════════════════════════════════════════════════ */
-main { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
-.section { display: none; }
-.section.active { display: block; }
-.page { max-width: 640px; margin: 0 auto; padding: 24px 20px 12px; }
-.eyebrow {
-  font-family: var(--font-body); font-size: 12px; font-weight: 600;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--md-sys-color-primary);
-}
-.page-title { font-family: var(--font-display); font-size: 30px; font-weight: 600; line-height: 1.15; margin-top: 6px; }
-.page-lead { color: var(--md-sys-color-on-surface-variant); margin-top: 12px; }
-.card {
-  background: var(--md-sys-color-surface);
-  border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: 18px;
-  box-shadow: var(--md-sys-elevation-1);
-  padding: 20px;
-  margin-top: 20px;
-}
-.stub-note {
-  margin-top: 20px; padding: 14px 16px; border-radius: 14px;
-  background: var(--md-sys-color-surface-container);
-  border: 1px dashed var(--md-sys-color-outline);
-  color: var(--md-sys-color-on-surface-variant); font-size: 15px;
-}
-
-/* ══ Home ════════════════════════════════════════════════════════════════ */
-.home-hero { text-align: center; padding: 20px 0 4px; }
-.home-mark { width: 76px; height: 76px; color: var(--md-sys-color-primary); }
-.home-hero .eyebrow { margin-top: 14px; }
-.home-title { font-family: var(--font-display); font-size: 46px; font-weight: 600; line-height: 1.05; letter-spacing: 0.005em; margin-top: 6px; }
-.home-subtitle { font-family: var(--font-display); font-style: italic; font-size: 19px; line-height: 1.35; color: var(--md-sys-color-on-surface-variant); margin: 10px auto 0; max-width: 22em; }
-.home-intro { margin-top: 24px; }
-.upnext {
-  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
-  background: var(--md-sys-color-surface);
-  border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: 18px;
-  box-shadow: var(--md-sys-elevation-1);
-  padding: 18px 14px 18px 18px;
-  margin-top: 20px;
-}
-.upnext:active { background: var(--md-sys-color-surface-variant); }
-.upnext-text { flex: 1; min-width: 0; }
-.upnext-text > span { display: block; }
-.upnext-slot { color: var(--md-sys-color-on-surface-variant); font-size: 15px; margin-top: 4px; }
-.upnext-title { font-family: var(--font-display); font-size: 25px; font-weight: 600; line-height: 1.2; }
-.upnext .ico { color: var(--md-sys-color-primary); }
-.verse-text { font-family: var(--font-reading); font-size: 22px; line-height: 1.45; }
-.verse-ref { margin-top: 12px; }
-.three { list-style: none; margin: 10px 0 0; padding: 0; }
-.three li { font-family: var(--font-display); font-size: 22px; line-height: 1.3; padding: 12px 0; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
-.three-under { font-family: var(--font-display); font-style: italic; font-size: 19px; line-height: 1.4; color: var(--md-sys-color-on-surface-variant); margin-top: 14px; }
-.home-foot { margin-top: 26px; text-align: center; color: var(--md-sys-color-on-surface-variant); font-size: 14px; line-height: 1.5; }
-.home-foot p + p { margin-top: 6px; }
-
-/* ══ Bottom nav ══════════════════════════════════════════════════════════ */
+/* ── Bottom Navigation ── */
 .bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-  background: var(--md-sys-color-nav-bg);
-  border-top: 1px solid var(--md-sys-color-outline-variant);
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--mj-chrome);
+  box-shadow: 0 -1px 0 rgba(0,0,0,0.14);
   display: flex;
-  height: calc(68px + env(safe-area-inset-bottom, 0px));
+  height: calc(80px + env(safe-area-inset-bottom, 0px));
   padding-bottom: env(safe-area-inset-bottom, 0px);
   transition: background 0.3s;
 }
 .nav-tab {
-  flex: 1; min-width: 0; position: relative;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-  color: var(--md-sys-color-on-surface-variant);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 0 16px;
+  color: var(--mj-chrome-muted);
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+.nav-tab:focus-visible { outline: 2px solid var(--mj-chrome-accent); outline-offset: -4px; border-radius: 12px; }
+.nav-tab .nav-indicator {
+  position: absolute;
+  top: 12px;
+  width: 64px; height: 32px;
+  border-radius: 16px;
+  background: transparent;
+  transition: background 0.2s;
+}
+.nav-tab.active .nav-indicator,
+.nav-tab[aria-current="page"] .nav-indicator { background: var(--mj-chrome-indicator); }
+.nav-tab .nav-icon {
+  width: 24px; height: 24px;
+  display: block;
+  fill: currentColor;
+  color: inherit;
+  position: relative; z-index: 1;
+  flex-shrink: 0;
   transition: color 0.2s;
 }
-.nav-tab .nav-indicator {
-  position: absolute; top: 8px; width: 56px; height: 30px; border-radius: 15px;
-  background: transparent; transition: background 0.2s;
+.nav-tab .nav-label {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 500; letter-spacing: 0.5px;
+  line-height: 1.2;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.nav-tab.active .nav-indicator { background: var(--md-sys-color-nav-indicator); }
-.nav-tab .ico { position: relative; z-index: 1; }
-.nav-tab .nav-label { font-size: 12px; font-weight: 600; letter-spacing: 0.02em; position: relative; z-index: 1; }
-.nav-tab.active { color: var(--md-sys-color-primary); }
+.nav-tab.active,
+.nav-tab[aria-current="page"] { color: var(--mj-chrome-accent); }
+.nav-tab.active .nav-icon,
+.nav-tab[aria-current="page"] .nav-icon { color: var(--mj-chrome-accent); }
 
-/* ══ Bottom sheet (pull down to dismiss — enableSheetDrag) ════════════════ */
-.sheet-overlay {
-  position: fixed; inset: 0; z-index: 1050;
-  background: var(--md-sys-color-scrim);
-  display: none; align-items: flex-end; justify-content: center;
+/* ── Raised centre slot ── */
+.nav-tab--feature .nav-indicator { display: none; }
+.nav-tab--feature .nav-icon {
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  margin: -17px 0;                 /* keep flow height ~24px so siblings/labels don't shift */
+  transform: translateY(-20px);    /* bump the icon up out of the bar */
+  padding: 14px;                   /* 58 − 2·14 = a 30px glyph */
+  background: var(--mj-metal);
+  color: var(--mj-metal-on);
+  box-shadow: 0 8px 18px -6px rgba(0,0,0,0.45), 0 0 0 6px var(--mj-chrome);
+  transition: background 0.2s, color 0.2s, box-shadow 0.3s, transform 0.12s;
+  z-index: 3;
 }
-.sheet-overlay.open { display: flex; }
-.sheet-container {
-  background: var(--md-sys-color-surface);
-  border-radius: 26px 26px 0 0;
-  width: 100%; max-width: 640px;
-  /* 90dvh normally; when the keyboard pins the overlay to the visual viewport
-     (_fitSheets), 100% of that smaller box wins so the sheet never overflows. */
-  max-height: min(90dvh, 100%);
-  display: flex; flex-direction: column;
-  box-shadow: 0 -4px 32px rgba(0,0,0,0.35);
-  animation: sheetUp 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+.nav-tab--feature:active .nav-icon { transform: translateY(-20px) scale(0.94); }
+/* Active: the circle stays metal; a 2px accent halo outside the chrome ring marks the state. */
+.nav-tab--feature.active .nav-icon,
+.nav-tab--feature[aria-current="page"] .nav-icon {
+  background: var(--mj-metal);
+  color: var(--mj-metal-on);
+  box-shadow: 0 8px 18px -6px rgba(0,0,0,0.45), 0 0 0 6px var(--mj-chrome), 0 0 0 8px var(--mj-chrome-accent);
 }
-@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.sheet-drag { width: 38px; height: 4px; border-radius: 2px; background: var(--md-sys-color-outline); margin: 10px auto 2px; flex-shrink: 0; }
-.sheet-header {
-  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
-  padding: 8px 8px 12px 20px;
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
-}
-.sheet-drag, .sheet-header { touch-action: none; }   /* the drag owns these; the body scrolls */
-.sheet-heading { flex: 1; min-width: 0; }
-.sheet-title { font-family: var(--font-display); font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 2px; }
-.sheet-body {
-  flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
-  padding: 18px 20px calc(28px + env(safe-area-inset-bottom, 0px));
-}
-.moment-strength { font-family: var(--font-display); font-style: italic; font-size: 20px; line-height: 1.4; }
-.moment-strength b { font-style: normal; font-weight: 600; color: var(--md-sys-color-primary); }
-.moment-context { margin-top: 16px; }
+.nav-tab--feature.active:active .nav-icon { transform: translateY(-20px) scale(0.94); }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .top-app-bar, .bottom-nav, .header-menu, .icon-btn,
+  .nav-tab, .nav-tab .nav-indicator, .nav-tab .nav-icon { transition: none; animation: none; }
+}
+
+/* ── Bottom sheet (z 1050). rgba() only for the theme-agnostic backdrop and the upward shadow. ── */
+.sheet-overlay {
+  position: fixed; inset: 0; z-index: 1050;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+}
+.sheet-overlay.open { display: flex; animation: mjSheetFade 0.22s ease; }
+.sheet {
+  position: relative;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  border-radius: 28px 28px 0 0;
+  width: 100%; max-width: 640px;
+  /* 92dvh normally; when the keyboard pins the overlay to the visual viewport,
+     100% of that smaller box wins, so the sheet never overflows the screen. */
+  height: min(92dvh, 100%); display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.35);
+  outline: none;
+}
+.sheet-overlay.open .sheet { animation: mjSheetUp 0.28s cubic-bezier(0.22,1,0.36,1); }
+.sheet--auto { height: auto; max-height: min(92dvh, 100%); }
+.sheet-drag {
+  width: 36px; height: 4px; border-radius: 2px;
+  background: var(--md-sys-color-outline-variant);
+  margin: 12px auto 4px; flex-shrink: 0;
+}
+.sheet-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 8px 10px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  flex-shrink: 0;
+}
+.sheet-drag, .sheet-header { touch-action: none; -webkit-user-select: none; user-select: none; }
+.sheet-drag { cursor: grab; }
+.sheet-icon { width: 20px; height: 20px; color: var(--md-sys-color-primary); }
+.sheet-title {
+  font-family: var(--font-sans);
+  font-size: 16px; font-weight: 600; flex: 1; min-width: 0;
+  color: var(--md-sys-color-on-surface); line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sheet-header .icon-btn { margin-left: auto; color: var(--md-sys-color-on-surface-variant); }
+.sheet-body {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  padding: 16px 18px calc(24px + env(safe-area-inset-bottom, 0px));
+  font-family: var(--font-sans);
+  font-size: 16px; line-height: 1.6;
+  color: var(--md-sys-color-on-surface);
+}
+.sheet-body .reading { font-family: var(--font-serif); font-size: 17px; line-height: 1.7; }
+.sheet-overlay.closing { animation: mjSheetFadeOut 0.22s ease forwards; pointer-events: none; }
+.sheet-overlay.closing .sheet { animation: mjSheetDown 0.22s ease forwards; }
+@keyframes mjSheetFade    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mjSheetFadeOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes mjSheetUp      { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes mjSheetDown    { from { transform: translateY(0); } to { transform: translateY(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .sheet-overlay.open, .sheet-overlay.open .sheet,
+  .sheet-overlay.closing, .sheet-overlay.closing .sheet { animation: none; }
+}
+/* numbered steps inside a sheet or panel */
+.steps { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.steps li { display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 10px; }
+.steps .step-num { font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; color: var(--md-sys-color-secondary); padding-top: 3px; }
+.steps b { font-family: var(--font-serif); font-size: 18px; font-weight: 600; line-height: 1.25; display: block; }
+.steps + .reading { margin-top: 18px; }
+.steps span.step-text { font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); display: block; margin-top: 2px; }
+
+/* ── Splash (z 5000). Shown only when the head script set html.mj-splash (namespaced: a bare
+   .splash rule would match <html> too). The shield draws itself while a bright arc travels its
+   edge, the sword descends into place, then the mark flares and a cream bloom fills the page. ── */
+.splash {
+  display: none;
+  position: fixed; inset: 0; z-index: 5000;
+  flex-direction: column; align-items: center; justify-content: center; gap: 30px;
+  background: radial-gradient(120% 90% at 50% 38%, var(--mj-house) 0%, var(--mj-ink) 72%);
+  color: var(--mj-metal);
+  transition: opacity 0.7s ease;
+}
+html.mj-splash #splash { display: flex; }
+.splash.hide { opacity: 0; pointer-events: none; }
+.splash-stage { position: relative; width: 184px; height: 184px; display: flex; align-items: center; justify-content: center; }
+.splash-mark {
+  position: relative; z-index: 2; width: 184px; height: 184px; overflow: visible;
+  opacity: 0; transform: scale(0.6);
+}
+.splash.run .splash-mark, .splash.still .splash-mark { animation: spEnter 0.6s ease-out forwards; }
+@keyframes spEnter { to { opacity: 1; transform: scale(1); } }
+.sp-piece {
+  transform-box: view-box;
+  filter: drop-shadow(0 0 1.4px var(--mj-metal)) drop-shadow(0 0 9px rgba(255, 236, 190, 0.62));
+}
+.sp-shield path { fill: none; stroke: currentColor; stroke-width: 5.5; stroke-linejoin: round; }
+.sp-shield .sp-line { stroke-dasharray: 100; stroke-dashoffset: 0; }
+.splash.run .sp-shield .sp-line { animation: spDraw 1.5s cubic-bezier(0.3, 0.05, 0.15, 1) both; }
+@keyframes spDraw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+.sp-shield .sp-arc { stroke: var(--banner-plate-ink); stroke-dasharray: 9 91; stroke-linecap: round; opacity: 0; }
+.splash.run .sp-shield .sp-arc { animation: spArc 2.3s ease-out both; }
+@keyframes spArc {
+  0% { opacity: 0; stroke-dashoffset: 100; } 10% { opacity: 0.95; } 80% { opacity: 0.95; }
+  100% { opacity: 0; stroke-dashoffset: -100; }
+}
+.sp-sword path { fill: currentColor; }
+.splash.run .sp-sword { animation: spSword 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) 0.9s both; }
+@keyframes spSword { from { opacity: 0; transform: translateY(-34px); } 30% { opacity: 1; } to { opacity: 1; transform: none; } }
+.splash.burst .splash-mark { animation: spGlow 0.7s ease-in forwards; }
+@keyframes spGlow {
+  from { opacity: 1; transform: scale(1); filter: none; }
+  to   { opacity: 1; transform: scale(1.18); filter: brightness(2.2) drop-shadow(0 0 24px rgba(255, 240, 200, 0.95)); }
+}
+.splash-bloom {
+  position: absolute; left: 50%; top: 50%;
+  width: 40vmax; height: 40vmax; margin: -20vmax 0 0 -20vmax; border-radius: 50%;
+  background: radial-gradient(circle, var(--banner-plate-ink) 0%, var(--banner-plate-ink) 55%, var(--mj-metal) 78%, transparent 100%);
+  transform: scale(0); opacity: 0; pointer-events: none; z-index: 1; filter: blur(4px);
+}
+.splash.burst .splash-bloom { animation: spBloom 0.75s cubic-bezier(0.4, 0, 1, 1) forwards; }
+@keyframes spBloom { 0% { transform: scale(0.1); opacity: 0; } 15% { opacity: 0.7; } 100% { transform: scale(7); opacity: 1; } }
+.splash-title {
+  position: relative; z-index: 2;
+  font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--mj-on-chrome); opacity: 0;
+}
+.splash.run .splash-title, .splash.still .splash-title { animation: spFadeUp 1s ease 0.5s both; }
+@keyframes spFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.splash.burst .splash-title { opacity: 0; transition: opacity 0.3s; }
+@media (prefers-reduced-motion: reduce) {
+  .splash-mark, .sp-piece, .sp-line, .sp-arc, .splash-title, .splash-bloom { animation: none !important; }
+  .splash.still .splash-mark { opacity: 1; transform: none; }
+  .splash.still .splash-title { opacity: 1; }
+}
+
+/* ── First-run onboarding: the banner page opens by itself; Back becomes "Skip for now" ── */
+.overlay-skip {
+  display: none; margin-left: auto; min-height: 44px; padding: 0 14px;
+  background: none; border: 0; cursor: pointer;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--mj-on-chrome); border-radius: 22px;
+}
+.overlay-skip:focus-visible { outline: 2px solid var(--mj-chrome-accent); outline-offset: 2px; }
+html.mj-onboarding #theme-page-back { display: none; }
+html.mj-onboarding .overlay-skip { display: inline-flex; align-items: center; }
+html.mj-onboarding .overlay-app-bar-title { padding-left: 12px; }   /* no Back button beside it on first run */
+
+/* ── Body scroll lock (set by openThemePage, cleared by closeThemePage) ── */
+html.mj-overlay-open,
+html.mj-overlay-open body { overflow: hidden; }
+
+/* ── Full-page overlay shell (z 320): slides in from the right. Reuse for every long-form page. ── */
+.page-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 320;
+  background: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  visibility: hidden;
+  /* closing: slide out, THEN hide (visibility flips after the 0.34s slide) */
+  transition: transform 0.34s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.34s;
+}
+.page-overlay.open {
+  transform: translateX(0);
+  visibility: visible;
+  /* opening: visible at once so focus can land on the back button */
+  transition: transform 0.34s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
+}
+.overlay-app-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  min-height: calc(56px + env(safe-area-inset-top, 0px));
+  padding: 4px 12px 4px 4px;
+  padding-top: calc(4px + env(safe-area-inset-top, 0px));
+  background: var(--mj-chrome);
+  color: var(--mj-on-chrome);
+  box-shadow: var(--md-sys-elevation-2);
+  transition: background 0.3s, color 0.3s;
+}
+.overlay-app-bar .icon-btn { color: var(--mj-on-chrome); }
+.overlay-app-bar .icon-btn:focus-visible { outline: 2px solid var(--mj-on-chrome); outline-offset: -2px; }
+.overlay-app-bar-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mj-on-chrome);
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* The scroll body is selected by ID, never by class. */
+#theme-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  padding: 28px 16px calc(72px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 600px) {
+  #theme-body { padding-left: 22px; padding-right: 22px; }
+}
+.overlay-inner { max-width: 720px; margin: 0 auto; }
+
+/* ── Front-matter type roles ── */
+.guide-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--md-sys-color-primary);
+  margin-bottom: 12px;
+}
+.guide-display {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 7.6vw, 34px);
+  line-height: 1.18;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--md-sys-color-on-surface);
+  margin: 0 0 24px;
+}
+.guide-lead {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.68;
+  color: var(--md-sys-color-on-surface);
+  margin: 0 0 30px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-overlay { transition: none; }
+  .overlay-app-bar { transition: none; }
+}
+
+/* ── Banner page ("Choose Your Banner"): medallion, intro, the four PLATES, outro.
+   Plate colours come from the STATIC plate tokens via [data-banner], so every plate always shows
+   its own colours whatever the current theme is. ── */
+.crest-medallion {
+  width: 104px; height: 104px; border-radius: 50%;
+  margin: 0 auto 18px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--mj-ink);
+  color: var(--mj-metal);
+  box-shadow: var(--md-sys-elevation-2);
+}
+.crest-medallion svg { width: 62px; height: 62px; display: block; }
+.banner-intro { padding: 4px 0 30px; }
+.banner-intro .guide-lead { max-width: 62ch; }
+.banner-intro-note {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--md-sys-color-on-surface-variant);
+  max-width: 62ch;
+  margin: -12px 0 0;
+}
+.banner-plate {
+  --plate: var(--md-sys-color-surface-variant);
+  --plate-metal: var(--md-sys-color-secondary);
+  position: relative;
+  background: var(--plate);
+  color: var(--banner-plate-ink);
+  border-radius: 20px;
+  padding: 32px 22px 28px;
+  margin: 0 0 20px;
+  box-shadow: var(--md-sys-elevation-2);
+}
+.banner-plate[data-banner="battle"]    { --plate: var(--banner-battle-plate);    --plate-metal: var(--banner-battle-metal); }
+.banner-plate[data-banner="adventure"] { --plate: var(--banner-adventure-plate); --plate-metal: var(--banner-adventure-metal); }
+.banner-plate[data-banner="beauty"]    { --plate: var(--banner-beauty-plate);    --plate-metal: var(--banner-beauty-metal); }
+.banner-plate[data-banner="son"]       { --plate: var(--banner-son-plate);       --plate-metal: var(--banner-son-metal); }
+@media (min-width: 600px) {
+  .banner-plate { padding: 40px 32px 34px; margin-bottom: 24px; }
+}
+.banner-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--plate-metal);
+  text-align: center;
+  margin: 0 0 8px;
+}
+.banner-title {
+  font-family: var(--font-serif);
+  font-size: clamp(30px, 9vw, 42px);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--banner-plate-ink);
+  text-align: center;
+  margin: 0 0 22px;
+}
+.banner-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+  max-width: 62ch;
+  margin: 0 auto 22px;
+  padding: 18px 0;
+  border-top: 1px solid var(--plate-metal);
+  border-bottom: 1px solid var(--plate-metal);
+}
+.banner-facts > div { min-width: 0; }
+.banner-facts > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.banner-facts dt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--plate-metal);
+  margin: 0 0 3px;
+}
+.banner-facts dd {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--banner-plate-ink);
+  margin: 0;
+}
+@media (max-width: 379.98px) {
+  .banner-facts { grid-template-columns: 1fr; gap: 12px; }
+  .banner-facts > div:last-child:nth-child(odd) { grid-column: auto; }
+}
+.banner-plate .banner-text {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--banner-plate-ink);
+  opacity: 0.92;
+  max-width: 62ch;
+  margin: 0 auto 26px;
+}
+/* Choose button: filled metal with ink text; aria-pressed="true" = outlined "Your banner". */
+.banner-plate .banner-choose {
+  display: flex;
+  width: 100%;
+  max-width: 62ch;
+  margin: 0 auto;
+  background: var(--plate-metal);
+  color: var(--mj-ink);
+  border: 1.5px solid var(--plate-metal);
+  box-shadow: var(--md-sys-elevation-2);
+}
+.banner-plate .banner-choose[aria-pressed="true"] {
+  background: transparent;
+  color: var(--banner-plate-ink);
+  border-color: var(--banner-plate-ink);
+  box-shadow: none;
+  cursor: default;
+}
+.banner-plate .banner-choose[aria-pressed="true"]:active { transform: none; }
+.banner-plate .banner-choose:focus-visible { outline: 2px solid var(--banner-plate-ink); outline-offset: 3px; }
+.banner-plate .banner-choose .ico { width: 20px; height: 20px; }
+.banner-plate .banner-choose:hover .ico:last-child { transform: none; }
+@media (hover: hover) {
+  .banner-plate .banner-choose:not([aria-pressed="true"]):hover { box-shadow: var(--md-sys-elevation-3); }
+}
+.banner-outro {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--md-sys-color-on-surface-variant);
+  text-align: center;
+  max-width: 52ch;
+  margin: 10px auto 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner-plate .banner-choose { transition: none; }
+}
+
+/* ── Home hero: photo plates, a theme TINT (::before, multiply) under a neutral SCRIM (::after).
+   Both pseudo-elements carry z-index 1 so they paint above the absolutely positioned slides.
+   The brightness/saturate filter sits on the <img> — per element, never body/html. ── */
+.home-hero {
+  position: relative;
+  min-height: 64dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--mj-chrome);           /* ground under the photos while they load */
+  color: var(--mj-on-chrome);
+}
+.home-hero-bg { position: absolute; inset: 0; z-index: 0; }
+.home-hero-bg img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.4s ease-in-out;
+  filter: brightness(0.82) saturate(0.95);
+}
+.home-hero-bg img.active { opacity: 1; }
+.home-hero-bg::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: var(--mj-house);
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  transition: background 0.3s;
+}
+.home-hero-bg::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.06) 32%, rgba(0,0,0,0.80) 100%);
+}
+.home-hero-content {
+  position: relative; z-index: 2;
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 24px 28px;
+}
+.hero-mark {
+  position: absolute; top: 20px; right: 16px;
+  width: min(46vw, 220px); height: min(46vw, 220px);
+  color: var(--mj-on-chrome);
+  opacity: 0.14;
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--mj-chrome-accent);
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.hero-eyebrow::before { content: ""; width: 36px; height: 1px; background: currentColor; flex-shrink: 0; }
+.hero-h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 9.4vw, 52px);
+  line-height: 1.06; font-weight: 700; letter-spacing: -0.012em;
+  color: var(--mj-on-chrome);
+  margin: 0 0 14px;
+  text-wrap: balance;
+}
+.hero-lead {
+  font-family: var(--font-sans);
+  font-size: 16px; line-height: 1.55;
+  color: var(--mj-on-chrome); opacity: 0.86;
+  max-width: 46ch;
+  margin: 0;
+}
+
+/* ── Home walkthrough: one card per tab, in tab order ── */
+.home-walk { max-width: 640px; margin: 0 auto; padding-top: 6px; }
+.walk-list { display: grid; gap: 12px; padding: 0 16px; }
+.walk-card {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: 14px;
+  padding: 18px 16px 16px;
+}
+.walk-icon {
+  grid-column: 1; grid-row: 1 / span 2;
+  width: 24px; height: 24px;
+  display: block;
+  color: var(--md-sys-color-primary);
+  fill: currentColor;
+  margin-top: 1px;
+}
+.walk-step {
+  grid-column: 2;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--md-sys-color-secondary);
+  margin: 0 0 6px;
+}
+.walk-title {
+  grid-column: 2;
+  font-family: var(--font-serif);
+  font-size: 20px; line-height: 1.25; font-weight: 600; letter-spacing: -0.005em;
+  color: var(--md-sys-color-on-surface);
+  margin: 0 0 6px;
+}
+.walk-desc {
+  grid-column: 2;
+  font-family: var(--font-sans);
+  font-size: 15px; line-height: 1.5;
+  color: var(--md-sys-color-on-surface-variant);
+  margin: 0 0 14px;
+}
+.walk-card .btn { grid-column: 2; justify-self: start; }
+.home-verse { margin: 12px 16px 0; }
+.home-foot {
+  max-width: 640px; margin: 0 auto; padding: 22px 24px 36px;   /* 36px: the raised nav disc rises 20px above the bar */
+  text-align: center;
+  font-family: var(--font-sans); font-size: 13px; line-height: 1.6;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* ── Tab heads ── */
+.tab-head { padding: 0 2px 14px; }
+.tab-head .display { margin-bottom: 6px; }
+.tab-head .lead { margin: 0; }
+.tab-head .btn { margin-top: 14px; }
+
+/* ── Picker strip: THE signature selector. One sideways strip at the top of a tab, the chosen
+   item's panel below it; the selection is remembered. ── */
+.pick-strip {
+  display: flex; gap: 10px;
+  overflow-x: auto; overflow-y: hidden;
+  padding: 4px 2px 12px; margin: 0 -2px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scrollbar-width: none;
+}
+.pick-strip::-webkit-scrollbar { display: none; }
+.pick-tile {
+  flex: 0 0 auto; scroll-snap-align: start;
+  display: flex; flex-direction: column; align-items: flex-start;
+  width: 122px; min-height: 96px;
+  padding: 10px 12px 11px;
+  border-radius: 14px;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  border: 1.5px solid var(--md-sys-color-outline-variant);
+  box-shadow: var(--md-sys-elevation-1);
+  text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.1s;
+}
+.pick-tile:active { transform: scale(0.98); }
+.pick-tile:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.pick-tile[aria-selected="true"] {
+  background: var(--mj-chrome); color: var(--mj-on-chrome);
+  border-color: var(--mj-chrome-accent);
+  box-shadow: var(--md-sys-elevation-2);
+}
+.pick-tile-num {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--md-sys-color-secondary);
+}
+.pick-tile[aria-selected="true"] .pick-tile-num { color: var(--mj-chrome-accent); }
+.pick-tile-title { font-family: var(--font-serif); font-size: 15px; line-height: 1.2; font-weight: 600; margin-top: 6px; }
+.pick-tile-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; margin-top: auto; padding-top: 8px; color: var(--md-sys-color-on-surface-variant); }
+.pick-tile[aria-selected="true"] .pick-tile-meta { color: var(--mj-chrome-muted); }
+/* topic tiles: a little larger, led by an icon instead of a number */
+.topic-tile { width: 132px; min-height: 100px; }
+.topic-tile .ico { width: 22px; height: 22px; color: var(--md-sys-color-primary); }
+.topic-tile[aria-selected="true"] .ico { color: var(--mj-chrome-accent); }
+.topic-tile .pick-tile-title { margin-top: 8px; }
+
+/* ── Facts: a definition list with mono labels ── */
+.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 14px 0 0; font-family: var(--font-sans); font-size: 14px; line-height: 1.4; }
+.facts dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--md-sys-color-secondary); padding-top: 2px; }
+.facts dd { margin: 0; color: var(--md-sys-color-on-surface); }
+.strength { font-family: var(--font-serif); font-style: italic; font-size: 18px; line-height: 1.5; color: var(--md-sys-color-on-surface); margin: 6px 0 10px; }
+.panel p.strength { color: var(--md-sys-color-on-surface); font-family: var(--font-serif); font-size: 18px; line-height: 1.5; }
+.strength b { font-style: normal; font-weight: 600; color: var(--md-sys-color-primary); }
+
+/* ── Accordion card ── */
+.acc-list { display: flex; flex-direction: column; gap: 10px; }
+.acc-card { background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); border-radius: 16px; box-shadow: var(--md-sys-elevation-1); overflow: hidden; border: 1.5px solid transparent; transition: border-color 0.2s; }
+.acc-card.open { border-color: var(--md-sys-color-primary); }
+.acc-head {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  min-height: 64px; padding: 10px 14px 10px 12px;
+  background: transparent; border: 0; text-align: left; cursor: pointer; color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.acc-head:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: -3px; border-radius: 14px; }
+.acc-icon { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); box-shadow: var(--md-sys-elevation-1); }
+.acc-text { flex: 1; min-width: 0; }
+.acc-name { font-family: var(--font-serif); font-size: 18px; font-weight: 600; line-height: 1.2; display: block; }
+.acc-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--md-sys-color-on-surface-variant); display: block; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acc-chevron { flex-shrink: 0; color: var(--md-sys-color-on-surface-variant); transition: transform 0.2s; }
+.acc-card.open .acc-chevron { transform: rotate(180deg); }
+.acc-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--md-sys-color-outline-variant); }
+.acc-card.open .acc-body { display: block; }
+.acc-items { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.acc-items li { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 10px; font-family: var(--font-sans); font-size: 15px; line-height: 1.45; }
+.acc-items b { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--md-sys-color-secondary); padding-top: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .acc-card, .acc-chevron, .pick-tile { transition: none; }
+}
+
+/* ── List rows ── */
+.row-list { display: flex; flex-direction: column; }
+.list-row {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; min-height: 56px;
+  padding: 12px 12px 12px 18px;
+  text-align: left;
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--md-sys-color-on-surface);
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s;
+}
+button.list-row:active, a.list-row:active { background: var(--md-sys-color-surface-container); }
+@media (hover: hover) { button.list-row:hover, a.list-row:hover { background: var(--md-sys-color-surface-container); } }
+.list-row:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: -3px; border-radius: 10px; }
+.row-num {
+  font-family: var(--font-mono);
+  font-size: 13px; font-weight: 600; letter-spacing: 0.08em;
+  color: var(--md-sys-color-secondary);
+  width: 1.6em; flex-shrink: 0;
+}
+.row-title {
+  flex: 1; min-width: 0;
+  font-family: var(--font-serif);
+  font-size: 18px; line-height: 1.3; font-weight: 600;
+}
+.row-title--q { font-size: 17px; font-weight: 400; line-height: 1.4; }
+.row-list--bare .list-row:first-child { border-top: 0; }
+.list-row .ico { width: 22px; height: 22px; color: var(--md-sys-color-on-surface-variant); }
+.empty { text-align: center; padding: 28px 18px; }
+.empty .ico { width: 40px; height: 40px; color: var(--md-sys-color-primary); margin: 0 auto 8px; }
+.empty .btn, .empty .chip { margin-top: 14px; }
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-bg img { transition: none; }
+  .home-hero-bg::before, .list-row { transition: none; }
+}
+
+/* ══ DESKTOP LAYER ══════════════════════════════════════════════════════
+   Everything in this block applies ONLY at iPad size and up:
+     @media (min-width: 744px) and (min-height: 500px)
+   744 px is the narrowest iPad (mini, portrait); the min-height keeps a phone turned sideways
+   (≈ 430 px tall) on the phone layout. Below that line the app is exactly the phone experience —
+   the only rule outside the query hides the three rail-only elements the phone never shows.
+     · the bottom nav becomes a left NAVIGATION RAIL in the theme chrome — collapsed 96 px (icon
+       over label), expanded 256 px (icon beside label, the wordmark, utilities labelled); menu
+       button or the '[' key, the choice remembered as 'manhood-rail'. Below 1024 px an expanded
+       rail floats over the page with a scrim (modal); from 1024 px it pushes the page.
+     · the top bar is hidden: the rail carries the brand and the header menu's items.
+     · <main class="content"> is a size container ("page"); pages split when the CONTENT area —
+       not the window — reaches 900 px, so expanding the rail on a small screen folds a split.
+     · sheets become centred dialogs. ── */
+.rail-head, .rail-foot, .rail-scrim { display: none; }
+
+@media (min-width: 744px) and (min-height: 500px) {
+  html { --rail-w: 96px; --rail-push: 96px; }
+  html.mj-rail-open { --rail-w: 256px; }
+
+  /* ── Chrome: no top bar; the page starts at the top edge ── */
+  .top-app-bar, .header-menu { display: none; }
+  body { background: var(--md-sys-color-background); }   /* the phone's status-bar fix (see body) is not needed here */
+  .content {
+    container: page / inline-size;
+    background: none; min-height: 0;
+    margin-left: var(--rail-push);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 0;
+    transition: margin-left 0.26s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  /* ── The rail (the bottom nav, re-laid) ── */
+  .bottom-nav {
+    top: 0; bottom: 0; left: 0; right: auto;
+    width: var(--rail-w); height: auto;
+    flex-direction: column; align-items: stretch; gap: 4px;
+    padding: calc(env(safe-area-inset-top, 0px) + 12px) 12px calc(env(safe-area-inset-bottom, 0px) + 14px);
+    box-shadow: 1px 0 0 rgba(0,0,0,0.14);
+    overflow-x: hidden; overflow-y: auto; scrollbar-width: none;
+    transition: width 0.26s cubic-bezier(0.2, 0, 0, 1), background 0.3s, box-shadow 0.26s;
+  }
+  .bottom-nav::-webkit-scrollbar { display: none; }
+
+  .rail-head { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 10px; }
+  .rail-toggle { color: var(--mj-on-chrome); }
+  .rail-toggle:focus-visible { outline-color: var(--mj-chrome-accent); }
+  .rail-brand {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px; border-radius: 14px;
+    color: var(--mj-on-chrome); text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .rail-brand:focus-visible { outline: 2px solid var(--mj-chrome-accent); outline-offset: 2px; }
+  .rail-mark { width: 46px; height: 46px; flex-shrink: 0; display: block; color: var(--mj-metal); }
+  .rail-word { display: none; flex-direction: column; min-width: 0; line-height: 1.12; letter-spacing: 0.005em; font-family: var(--font-sans); font-size: 15px; }
+  .rail-word-a { font-weight: 700; color: var(--mj-on-chrome); white-space: nowrap; }
+  .rail-word-b { font-weight: 400; color: var(--mj-chrome-muted); white-space: nowrap; }
+
+  /* collapsed items: icon over label, the 56×32 indicator pill */
+  .nav-tab { flex: 0 0 auto; min-height: 64px; padding: 6px 0 8px; gap: 4px; border-radius: 16px; }
+  .nav-tab .nav-indicator { top: 6px; width: 56px; height: 32px; }
+  @media (hover: hover) {
+    .nav-tab:hover { color: var(--mj-on-chrome); }
+    .nav-tab:not(.active):not([aria-current="page"]):hover .nav-indicator { background: color-mix(in srgb, var(--mj-on-chrome) 10%, transparent); }
+  }
+  /* the raised centre disc is a phone affordance — in the rail Moments is an ordinary item */
+  .nav-tab--feature .nav-indicator { display: block; }
+  .nav-tab--feature .nav-icon,
+  .nav-tab--feature.active .nav-icon,
+  .nav-tab--feature[aria-current="page"] .nav-icon {
+    width: 24px; height: 24px; margin: 0; padding: 0;
+    transform: none; background: transparent; color: inherit; box-shadow: none; border-radius: 0;
+  }
+  .nav-tab--feature:active .nav-icon,
+  .nav-tab--feature.active:active .nav-icon { transform: none; }
+
+  .rail-foot {
+    display: flex; flex-direction: column; gap: 2px;
+    margin-top: auto; padding-top: 12px;
+    border-top: 1px solid color-mix(in srgb, var(--mj-on-chrome) 16%, transparent);
+  }
+  .rail-util {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    min-height: 44px; padding: 0 10px; border-radius: 22px;
+    color: var(--mj-chrome-muted);
+    font-family: var(--font-sans); font-size: 14px; font-weight: 500; text-align: left;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s, color 0.2s;
+  }
+  .rail-util .ico { width: 22px; height: 22px; }
+  .rail-util-label { display: none; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rail-util[aria-pressed="true"] { color: var(--mj-chrome-accent); }
+  .rail-util:focus-visible { outline: 2px solid var(--mj-chrome-accent); outline-offset: -2px; }
+  @media (hover: hover) {
+    .rail-util:hover { background: color-mix(in srgb, var(--mj-on-chrome) 10%, transparent); color: var(--mj-on-chrome); }
+  }
+
+  /* expanded: icon beside label, a full-width pill, the wordmark and labelled utilities */
+  html.mj-rail-open .rail-head { flex-direction: row; justify-content: flex-start; gap: 4px; }
+  html.mj-rail-open .rail-word { display: flex; }
+  html.mj-rail-open .nav-tab { flex-direction: row; justify-content: flex-start; gap: 16px; min-height: 52px; padding: 0 20px; }
+  html.mj-rail-open .nav-tab .nav-indicator { top: 0; left: 0; width: 100%; height: 100%; border-radius: 26px; }
+  html.mj-rail-open .nav-tab .nav-label { font-size: 14px; letter-spacing: 0.06em; position: relative; z-index: 1; }
+  html.mj-rail-open .rail-util { justify-content: flex-start; padding: 0 20px; }
+  html.mj-rail-open .rail-util-label { display: block; }
+  html.mj-rail-open .rail-word,
+  html.mj-rail-open .nav-tab .nav-label,
+  html.mj-rail-open .rail-util-label { animation: mjRailLabel 0.3s ease both; }
+  @keyframes mjRailLabel { from { opacity: 0; } 40% { opacity: 0; } to { opacity: 1; } }
+
+  /* ── Pages: wider measure, roomier gutters ── */
+  .section-inner { max-width: 1180px; padding: 0 32px 72px; }
+  .section-inner--pad { padding-top: 36px; }
+  .tab-head { padding: 0 2px 22px; }
+  .tab-head .display { font-size: 46px; line-height: 1.08; margin-bottom: 10px; }
+  .tab-head .lead { font-size: 17px; }
+  #pathPanel, #momentPanel, #deckPanel, #topicPanel { container: panel / inline-size; }
+
+  /* picker strips become an even grid (a mouse has no swipe) */
+  .pick-strip {
+    display: grid; overflow: visible; scroll-snap-type: none; touch-action: auto;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); padding-bottom: 16px;
+  }
+  .pick-strip .pick-tile { width: auto; }
+
+  /* ── Home: hero on top, the steps in a 2 × 2 grid ── */
+  .home-hero { min-height: 58dvh; }
+  .home-hero-content { padding: 0 40px 40px; }
+  .hero-h1 { font-size: clamp(44px, 6.4cqi, 72px); }
+  .hero-lead { font-size: 18px; }
+  .home-walk { max-width: 1000px; padding: 20px 16px 0; }
+  .walk-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 0 16px; }
+  .walk-list--now { grid-template-columns: minmax(0, 1fr); }
+  .walk-card { grid-template-rows: auto auto 1fr auto; }            /* Open buttons line up across a row */
+  .walk-card .btn { align-self: end; }
+  .home-verse { margin: 16px 16px 0; }
+  .home-foot { max-width: 1000px; padding: 28px 32px 56px; }
+
+  /* ── Sheets become centred dialogs ── */
+  .sheet-overlay { align-items: center; padding: 24px; }
+  .sheet-drag { display: none; }
+  .sheet { border-radius: 24px; box-shadow: 0 24px 64px -12px rgba(0,0,0,0.5); }
+  /* a dialog sizes to its content (the phone sheet is a fixed 92 % tall) */
+  .sheet, .sheet--auto { max-width: 600px; height: auto; min-height: min(320px, 100%); max-height: min(86dvh, 100%); }
+  .sheet-header { padding-top: 14px; padding-bottom: 14px; }
+  .sheet-overlay.open .sheet { animation: mjDlgIn 0.24s cubic-bezier(0.2, 0, 0, 1); }
+  .sheet-overlay.closing .sheet { animation: mjDlgOut 0.2s ease forwards; }
+  @keyframes mjDlgIn  { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+  @keyframes mjDlgOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scale(0.98); } }
+}
+@media (min-width: 744px) and (min-height: 500px) and (prefers-reduced-motion: reduce) {
+  .content, .bottom-nav, .rail-util { transition: none; }
+  html.mj-rail-open .rail-word, html.mj-rail-open .nav-tab .nav-label, html.mj-rail-open .rail-util-label,
+  .sheet-overlay.open .sheet, .sheet-overlay.closing .sheet { animation: none; }
+}
+
+/* ── Rail below 1024 px: expanded = modal, floating over the page ── */
+@media (min-width: 744px) and (min-height: 500px) and (max-width: 1023.98px) {
+  html.mj-rail-open .bottom-nav { box-shadow: var(--md-sys-elevation-3); }
+  html.mj-rail-open .rail-scrim {
+    display: block; position: fixed; inset: 0; z-index: 99;
+    background: rgba(0,0,0,0.42);
+    animation: mjSheetFade 0.2s ease;
+  }
+}
+/* ── Rail from 1024 px: expanded pushes the page ── */
+@media (min-width: 1024px) and (min-height: 500px) {
+  html.mj-rail-open { --rail-push: 256px; }
+  /* the banner page: plates two across */
+  #theme-page .overlay-inner { max-width: 1120px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; align-items: stretch; }
+  #theme-page .banner-intro, #theme-page .banner-outro { grid-column: 1 / -1; width: 100%; max-width: 760px; justify-self: center; }
+  #theme-page .banner-plate { margin: 0 0 24px; display: flex; flex-direction: column; }
+  #theme-page .banner-plate .banner-text { margin-left: 0; margin-right: 0; }
+  #theme-page .banner-plate .banner-choose { margin-top: auto; align-self: flex-start; }
+}
+
+/* ── Splits: the CONTENT area (container "page") is at least 900 px ── */
+@container page (min-width: 900px) {
+  /* Home — 50/50: the slideshow holds the left half, full height; this year and the steps sit centred on the right */
+  #section-home.active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto 1fr;
+    min-height: calc(100dvh - env(safe-area-inset-top, 0px));
+  }
+  .home-hero {
+    grid-column: 1; grid-row: 1 / -1; align-self: start;
+    position: sticky; top: env(safe-area-inset-top, 0px);
+    height: calc(100dvh - env(safe-area-inset-top, 0px)); min-height: 0;
+  }
+  .home-hero-content { padding: 0 48px 56px; }
+  .hero-h1 { font-size: clamp(44px, 5.2cqi, 76px); }
+  .hero-lead { font-size: 19px; max-width: 32ch; }
+  .hero-mark { top: 40px; right: 36px; width: 240px; height: 240px; }
+  .home-walk { grid-column: 2; grid-row: 2; width: 100%; max-width: 640px; justify-self: center; padding: 48px 24px 0; }
+  .walk-list { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  /* each step becomes one row: icon · number / title / line · Open */
+  .walk-card { grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-rows: auto; align-items: center; padding: 16px 18px 16px 16px; }
+  .walk-card .btn { grid-column: 3; grid-row: 1 / span 3; align-self: center; margin: 0 0 0 12px; }
+  .walk-card .walk-desc { margin-bottom: 0; }
+  .home-foot { grid-column: 2; grid-row: 3; width: 100%; max-width: 640px; justify-self: center; padding: 28px 24px 56px; }
+
+  /* Path, Moments, Road, Blessing — a list on the left (sticky), the chosen item on the right */
+  .section-inner:has(> .pick-strip) { display: grid; grid-template-columns: 220px minmax(0, 1fr); column-gap: 36px; align-items: start; }
+  .section-inner:has(> .pick-strip) > .tab-head { grid-column: 1 / -1; }
+  .section-inner > .pick-strip {
+    grid-column: 1; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px);
+    display: flex; flex-direction: column; flex-wrap: nowrap; gap: 8px; padding: 0; margin: 0;
+  }
+  .section-inner > .pick-strip .pick-tile { width: 100%; min-height: 0; flex-direction: row; align-items: center; gap: 12px; padding: 14px 16px; }
+  .section-inner > .pick-strip .pick-tile-title { margin-top: 0; font-size: 16px; }
+  .section-inner > .pick-strip .pick-tile-num { flex-shrink: 0; min-width: 2.4em; }
+  .section-inner > .pick-strip .pick-tile-meta { display: none; }
+  .section-inner > .pick-strip + div { grid-column: 2; min-width: 0; }
+  .section-inner > .panel.empty { max-width: 640px; }
+}
+/* ── A wide panel (container "panel": its own width, beside or under the list): cards go two across ── */
+@container panel (min-width: 760px) {
+  .acc-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; align-items: start; }
+  .row-list:not(.row-list--bare) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 0; }
+}
+/* manhood-journey Colorblind Mode tokens — GENERATED by tools/theme.py; edit theme.py, not this block. */
+html[data-mono="1"] {
+  --md-sys-color-primary: #000000;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-primary-container: #FFFFFF;
+  --md-sys-color-secondary: #000000;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-secondary-container: #FFFFFF;
+  --md-sys-color-tertiary: #000000;
+  --md-sys-color-background: #FFFFFF;
+  --md-sys-color-on-background: #000000;
+  --md-sys-color-surface: #FFFFFF;
+  --md-sys-color-surface-variant: #FFFFFF;
+  --md-sys-color-surface-container: #FFFFFF;
+  --md-sys-color-on-surface: #000000;
+  --md-sys-color-on-surface-variant: #000000;
+  --md-sys-color-outline: #000000;
+  --md-sys-color-outline-variant: #000000;
+  --md-sys-color-error: #000000;
+  --md-sys-color-nav-bg: #000000;
+  --md-sys-color-nav-indicator: #FFFFFF;
+  --md-sys-color-shadow: transparent;
+  --mj-ink: #000000;
+  --mj-ink-on: #FFFFFF;
+  --mj-house: #000000;
+  --mj-house-2: #000000;
+  --mj-metal: #FFFFFF;
+  --mj-metal-on: #000000;
+  --mj-metal-bg: transparent;
+  --mj-metal-bg-2: transparent;
+  --mj-chrome: #000000;
+  --mj-on-chrome: #FFFFFF;
+  --mj-chrome-muted: #FFFFFF;
+  --mj-chrome-accent: #FFFFFF;
+  --mj-chrome-indicator: #FFFFFF;
+  --banner-adventure-plate: #000000;
+  --banner-adventure-metal: #FFFFFF;
+  --banner-battle-plate: #000000;
+  --banner-battle-metal: #FFFFFF;
+  --banner-beauty-plate: #000000;
+  --banner-beauty-metal: #FFFFFF;
+  --banner-son-plate: #000000;
+  --banner-son-metal: #FFFFFF;
+  --banner-plate-ink: #FFFFFF;
+  --md-sys-elevation-1: none;
+  --md-sys-elevation-2: none;
+  --md-sys-elevation-3: none;
+}
+/* end generated mono tokens */
+/* ── Colorblind Mode COMPONENT rules. These, with the token block above, are the LAST rules in the
+   stylesheet: they win by position and by html[attr] specificity. Pure #000 / #FFF literals are
+   permitted here only. Never a filter on body/html — imagery is filtered per element. ── */
+html[data-mono="1"] .card,
+html[data-mono="1"] .panel,
+html[data-mono="1"] .sheet,
+html[data-mono="1"] .header-menu { border: 1px solid #000000; box-shadow: none; }
+html[data-mono="1"] .top-app-bar { border-bottom: 1px solid #000000; box-shadow: none; }
+html[data-mono="1"] .bottom-nav { border-top: 1px solid #000000; box-shadow: none; }
+html[data-mono="1"] .sheet-overlay { backdrop-filter: none; -webkit-backdrop-filter: none; }
+html[data-mono="1"] img { filter: grayscale(1); }
+/* The active glyph sits ON the indicator pill. The pill is WHITE (the mono indicator token), so the
+   glyph takes the chrome colour (black). Without this pair the active tab is invisible. */
+html[data-mono="1"] .nav-tab.active .nav-icon,
+html[data-mono="1"] .nav-tab[aria-current="page"] .nav-icon { color: var(--mj-chrome); }
+/* Raised centre circle: white fill, black glyph, an edge in either polarity, then the chrome ring.
+   Active has no pill, and muted and accent are both white here, so the halo carries the state. */
+html[data-mono="1"] .nav-tab--feature .nav-icon {
+  background: var(--mj-metal);
+  color: var(--mj-metal-on);
+  box-shadow: inset 0 0 0 1px #FFFFFF, 0 0 0 1px #000000, 0 0 0 6px var(--mj-chrome);
+}
+html[data-mono="1"] .nav-tab--feature.active .nav-icon,
+html[data-mono="1"] .nav-tab--feature[aria-current="page"] .nav-icon {
+  background: var(--mj-metal);
+  color: var(--mj-metal-on);
+  box-shadow: inset 0 0 0 1px #FFFFFF, 0 0 0 1px #000000, 0 0 0 6px var(--mj-chrome), 0 0 0 9px #FFFFFF;
+}
+/* Buttons: two adjacent fills must never merge. */
+html[data-mono="1"] .btn { border: 1px solid #000000; box-shadow: none; }
+html[data-mono="1"] .btn-house {
+  background: #000000;
+  color: #FFFFFF;
+  border-color: #000000;
+  box-shadow: inset 0 0 0 1px #FFFFFF;
+}
+html[data-mono="1"] .btn-metal {
+  background: #FFFFFF;
+  color: #000000;
+  border-color: #000000;
+  box-shadow: none;
+}
+html[data-mono="1"] .btn:focus-visible { outline: 2px solid #000000; outline-offset: 2px; }
+/* rgba washes become transparent with a drawn edge. */
+html[data-mono="1"] .chip,
+html[data-mono="1"] .wash-metal,
+html[data-mono="1"] .wash-metal-2 { background: transparent; border: 1px solid #000000; }
+html[data-mono="1"] .chip { color: #000000; }
+html[data-mono="1"] .chip.active { background: #000000; color: #FFFFFF; border-color: #000000; }
+html[data-mono="1"] .icon-btn:active,
+html[data-mono="1"] .icon-btn:hover { background: transparent; box-shadow: inset 0 0 0 1px currentColor; }
+html[data-mono="1"] .header-menu-item:active,
+html[data-mono="1"] .header-menu-item:hover { background: transparent; box-shadow: inset 0 0 0 1px #000000; }
+/* Banner page */
+html[data-mono="1"] .banner-plate { background: #000000; border: 1px solid #FFFFFF; box-shadow: none; }
+html[data-mono="1"] .banner-plate .banner-choose { background: #FFFFFF; color: #000000; border: 1.5px solid #FFFFFF; box-shadow: none; }
+html[data-mono="1"] .banner-plate .banner-choose[aria-pressed="true"] { background: #000000; color: #FFFFFF; border: 1.5px solid #FFFFFF; }
+html[data-mono="1"] .banner-plate .banner-choose:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+html[data-mono="1"] .banner-plate .banner-choose:not([aria-pressed="true"]):hover { box-shadow: none; }
+html[data-mono="1"] .overlay-app-bar { border-bottom: 1px solid #000000; box-shadow: none; }
+html[data-mono="1"] .crest-medallion { box-shadow: none; }
+/* Splash */
+html[data-mono="1"] .splash { background: #000000; }
+html[data-mono="1"] .sp-piece { filter: none; }
+html[data-mono="1"] .splash-bloom { background: #FFFFFF; }
+/* Picker strip, accordion, rows */
+html[data-mono="1"] .pick-tile { background: #FFFFFF; color: #000000; border-color: #000000; box-shadow: none; }
+html[data-mono="1"] .pick-tile[aria-selected="true"] { background: #000000; color: #FFFFFF; border-color: #000000; }
+html[data-mono="1"] .pick-tile[aria-selected="true"] .pick-tile-num,
+html[data-mono="1"] .pick-tile[aria-selected="true"] .pick-tile-meta,
+html[data-mono="1"] .topic-tile[aria-selected="true"] .ico { color: #FFFFFF; }
+html[data-mono="1"] .acc-card { background: #FFFFFF; color: #000000; border: 1px solid #000000; box-shadow: none; }
+html[data-mono="1"] .acc-card.open { border: 2px solid #000000; }
+html[data-mono="1"] .acc-icon { background: #000000; color: #FFFFFF; box-shadow: none; }
+html[data-mono="1"] button.list-row:active,
+html[data-mono="1"] button.list-row:hover { background: transparent; box-shadow: inset 0 0 0 1px #000000; }
+/* Hero: the tint is a colour wash; in mono the scrim alone carries legibility. */
+html[data-mono="1"] .home-hero-bg::before { opacity: 0; }
+html[data-mono="1"] .hero-eyebrow { color: #FFFFFF; }
+@media (min-width: 744px) and (min-height: 500px) {
+  /* in the rail Moments is an ordinary item: undo the raised disc, keep the black-on-white active glyph */
+  html[data-mono="1"] .nav-tab--feature .nav-icon,
+  html[data-mono="1"] .nav-tab--feature.active .nav-icon,
+  html[data-mono="1"] .nav-tab--feature[aria-current="page"] .nav-icon { background: transparent; color: inherit; box-shadow: none; }
+  html[data-mono="1"] .nav-tab--feature.active .nav-icon,
+  html[data-mono="1"] .nav-tab--feature[aria-current="page"] .nav-icon { color: var(--mj-chrome); }
+  /* expanded rail: the white pill runs behind the label too, so the label goes black */
+  html[data-mono="1"].mj-rail-open .nav-tab.active .nav-label,
+  html[data-mono="1"].mj-rail-open .nav-tab[aria-current="page"] .nav-label { color: #000000; }
+  html[data-mono="1"] .nav-tab:not(.active):not([aria-current="page"]):hover .nav-indicator { background: transparent; box-shadow: inset 0 0 0 1px #FFFFFF; }
+  html[data-mono="1"] .bottom-nav { border-top: 0; border-right: 1px solid #000000; }
+  html[data-mono="1"] .rail-util:hover { background: transparent; box-shadow: inset 0 0 0 1px #FFFFFF; }
 }
 </style>
 </head>
 <body>
-
-<!-- SVG sprite: declared once, drawn everywhere with <use>. Every shape is
-     stroke-only and inherits currentColor. #mark mirrors tools/make_icons.py. -->
-<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-  <symbol id="mark" viewBox="0 0 100 100" fill="none" stroke="currentColor">
-    <circle cx="50" cy="50" r="46" stroke-width="2.2"/>
-    <circle cx="50" cy="50" r="40.5" stroke-width="1"/>
-    <g stroke-width="3.2" stroke-linejoin="round">
-      <path d="M29 36.6 L45 63.4 M45 36.6 L29 63.4"/>
-      <path d="M49 36.6 L57 63.4 L65 36.6"/>
-      <path d="M71 36.6 V63.4"/>
-    </g>
-    <path d="M26 36 H74 M26 64 H74" stroke-width="1.6"/>
-  </symbol>
-  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 L12 4 L20 11"/><path d="M6 10 V20 H18 V10"/><path d="M10 20 V14 H14 V20"/></symbol>
-  <symbol id="i-peak" viewBox="0 0 24 24"><path d="M2.5 19 L9 7.5 L13 14 L15.5 10.5 L21.5 19 Z"/></symbol>
-  <symbol id="i-sword" viewBox="0 0 24 24"><path d="M12 2.5 V15.5"/><path d="M7.5 15.5 H16.5"/><path d="M12 15.5 V19.5"/><circle cx="12" cy="20.6" r="1.1"/></symbol>
-  <symbol id="i-wheel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/><path d="M12 14.4 V21"/><path d="M9.8 11 L3.4 9.2"/><path d="M14.2 11 L20.6 9.2"/></symbol>
-  <symbol id="i-page" viewBox="0 0 24 24"><path d="M6 3.5 H15 L19 7.5 V20.5 H6 Z"/><path d="M15 3.5 V7.5 H19"/><path d="M9 12 H16"/><path d="M9 15.5 H16"/></symbol>
-  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="18.5" r="1.2"/></symbol>
-  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18"/></symbol>
-  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5.5 L15.5 12 L9 18.5"/></symbol>
-  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5 V5 M12 19 V21.5 M2.5 12 H5 M19 12 H21.5 M5.3 5.3 L7 7 M17 17 L18.7 18.7 M18.7 5.3 L17 7 M7 17 L5.3 18.7"/></symbol>
-  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.2 A8.2 8.2 0 1 1 9.8 4 A6.6 6.6 0 0 0 20 14.2 Z"/></symbol>
+<svg xmlns="http://www.w3.org/2000/svg" class="mj-sprite" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+  <symbol id="mj-mark" viewBox="0 0 100 100"><path fill="none" stroke="currentColor" stroke-width="5.5" stroke-linejoin="round" d="M50 8.5 L86 20.5 V47 C86 68 71 83.5 50 92.5 C29 83.5 14 68 14 47 V20.5 Z"/><path fill="currentColor" d="M50 23.2 a3.9 3.9 0 1 1 0 7.8 a3.9 3.9 0 1 1 0 -7.8 Z M47.4 30 H52.6 V38.6 H63.5 V44 H52.6 V68.5 L50 76.5 L47.4 68.5 V44 H36.5 V38.6 H47.4 Z"/></symbol>
+  <symbol id="mj-i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+  <symbol id="mj-i-path" viewBox="0 0 24 24"><path fill="currentColor" d="M3 21V16.5H7.5V12H12V7.5H16.5V3H21V21Z"/></symbol>
+  <symbol id="mj-i-flame" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2c.5 2.7 2 4.300 3.400 6C17.300 9.600 18.500 11.400 18.500 14c0 3.900-2.900 7-6.500 7s-6.500-3.100-6.500-7c0-2 .700-3.700 1.800-5.100.300 1.500 1.100 2.500 2.200 2.900C9.100 8 10.300 4.600 12.600 2Z"/></symbol>
+  <symbol id="mj-i-wheel" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20Zm0 2.400a7.600 7.600 0 1 1 0 15.200a7.600 7.600 0 0 1 0-15.200Z"/><circle fill="currentColor" cx="12" cy="12" r="2.700"/><path fill="none" stroke="currentColor" stroke-width="2.200" d="M12 12 4.800 10.100M12 12 19.200 10.100M12 12V19.600"/></symbol>
+  <symbol id="mj-i-page" viewBox="0 0 24 24"><path fill="currentColor" d="M14 2H6c-1.1 0-1.990.900-1.990 2L4 20c0 1.100.890 2 1.990 2H18c1.100 0 2-.900 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.500L18.500 9H13z"/></symbol>
+  <symbol id="mj-i-menu" viewBox="0 0 24 24"><path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></symbol>
+  <symbol id="mj-i-menu-open" viewBox="0 0 24 24"><path fill="currentColor" d="M3 18h13v-2H3v2zm0-5h10v-2H3v2zm0-7v2h13V6H3zm18 9.590L17.420 12 21 8.410 19.590 7l-5 5 5 5L21 15.590z"/></symbol>
+  <symbol id="mj-i-palette" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3a9 9 0 0 0 0 18c.830 0 1.500-.670 1.500-1.500 0-.390-.150-.740-.390-1.010-.230-.260-.380-.610-.380-.990 0-.830.670-1.500 1.500-1.500H16c2.760 0 5-2.240 5-5 0-4.420-4.030-8-9-8zm-5.500 9a1.500 1.500 0 1 1 0-3 1.500 1.500 0 0 1 0 3zm3-4a1.500 1.500 0 1 1 0-3 1.500 1.500 0 0 1 0 3zm5 0a1.500 1.500 0 1 1 0-3 1.500 1.500 0 0 1 0 3zm3 4a1.500 1.500 0 1 1 0-3 1.500 1.500 0 0 1 0 3z"/></symbol>
+  <symbol id="mj-i-contrast" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20Zm0 18V4a8 8 0 0 1 0 16Z"/></symbol>
+  <symbol id="mj-i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.830l5.590-5.590L12 4l-8 8 8 8 1.410-1.410L7.830 13H20v-2z"/></symbol>
+  <symbol id="mj-i-forward" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4l-1.410 1.410L16.170 11H4v2h12.170l-5.580 5.590L12 20l8-8z"/></symbol>
+  <symbol id="mj-i-close" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.410L17.590 5 12 10.590 6.410 5 5 6.410 10.590 12 5 17.590 6.410 19 12 13.410 17.590 19 19 17.590 13.410 12z"/></symbol>
+  <symbol id="mj-i-expand" viewBox="0 0 24 24"><path fill="currentColor" d="M16.590 8.590L12 13.170 7.410 8.590 6 10l6 6 6-6z"/></symbol>
+  <symbol id="mj-i-check" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.170L4.830 12l-1.420 1.410L9 19 21 7l-1.410-1.410z"/></symbol>
+  <symbol id="mj-i-info" viewBox="0 0 24 24"><path fill="currentColor" d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.480 2 2 6.480 2 12s4.480 10 10 10 10-4.480 10-10S17.520 2 12 2zm0 18c-4.410 0-8-3.590-8-8s3.590-8 8-8 8 3.590 8 8-3.590 8-8 8z"/></symbol>
+  <symbol id="mj-i-edit" viewBox="0 0 24 24"><path fill="currentColor" d="M3 17.250V21h3.750L17.810 9.940l-3.750-3.750L3 17.250zM20.710 7.040a1 1 0 0 0 0-1.410l-2.340-2.340a1 1 0 0 0-1.410 0l-1.830 1.830 3.750 3.750 1.830-1.830z"/></symbol>
+  <symbol id="mj-i-crown" viewBox="0 0 24 24"><path fill="currentColor" d="M3 18h18v2.500H3zM3 6.500l4.500 4.500L12 4.500l4.500 6.500L21 6.500 19.500 16h-15z"/></symbol>
+  <symbol id="mj-i-men" viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.660 0 2.990-1.340 2.990-3S17.660 5 16 5c-1.660 0-3 1.340-3 3s1.340 3 3 3zm-8 0c1.660 0 2.990-1.340 2.990-3S9.660 5 8 5C6.340 5 5 6.340 5 8s1.340 3 3 3zm0 2c-2.330 0-7 1.170-7 3.500V19h14v-2.500c0-2.330-4.670-3.500-7-3.500zm8 0c-.290 0-.620.020-.970.050 1.160.840 1.970 1.970 1.970 3.450V19h6v-2.500c0-2.330-4.670-3.500-7-3.500z"/></symbol>
+  <symbol id="mj-i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M18 2H6c-1.100 0-2 .900-2 2v16c0 1.100.900 2 2 2h12c1.100 0 2-.900 2-2V4c0-1.100-.900-2-2-2zM6 4h5v8l-2.500-1.500L6 12V4z"/></symbol>
 </svg>
 
+<!-- ── Splash (html.mj-splash only: first run and once per calendar day) ── -->
+<div id="splash" class="splash" role="presentation" aria-hidden="true">
+  <div class="splash-stage">
+    <div class="splash-bloom"></div>
+    <svg class="splash-mark" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+      <g class="sp-piece sp-shield"><path class="sp-line" pathLength="100" d="M50 8.5 L86 20.5 V47 C86 68 71 83.5 50 92.5 C29 83.5 14 68 14 47 V20.5 Z"/><path class="sp-arc" pathLength="100" d="M50 8.5 L86 20.5 V47 C86 68 71 83.5 50 92.5 C29 83.5 14 68 14 47 V20.5 Z"/></g>
+      <g class="sp-piece sp-sword"><path d="M50 23.2 a3.9 3.9 0 1 1 0 7.8 a3.9 3.9 0 1 1 0 -7.8 Z M47.4 30 H52.6 V38.6 H63.5 V44 H52.6 V68.5 L50 76.5 L47.4 68.5 V44 H36.5 V38.6 H47.4 Z"/></g>
+    </svg>
+  </div>
+  <div class="splash-title">Manhood Journey</div>
+</div>
+<script>
+(function () {
+  var root = document.documentElement, splash = document.getElementById('splash');
+  if (!splash) return;
+  if (!root.classList.contains('mj-splash')) { if (splash.parentNode) splash.parentNode.removeChild(splash); return; }
+  try { var d = new Date(); localStorage.setItem('manhood-splash-date', d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()); } catch (e) {}
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var onboarding = root.classList.contains('mj-onboarding');
+  document.body.style.overflow = 'hidden';
+  // First run lands on Choose Your Banner (opened underneath before the splash fades); later loads land on the app.
+  function land() { if (onboarding && typeof openThemePage === 'function') openThemePage(); }
+  function done() {
+    splash.classList.add('hide');
+    document.body.style.overflow = '';
+    root.classList.remove('mj-splash');
+    setTimeout(function () { if (splash.parentNode) splash.parentNode.removeChild(splash); }, 800);
+  }
+  if (reduce) { splash.classList.add('still'); setTimeout(function () { land(); done(); }, 1100); return; }
+  splash.classList.add('run');                                    // the shield draws, the sword descends (2.3s)
+  setTimeout(function () { splash.classList.add('burst'); }, 2300); // flare + bloom fills the page
+  setTimeout(land, 2850);
+  setTimeout(done, 3000);
+})();
+</script>
+
+<!-- ── Top app bar (theme chrome) ── -->
 <header class="top-app-bar">
-  <svg class="app-mark" aria-hidden="true"><use href="#mark"/></svg>
-  <span class="app-title" id="appTitle">Sixteen</span>
-  <button class="icon-btn" id="menuBtn" type="button" aria-label="Menu" aria-haspopup="menu" aria-expanded="false" aria-controls="headerMenu" onclick="toggleHeaderMenu(event)"><svg class="ico" aria-hidden="true"><use href="#i-more"/></svg></button>
+  <button class="app-mark-btn" type="button" title="Home" aria-label="Home" onclick="goToTab('home')">
+    <svg class="app-mark" role="img" aria-label="Manhood Journey" focusable="false"><use href="#mj-mark"/></svg>
+  </button>
+  <span class="app-title"><span class="app-title-a">Manhood</span><span class="app-title-b">Journey</span></span>
+  <span class="header-actions">
+    <button class="icon-btn" id="header-menu-btn" type="button" title="Menu" aria-label="Menu" aria-haspopup="menu" aria-expanded="false" onclick="toggleHeaderMenu()">
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-menu"/></svg>
+    </button>
+  </span>
 </header>
 
-<div class="header-menu" id="headerMenu" role="menu" aria-label="Menu">
-  <button class="header-menu-item" id="themeMenuItem" type="button" role="menuitem" onclick="closeHeaderMenu(); toggleTheme();"><svg class="ico" aria-hidden="true"><use id="themeMenuIcon" href="#i-sun"/></svg><span id="themeMenuLabel">Light theme</span></button>
+<!-- ── Header menu: Theme (opens the full-page banner picker) + Colorblind Mode.
+     "Download the App" joins these once the app is live (it needs screenshots of the live site). ── -->
+<div class="header-menu" id="headerMenu" role="menu" aria-label="App menu">
+  <button class="header-menu-item" id="themeMenuItem" type="button" role="menuitem" aria-haspopup="dialog" onclick="openThemePage()">
+    <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-palette"/></svg><span class="header-menu-label">Theme · The Son</span>
+  </button>
+  <button class="header-menu-item" id="monoMenuItem" type="button" role="menuitem" aria-pressed="false" onclick="toggleMono()">
+    <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-contrast"/></svg><span class="header-menu-label">Colorblind Mode</span>
+  </button>
 </div>
 
-<main id="main">
-  <section class="section active" id="section-home" aria-label="Home"></section>
-  <section class="section" id="section-friday" aria-label="Friday"></section>
-  <section class="section" id="section-saturday" aria-label="Saturday"></section>
-  <section class="section" id="section-road" aria-label="Road"></section>
-  <section class="section" id="section-blessing" aria-label="Blessing"></section>
+<main class="content">
+
+  <!-- ── HOME: hero slideshow + this year + walkthrough ── -->
+  <section class="section active" id="section-home" data-section="home">
+    <div class="home-hero">
+      <div class="home-hero-bg" id="heroSlideshow">
+        <img class="hero-slide active" src="assets/hero-dawn.webp" alt="Ridgelines fading into a gold dawn sky" width="1200" height="1500" decoding="async">
+        <img class="hero-slide" src="assets/hero-dusk.webp" alt="Layered hills at dusk under a violet sky" width="1200" height="1500" loading="lazy" decoding="async">
+        <img class="hero-slide" src="assets/hero-night.webp" alt="A moonlit ridge under a field of stars" width="1200" height="1500" loading="lazy" decoding="async">
+      </div>
+      <div class="home-hero-content">
+        <svg class="hero-mark" aria-hidden="true" focusable="false"><use href="#mj-mark"/></svg>
+        <div class="hero-eyebrow">Twelve to eighteen</div>
+        <h1 class="hero-h1">Manhood Journey</h1>
+        <p class="hero-lead">A boy doesn’t become a man by accident.</p>
+      </div>
+    </div>
+    <div class="home-walk" id="homeBody"></div>
+    <p class="home-foot" id="homeFoot"></p>
+  </section>
+
+  <!-- ── PATH: the seven years, twelve to eighteen ── -->
+  <section class="section" id="section-path" data-section="path">
+    <div class="section-inner section-inner--pad" id="pathInner"></div>
+  </section>
+
+  <!-- ── MOMENTS (raised centre tab): the active year's conversations ── -->
+  <section class="section" id="section-moments" data-section="moments">
+    <div class="section-inner section-inner--pad" id="momentsInner"></div>
+  </section>
+
+  <!-- ── ROAD: question decks ── -->
+  <section class="section" id="section-road" data-section="road">
+    <div class="section-inner section-inner--pad" id="roadInner"></div>
+  </section>
+
+  <!-- ── BLESSING: blessing, ceremony, the men, the journal ── -->
+  <section class="section" id="section-blessing" data-section="blessing">
+    <div class="section-inner section-inner--pad" id="blessingInner"></div>
+  </section>
+
 </main>
 
+<!-- ── Bottom navigation (theme chrome; centre slot raised) ── -->
 <nav class="bottom-nav" aria-label="Primary">
-  <button class="nav-tab active" type="button" data-section="home" aria-current="page"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span class="nav-label">Home</span></button>
-  <button class="nav-tab" type="button" data-section="friday"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-peak"/></svg><span class="nav-label">Friday</span></button>
-  <button class="nav-tab" type="button" data-section="saturday"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-sword"/></svg><span class="nav-label">Saturday</span></button>
-  <button class="nav-tab" type="button" data-section="road"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-wheel"/></svg><span class="nav-label">Road</span></button>
-  <button class="nav-tab" type="button" data-section="blessing"><span class="nav-indicator"></span><svg class="ico" aria-hidden="true"><use href="#i-page"/></svg><span class="nav-label">Blessing</span></button>
+  <!-- Desktop layer only (hidden on phones): the rail's menu button + brand -->
+  <div class="rail-head">
+    <button class="icon-btn rail-toggle" id="railToggle" type="button" aria-expanded="false" aria-label="Expand navigation" title="Expand navigation ( [ )" onclick="toggleRail()">
+      <svg class="ico" aria-hidden="true" focusable="false"><use id="railToggleIcon" href="#mj-i-menu"/></svg>
+    </button>
+    <button class="rail-brand" type="button" aria-label="Manhood Journey — home" onclick="goToTab('home')">
+      <svg class="rail-mark" aria-hidden="true" focusable="false"><use href="#mj-mark"/></svg>
+      <span class="rail-word" aria-hidden="true"><span class="rail-word-a">Manhood</span><span class="rail-word-b">Journey</span></span>
+    </button>
+  </div>
+  <button class="nav-tab active" type="button" data-section="home" aria-current="page" aria-label="Home">
+    <div class="nav-indicator"></div>
+    <svg class="nav-icon" aria-hidden="true" focusable="false"><use href="#mj-i-home"/></svg>
+    <span class="nav-label">Home</span>
+  </button>
+  <button class="nav-tab" type="button" data-section="path" aria-label="Path">
+    <div class="nav-indicator"></div>
+    <svg class="nav-icon" aria-hidden="true" focusable="false"><use href="#mj-i-path"/></svg>
+    <span class="nav-label">Path</span>
+  </button>
+  <button class="nav-tab nav-tab--feature" type="button" data-section="moments" aria-label="Moments">
+    <div class="nav-indicator"></div>
+    <svg class="nav-icon" aria-hidden="true" focusable="false"><use href="#mj-i-flame"/></svg>
+    <span class="nav-label">Moments</span>
+  </button>
+  <button class="nav-tab" type="button" data-section="road" aria-label="Road">
+    <div class="nav-indicator"></div>
+    <svg class="nav-icon" aria-hidden="true" focusable="false"><use href="#mj-i-wheel"/></svg>
+    <span class="nav-label">Road</span>
+  </button>
+  <button class="nav-tab" type="button" data-section="blessing" aria-label="Blessing">
+    <div class="nav-indicator"></div>
+    <svg class="nav-icon" aria-hidden="true" focusable="false"><use href="#mj-i-page"/></svg>
+    <span class="nav-label">Blessing</span>
+  </button>
+  <!-- Desktop layer only: the header menu's items live at the foot of the rail -->
+  <div class="rail-foot">
+    <button class="rail-util" id="railTheme" type="button" aria-haspopup="dialog" onclick="railUtil('theme')">
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-palette"/></svg><span class="rail-util-label">Theme · The Son</span>
+    </button>
+    <button class="rail-util" id="railMono" type="button" aria-pressed="false" onclick="railUtil('mono')">
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-contrast"/></svg><span class="rail-util-label">Colorblind Mode</span>
+    </button>
+  </div>
 </nav>
+<div class="rail-scrim" id="railScrim" aria-hidden="true"></div>
 
-<!-- Bottom sheet primitive: one shared sheet, filled by openSheet(). -->
-<div class="sheet-overlay" id="sheet" aria-hidden="true">
-  <div class="sheet-container" id="sheetContainer" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+<!-- ── Shared bottom sheet: one sheet, filled by openSheet(). Every close path goes through closeSheet(). ── -->
+<div class="sheet-overlay" id="sheet-overlay" aria-hidden="true">
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" tabindex="-1">
     <div class="sheet-drag" aria-hidden="true"></div>
     <div class="sheet-header">
-      <div class="sheet-heading">
-        <div class="eyebrow" id="sheetEyebrow"></div>
-        <h2 class="sheet-title" id="sheetTitle"></h2>
-      </div>
-      <button class="icon-btn" id="sheetClose" type="button" aria-label="Close" onclick="closeSheet()"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></button>
+      <svg class="ico sheet-icon" aria-hidden="true" focusable="false"><use id="sheet-icon-use" href="#mj-i-info"/></svg>
+      <h2 class="sheet-title" id="sheet-title">Title</h2>
+      <button class="icon-btn" type="button" data-sheet-close title="Close" aria-label="Close" onclick="closeSheet()">
+        <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-close"/></svg>
+      </button>
     </div>
-    <div class="sheet-body" id="sheetBody"></div>
+    <div class="sheet-body" id="sheet-body"></div>
+  </div>
+</div>
+
+<!-- ── "Choose Your Banner": the theme picker, a full-page overlay. Opened from the menu's Theme item
+     (openThemePage) and by itself on first run; closed by Back / Skip / Escape (closeThemePage). ── -->
+<div id="theme-page" class="page-overlay" role="dialog" aria-modal="true" aria-labelledby="theme-page-title" aria-hidden="true">
+  <div class="overlay-app-bar">
+    <button class="icon-btn" id="theme-page-back" type="button" onclick="closeThemePage()" aria-label="Back">
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-back"/></svg>
+    </button>
+    <span class="overlay-app-bar-title">Choose Your Banner</span>
+    <button class="overlay-skip" id="theme-skip" type="button" onclick="closeThemePage()">Skip for now</button>
+  </div>
+  <div id="theme-body">
+    <div class="overlay-inner">
+
+<div class="banner-intro">
+  <div class="crest-medallion" aria-hidden="true"><svg focusable="false"><use href="#mj-mark"/></svg></div>
+  <div class="guide-eyebrow">Manhood Journey</div>
+  <h1 class="guide-display" id="theme-page-title">Choose Your Banner</h1>
+  <p class="guide-lead">Every man’s heart carries a battle to fight, an adventure to live, and a beauty to fight for. Underneath all three is a Father who already calls him son. Each one has a banner here.</p>
+  <p class="banner-intro-note">The banner you choose colours the whole app. It changes nothing else, and you can change it whenever you like.</p>
+</div>
+
+<section class="banner-plate" data-banner="battle" aria-labelledby="banner-battle">
+  <div class="banner-kicker">Courage &middot; Resolve &middot; Honor</div>
+  <h2 class="banner-title" id="banner-battle">The Battle</h2>
+  <dl class="banner-facts">
+    <div><dt>Desire</dt><dd>A battle to fight</dd></div>
+    <div><dt>Feeling</dt><dd>Fear</dd></div>
+    <div><dt>Figure</dt><dd>David before Goliath</dd></div>
+    <div><dt>Passage</dt><dd>1 Samuel 17:45&ndash;47</dd></div>
+    <div><dt>Colours</dt><dd>Oxblood and sword steel</dd></div>
+  </dl>
+  <p class="banner-text">Courage isn’t the absence of fear. It’s going anyway, and knowing whose name you go in.</p>
+  <button type="button" class="btn btn-metal banner-choose" data-banner="battle" aria-pressed="false">Choose The Battle</button>
+</section>
+
+<section class="banner-plate" data-banner="adventure" aria-labelledby="banner-adventure">
+  <div class="banner-kicker">Risk &middot; Wonder &middot; Endurance</div>
+  <h2 class="banner-title" id="banner-adventure">The Adventure</h2>
+  <dl class="banner-facts">
+    <div><dt>Desire</dt><dd>An adventure to live</dd></div>
+    <div><dt>Feeling</dt><dd>Risk</dd></div>
+    <div><dt>Figure</dt><dd>Joshua at the edge of the land</dd></div>
+    <div><dt>Passage</dt><dd>Joshua 1:9</dd></div>
+    <div><dt>Colours</dt><dd>Pine and compass brass</dd></div>
+  </dl>
+  <p class="banner-text">The appetite for adventure is God-given. What it needs is a father beside it, calibrating the risk instead of removing it.</p>
+  <button type="button" class="btn btn-metal banner-choose" data-banner="adventure" aria-pressed="false">Choose The Adventure</button>
+</section>
+
+<section class="banner-plate" data-banner="beauty" aria-labelledby="banner-beauty">
+  <div class="banner-kicker">Honor &middot; Tenderness &middot; Strength</div>
+  <h2 class="banner-title" id="banner-beauty">The Beauty</h2>
+  <dl class="banner-facts">
+    <div><dt>Desire</dt><dd>A beauty to fight for</dd></div>
+    <div><dt>Feeling</dt><dd>Desire</dd></div>
+    <div><dt>Figure</dt><dd>Solomon, to his son</dd></div>
+    <div><dt>Passage</dt><dd>Proverbs 4:23</dd></div>
+    <div><dt>Colours</dt><dd>Dusk plum and rose gold</dd></div>
+  </dl>
+  <p class="banner-text">A man with a guarded heart isn’t a man with a locked one. He knows what the strength is for, and he brings it to her instead of taking it from her.</p>
+  <button type="button" class="btn btn-metal banner-choose" data-banner="beauty" aria-pressed="false">Choose The Beauty</button>
+</section>
+
+<section class="banner-plate" data-banner="son" aria-labelledby="banner-son">
+  <div class="banner-kicker">Beloved &middot; Named &middot; Sent</div>
+  <h2 class="banner-title" id="banner-son">The Son</h2>
+  <dl class="banner-facts">
+    <div><dt>Beneath all three</dt><dd>A Father who calls you son</dd></div>
+    <div><dt>Feeling</dt><dd>Belonging</dd></div>
+    <div><dt>Figure</dt><dd>Jesus at the Jordan</dd></div>
+    <div><dt>Passage</dt><dd>Luke 3:21&ndash;22</dd></div>
+    <div><dt>Colours</dt><dd>River navy and anointing gold</dd></div>
+  </dl>
+  <p class="banner-text">Before Jesus did a single public thing, his Father said two sentences over him. He needed to hear them. So do you.</p>
+  <button type="button" class="btn btn-metal banner-choose" data-banner="son" aria-pressed="false">Choose The Son</button>
+</section>
+
+<p class="banner-outro">Your banner is remembered on this phone. Change it any time from the menu.</p>
+
+    </div>
   </div>
 </div>
 
 <script>
 'use strict';
-/* ═══ CONTENT ════════════════════════════════════════════════════════════
-   Every word the app shows lives here, so wording can change without touching
-   logic. {son} {dad} {mom} are filled from state.names by fill(). */
+/* Manhood Journey — app script. Plain functions, no framework, no build step.
+
+   ═══ STORAGE — THE SHARED-ORIGIN RULE ═══════════════════════════════════════
+   Every joe-ray-sites.github.io app shares ONE localStorage pool. Every key this
+   app touches starts with "manhood-" (device prefs) or "manhood_" (the data the
+   owner writes). Never add a key without the prefix.
+     manhood-theme        banner id (battle | adventure | beauty | son)
+     manhood-mono         '1' = Colorblind Mode
+     manhood-onboarded    '1' once the first-run banner page has been closed
+     manhood-splash-date  the last calendar day the splash played
+     manhood-tab          last tab
+     manhood-year         the active year (12–18): the year every tab opens
+     manhood-moment / manhood-deck / manhood-topic   last selection in each tab
+     manhood-rail         desktop rail, '1' open | '0' collapsed
+     manhood_profile      { names } shared by every year
+     manhood_y<age>__state    ONE year's data (plan, done, notes, blessing, oath…)
+     manhood_y<age>__corrupt  raw copy of an unreadable year blob, kept so that a
+                              parse failure can never silently destroy a blessing */
+function lsGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+function lsSet(key, value) { try { localStorage.setItem(key, value); return true; } catch (e) { return false; } }
+
+/* ═══ CONTENT ═════════════════════════════════════════════════════════════════
+   Every word the tabs show lives here, so wording changes never touch logic.
+   {son} {dad} {mom} are filled from the profile by fill(). One entry per year,
+   twelve to eighteen. A year with written:false shows as a draft outline: only
+   its title, stage and focus are used. Sixteen is the first year fully written. */
 const CONTENT = {
-  title: "Sixteen",
-  eyebrow: "A father-son weekend",
-  subtitle: "{son}’s weekend — the road, the hard thing, and the sword",
-  intro: "Two days, one drive you make yourself, four conversations, and one evening with men who have your back. Nothing to finish, nothing to get right. A few verses, a real question, and your dad going first each time.",
-  verse: {
-    ref: "1 Corinthians 16:13–14",
-    text: "Watch! Stand firm in the faith! Be courageous! Be strong! Let all that you do be done in love."
-  },
-  threeLabel: "The three things",
-  three: ["A battle to fight.", "An adventure to live.", "A beauty to fight for."],
-  threeUnder: "And underneath all three, a Father who already calls you son.",
   privacy: "Everything you write here stays on this phone. Nothing is sent anywhere.",
   credit: "Scripture adapted from the World English Bible.",
-  stub: "This screen is built in the next step.",
-  moments: [
-    { id: "battle", title: "The Battle", day: "Friday", slot: "the drive out", feeling: "Fear",
-      strength: "Courage isn’t the absence of fear. It’s going anyway, and knowing whose name you go in.",
-      context: "A teenage shepherd walks out to face a giant the whole army is afraid of. Goliath has armor and a reputation. David has a sling, a history with God, and the one thing that matters: he knows what the fight is actually about." },
-    { id: "adventure", title: "The Adventure", day: "Friday", slot: "after the hard thing", feeling: "Risk",
-      strength: "The appetite for adventure is God-given. What it needs is a father beside it, calibrating the risk instead of removing it.",
-      context: "Joshua has just inherited Moses’ job and a people to lead into a land full of giants. God doesn’t tell him it’ll be easy. He tells him three times in nine verses to be strong and courageous, and then gives him the only reason that works." },
-    { id: "beauty", title: "The Beauty", day: "Friday", slot: "the fire", feeling: "Desire",
-      strength: "A man with a guarded heart isn’t a man with a locked one. He knows what the strength is for, and he brings it to her instead of taking it from her.",
-      context: "Solomon gives his son one instruction above every other, and Paul tells a young leader not to let anyone write him off for being young — but to be the example instead. Both passages are about the same thing: where your life flows from, and who gets to tell you who you are." },
-    { id: "son", title: "The Son", day: "Saturday", slot: "morning coffee", feeling: "Belonging",
-      strength: "Before Jesus did a single public thing, his Father said two sentences over him. He needed to hear them. So do you.",
-      context: "Jesus hasn’t preached a sermon, healed anyone, or picked a fight with a Pharisee yet. He comes up out of the water and heaven opens, and the Father says who he is before he’s done anything to earn it. Everything Jesus does afterward, he does from that, not for it." }
+  soon: "Built next",
+  momentSoon: "The passage to read aloud, the question, {dad}’s story to share, and a place to write a few words.",
+  draft: "Draft outline",
+  draftNote: "This year isn’t written yet. The title and focus above are a working outline drawn from the research, there to be rewritten.",
+  walk: [
+    { tab: "path", icon: "mj-i-path", label: "Path", title: "Seven years, one path",
+      desc: "A marked experience for every year from twelve to eighteen. Start by choosing the year." },
+    { tab: "moments", icon: "mj-i-flame", label: "Moments", title: "The conversations",
+      desc: "A few verses, a real question, and {dad} going first each time." },
+    { tab: "road", icon: "mj-i-wheel", label: "Road", title: "Questions for the road",
+      desc: "Decks for the drive. Whoever’s not driving reads; whoever’s driving answers first." },
+    { tab: "blessing", icon: "mj-i-page", label: "Blessing", title: "The blessing",
+      desc: "Written ahead of time, then read aloud in front of men who know him." }
   ],
   tabs: {
-    friday:   { eyebrow: "Friday",   title: "The Road and the Hard Thing", lead: "{son} drives. A hard thing done side by side, a skill handed over, and a fire. Three conversations along the way: the Battle, the Adventure, the Beauty." },
-    saturday: { eyebrow: "Saturday", title: "The Son and the Sword", lead: "Morning coffee and the fourth conversation. The drive home. Then an evening with men who have your back." },
-    road:     { eyebrow: "Road",     title: "Questions for the road", lead: "Whoever’s not driving reads. Whoever’s driving answers first." },
-    blessing: { eyebrow: "Blessing", title: "The Blessing", lead: "Written ahead of time, then read aloud on Saturday night." }
-  }
+    path: { eyebrow: "Twelve to eighteen", title: "Seven years, one path",
+      lead: "One marked experience for each year. Choose a year to see what it holds. The year you choose is the one the other tabs open." },
+    moments: { title: "The conversations",
+      lead: "One moment per slot. A few verses, a real question, and {dad} going first each time. Nothing to finish, nothing to get right." },
+    road: { title: "Questions for the road",
+      lead: "Whoever’s not driving reads. Whoever’s driving answers first." },
+    blessing: { title: "The blessing",
+      lead: "Everything for the night it is spoken: the blessing, the ceremony, the men in the circle, and the journal you keep." }
+  },
+  howMoment: {
+    title: "How a moment works",
+    steps: [
+      ["Context", "Two sentences that set the scene."],
+      ["Strength", "One line naming the strength inside the feeling."],
+      ["Read", "The passage, out loud."],
+      ["Ask", "One real question for {son}."],
+      ["Share", "{dad} goes first, every time."],
+      ["Write", "A few words to remember it by."]
+    ],
+    foot: "One moment per slot. Nothing to finish, nothing to get right."
+  },
+  years: [
+    { age: 12, word: "twelve", title: "The Threshold", stage: "Beloved son", written: false,
+      focus: "Before the path begins. He hears, plainly and often, that his father delights in him." },
+    { age: 13, word: "thirteen", title: "The Call", stage: "Page", written: false,
+      focus: "The definition of manhood, presented for the first time among family and friends." },
+    { age: 14, word: "fourteen", title: "The Hard Road", stage: "Formation", written: false,
+      focus: "From ease to difficulty. Learning to choose the hard thing, with his father beside him." },
+    { age: 15, word: "fifteen", title: "The Larger Story", stage: "Formation", written: false,
+      focus: "From the whole story to a part in it. He learns the story he was born into." },
+    { age: 16, word: "sixteen", title: "The Road and the Sword", stage: "Commissioning", written: true,
+      focus: "{son}’s weekend: the road, the hard thing, and the sword.",
+      intro: "Two days, one drive you make yourself, four conversations, and one evening with men who have your back. Nothing to finish, nothing to get right. A few verses, a real question, and your dad going first each time.",
+      verse: { ref: "1 Corinthians 16:13–14", text: "Watch! Stand firm in the faith! Be courageous! Be strong! Let all that you do be done in love." },
+      facts: [["Shape", "Two days, Friday and Saturday"], ["Conversations", "Four"], ["Marker", "A blessing, an oath and a sword"]],
+      days: [
+        { id: "friday", name: "Friday", title: "The Road and the Hard Thing", icon: "mj-i-wheel", items: [
+          ["Drive out", "{son} drives. {dad} reads the first moment aloud: The Battle."],
+          ["Hard thing", "A real physical challenge, chosen together ahead of time and done side by side."],
+          ["The skill", "Change a tire, jump-start a car, check the oil and tire pressure. I do, you watch, we talk. Then you do, I watch."],
+          ["Rest", "The second moment: The Adventure."],
+          ["The fire", "Dinner and a fire. The third moment: The Beauty."]
+        ] },
+        { id: "saturday", name: "Saturday", title: "The Son and the Sword", icon: "mj-i-crown", items: [
+          ["Coffee", "The fourth moment: The Son. The blessing, rehearsed in private before it is spoken in public."],
+          ["Drive home", "{son} drives. The last deck of road questions."],
+          ["Vigil", "Optional. Twenty or thirty minutes alone with a card and a pen."],
+          ["Men arrive", "Three to five men who know {son}, each with a short letter."],
+          ["Ceremony", "The blessing, the oath, the sword and the accolade."],
+          ["Feast", "Eat well. Let it be loud."]
+        ] }
+      ],
+      moments: [
+        { id: "battle", title: "The Battle", day: "Friday", slot: "the drive out", short: "Fri · drive", feeling: "Fear",
+          passage: "1 Samuel 17:45–47", deeper: "Ephesians 6:10–13; the full story in 1 Samuel 17",
+          strength: "Courage isn’t the absence of fear. It’s going anyway, and knowing whose name you go in.",
+          context: "A teenage shepherd walks out to face a giant the whole army is afraid of. Goliath has armor and a reputation. David has a sling, a history with God, and the one thing that matters: he knows what the fight is actually about." },
+        { id: "adventure", title: "The Adventure", day: "Friday", slot: "after the hard thing", short: "Fri · rest", feeling: "Risk",
+          passage: "Joshua 1:9", deeper: "Genesis 2:15; Luke 2:52",
+          strength: "The appetite for adventure is God-given. What it needs is a father beside it, calibrating the risk instead of removing it.",
+          context: "Joshua has just inherited Moses’ job and a people to lead into a land full of giants. God doesn’t tell him it’ll be easy. He tells him three times in nine verses to be strong and courageous, and then gives him the only reason that works." },
+        { id: "beauty", title: "The Beauty", day: "Friday", slot: "the fire", short: "Fri · fire", feeling: "Desire",
+          passage: "Proverbs 4:23; 1 Timothy 4:12", deeper: "Song of Songs 8:4; Ephesians 5:25",
+          strength: "A man with a guarded heart isn’t a man with a locked one. He knows what the strength is for, and he brings it to her instead of taking it from her.",
+          context: "Solomon gives his son one instruction above every other, and Paul tells a young leader not to let anyone write him off for being young — but to be the example instead. Both passages are about the same thing: where your life flows from, and who gets to tell you who you are." },
+        { id: "son", title: "The Son", day: "Saturday", slot: "morning coffee", short: "Sat · coffee", feeling: "Belonging",
+          passage: "Luke 3:21–22; Ephesians 2:10", deeper: "Revelation 2:17; Romans 8:15",
+          strength: "Before Jesus did a single public thing, his Father said two sentences over him. He needed to hear them. So do you.",
+          context: "Jesus hasn’t preached a sermon, healed anyone, or picked a fight with a Pharisee yet. He comes up out of the water and heaven opens, and the Father says who he is before he’s done anything to earn it. Everything Jesus does afterward, he does from that, not for it." }
+      ],
+      decks: [
+        { title: "Drive Out", meta: "Light", questions: [
+          "If you could drive any road in the world, what would it be and what would you be driving?",
+          "What’s the best shot, catch, or moment you’ve ever had in anything?",
+          "What song has to be on this playlist?",
+          "What’s something you’re already better at than me?",
+          "What’s the funniest thing that happened to you this year?",
+          "If you could eat one meal with anyone alive, who, and where?",
+          "What’s a rule in our house you’d change if you were in charge?",
+          "What do you want to be known for at school, honestly?" ] },
+        { title: "Trail and Rest", meta: "Identity", questions: [
+          "When do you feel most like yourself?",
+          "What’s a goal you have this year that nobody knows about yet?",
+          "Who’s someone you look up to, and what specifically do they do well?",
+          "What’s the best part of being sixteen so far? The hardest?",
+          "What’s a moment this year you were proud of yourself and didn’t tell anyone?",
+          "What’s one thing you wish adults understood about guys your age?",
+          "What scares you about the next two years?",
+          "If you had a free Saturday and no phone, what would you do with it?" ] },
+        { title: "Drive Home", meta: "The two of us", questions: [
+          "If you could master one skill by eighteen, what would it be?",
+          "What’s a place you want the two of us to go someday?",
+          "What’s one thing I do that you want to do when you’re a dad?",
+          "What’s one thing I do that you’d do differently?",
+          "What’s your favorite memory of the two of us?",
+          "If you could ask God one question and get a straight answer, what would it be?",
+          "What do you want your brothers to learn from watching you?",
+          "Twenty years from now, what do you hope somebody says about you?" ] }
+      ],
+      topics: [
+        { id: "blessing", title: "The Blessing", meta: "Five prompts", icon: "mj-i-edit",
+          text: ["Composed ahead of time, then read aloud at the ceremony. It should be read, not improvised, and short enough to get through without losing the room."],
+          rows: ["What I see in you", "What I’m proud of", "The two sentences", "A name, and what I’m asking God for", "A verse to carry"] },
+        { id: "ceremony", title: "The Ceremony", meta: "Saturday evening", icon: "mj-i-crown",
+          text: ["Saturday evening, before the meal. One movement per screen, in large type, with the screen kept awake.", "{dad} leads. {son} sits at the centre, with the men in a circle around him."] },
+        { id: "men", title: "The Men", meta: "The round table", icon: "mj-i-men",
+          text: ["Three to five men who know {son}. Each one brings a short letter: what I see in you, and one thing I’d tell myself at sixteen."] },
+        { id: "journal", title: "The Journal", meta: "Keepsake", icon: "mj-i-book",
+          text: ["Every note, the blessing and the oath in one place and in order, to copy out or print as a keepsake."] }
+      ]
+    },
+    { age: 17, word: "seventeen", title: "The Squire’s Year", stage: "Squire", written: false,
+      focus: "A standing responsibility the family relies on, carried for a full year." },
+    { age: 18, word: "eighteen", title: "The Sending", stage: "Sending", written: false,
+      focus: "The ceremony when he leaves high school. Honored, needed and sent." }
+  ]
 };
+const YEAR_DEFAULT_AGE = 16;
 
-/* ═══ STORAGE ════════════════════════════════════════════════════════════
-   SHARED-ORIGIN RULE: every joe-ray-sites.github.io app shares ONE
-   localStorage pool. Every key this app writes starts with "manhood_" (data)
-   or "manhood-" (device prefs). Never add a key without the prefix. */
-const STORE_KEY = 'manhood_state';            // all weekend data, one JSON blob (schema version in .v)
-const CORRUPT_KEY = 'manhood_state_corrupt';  // raw copy of an unreadable blob, so nothing written is ever silently lost
-const THEME_KEY = 'manhood-theme';            // 'light' | 'dark' — also read by the <head> pre-paint script
-const DEFAULT_STATE = {
+/* ═══ Profile + per-year state ════════════════════════════════════════════════ */
+const PROFILE_KEY = 'manhood_profile';
+const PROFILE_DEFAULT = { v: 1, names: { son: "Asa", dad: "Joe", mom: "" } };
+const YEAR_STATE_DEFAULT = {
   v: 1,
-  names: { son: "Asa", dad: "Joe", mom: "" },
   plan: { dates: "", destination: "", hardThing: "", skill: "", responsibility: "", word: "", sword: "", song: "", momRole: "", vigil: true },
-  done: { battle: false, adventure: false, beauty: false, son: false, hardThing: false, skill: false, vigil: false },
-  notes: { battle: "", adventure: "", beauty: "", son: "", hardThing: "" },
+  done: {},
+  notes: {},
   asked: {},
   men: [],
   bless: { see: "", proud: "", two: "", name: "", verse: "" },
   oath: "",
   ceremonyStep: 0
 };
-function freshState() { return JSON.parse(JSON.stringify(DEFAULT_STATE)); }
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
 function isPlainObject(x) { return !!x && typeof x === 'object' && !Array.isArray(x); }
-function loadState() {
-  const base = freshState();
-  let raw = null;
-  try { raw = localStorage.getItem(STORE_KEY); } catch (e) { return base; }
+function yearKey(age, name) { return 'manhood_y' + age + '__' + name; }
+/* Read a JSON blob over its defaults, one level deep. An unreadable blob is copied to backupKey
+   before the defaults are returned, so the next save cannot overwrite what was there. */
+function readBlob(key, defaults, backupKey) {
+  const base = clone(defaults);
+  const raw = lsGet(key);
   if (!raw) return base;
   try {
     const saved = JSON.parse(raw);
@@ -415,199 +1998,184 @@ function loadState() {
       if (isPlainObject(base[k]) && isPlainObject(saved[k])) base[k] = Object.assign({}, base[k], saved[k]);
       else if (saved[k] !== undefined && saved[k] !== null) base[k] = saved[k];
     });
-    base.v = DEFAULT_STATE.v;
+    base.v = defaults.v;
+    return base;
   } catch (e) {
-    try { localStorage.setItem(CORRUPT_KEY, raw); } catch (_) {}
-    return freshState();
+    if (backupKey) lsSet(backupKey, raw);
+    return clone(defaults);
   }
-  return base;
 }
-let state = loadState();
-function save() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); return true; }
-  catch (e) { console.warn('save failed', e); return false; }
+let profile = readBlob(PROFILE_KEY, PROFILE_DEFAULT, null);
+const _yearStates = {};
+function yearState(age) {
+  if (!_yearStates[age]) _yearStates[age] = readBlob(yearKey(age, 'state'), YEAR_STATE_DEFAULT, yearKey(age, 'corrupt'));
+  return _yearStates[age];
 }
+function saveYear(age) { return lsSet(yearKey(age, 'state'), JSON.stringify(yearState(age))); }
+function saveProfile() { return lsSet(PROFILE_KEY, JSON.stringify(profile)); }
 
-/* ═══ Helpers ════════════════════════════════════════════════════════════ */
+/* ═══ Helpers ═════════════════════════════════════════════════════════════════ */
 function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
   });
 }
 function fill(s) {
-  const n = state.names || {};
-  return String(s).replace(/\{(son|dad|mom)\}/g, function (_, k) { return n[k] || DEFAULT_STATE.names[k] || ''; });
+  const n = profile.names || {};
+  return String(s).replace(/\{(son|dad|mom)\}/g, function (_, k) { return n[k] || PROFILE_DEFAULT.names[k] || ''; });
 }
 function txt(s) { return esc(fill(s)); }
-function icon(id) { return '<svg class="ico" aria-hidden="true"><use href="#' + id + '"/></svg>'; }
+function icon(id, cls) { return '<svg class="' + (cls || 'ico') + '" aria-hidden="true" focusable="false"><use href="#' + id + '"/></svg>'; }
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function _reduceMotion() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
 
-/* ═══ Home ═══════════════════════════════════════════════════════════════ */
-function nextMoment() {
-  for (let i = 0; i < CONTENT.moments.length; i++) {
-    if (!state.done[CONTENT.moments[i].id]) return CONTENT.moments[i];
-  }
+/* ═══ Themes ("banners") ══════════════════════════════════════════════════════ */
+const THEMES = [
+  { id: 'battle',    name: 'The Battle' },
+  { id: 'adventure', name: 'The Adventure' },
+  { id: 'beauty',    name: 'The Beauty' },
+  { id: 'son',       name: 'The Son' }
+];
+const THEME_DEFAULT = 'son';
+function themeById(id) {
+  for (let i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i];
   return null;
 }
-function anyDone() { return CONTENT.moments.some(function (m) { return !!state.done[m.id]; }); }
-function renderHome() {
-  const m = nextMoment();
-  let up = '';
-  if (m) {
-    up = '<button class="upnext" type="button" id="upNext" onclick="openMoment(\'' + m.id + '\', this)">' +
-           '<span class="upnext-text">' +
-             '<span class="eyebrow">' + (anyDone() ? 'Up next' : 'Start here') + '</span>' +
-             '<span class="upnext-title">' + txt(m.title) + '</span>' +
-             '<span class="upnext-slot">' + txt(m.day + ', ' + m.slot) + '</span>' +
-           '</span>' + icon('i-chevron') +
-         '</button>';
+function currentTheme() {
+  const id = document.documentElement.getAttribute('data-theme');
+  return themeById(id) ? id : THEME_DEFAULT;
+}
+function setTheme(id) {
+  if (!themeById(id)) return;                         // unknown ids are ignored
+  document.documentElement.setAttribute('data-theme', id);
+  lsSet('manhood-theme', id);
+  applyThemeMeta();
+  syncMenuLabels();
+  syncBannerButtons();
+}
+/* theme-color meta: the chrome fills the browser / status bar. Read from the token, never a literal. */
+function applyThemeMeta() {
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.setAttribute('name', 'theme-color');
+    document.head.appendChild(meta);
   }
-  document.getElementById('section-home').innerHTML =
-    '<div class="page">' +
-      '<div class="home-hero">' +
-        '<svg class="home-mark" aria-hidden="true"><use href="#mark"/></svg>' +
-        '<div class="eyebrow">' + txt(CONTENT.eyebrow) + '</div>' +
-        '<h1 class="home-title">' + txt(CONTENT.title) + '</h1>' +
-        '<p class="home-subtitle">' + txt(CONTENT.subtitle) + '</p>' +
-      '</div>' +
-      '<p class="home-intro">' + txt(CONTENT.intro) + '</p>' +
-      up +
-      '<div class="card">' +
-        '<p class="verse-text">' + txt(CONTENT.verse.text) + '</p>' +
-        '<div class="eyebrow verse-ref">' + txt(CONTENT.verse.ref) + '</div>' +
-      '</div>' +
-      '<div class="card">' +
-        '<div class="eyebrow">' + txt(CONTENT.threeLabel) + '</div>' +
-        '<ul class="three">' + CONTENT.three.map(function (t) { return '<li>' + txt(t) + '</li>'; }).join('') + '</ul>' +
-        '<p class="three-under">' + txt(CONTENT.threeUnder) + '</p>' +
-      '</div>' +
-      '<div class="home-foot"><p>' + txt(CONTENT.privacy) + '</p><p>' + txt(CONTENT.credit) + '</p></div>' +
-    '</div>';
-}
-function renderStub(id) {
-  const t = CONTENT.tabs[id];
-  document.getElementById('section-' + id).innerHTML =
-    '<div class="page">' +
-      '<div class="eyebrow">' + txt(t.eyebrow) + '</div>' +
-      '<h1 class="page-title">' + txt(t.title) + '</h1>' +
-      '<p class="page-lead">' + txt(t.lead) + '</p>' +
-      '<p class="stub-note">' + txt(CONTENT.stub) + '</p>' +
-    '</div>';
-}
-function openMoment(id, opener) {
-  const m = CONTENT.moments.filter(function (x) { return x.id === id; })[0];
-  if (!m) return;
-  openSheet({
-    eyebrow: fill(m.day + ' · ' + m.slot),
-    title: fill(m.title),
-    html: '<p class="moment-strength"><b>' + txt(m.feeling) + '.</b> ' + txt(m.strength) + '</p>' +
-          '<p class="moment-context">' + txt(m.context) + '</p>' +
-          '<p class="stub-note">' + txt(CONTENT.stub) + '</p>'
-  }, opener);
+  const c = getComputedStyle(document.documentElement).getPropertyValue('--mj-chrome').trim();
+  if (c) meta.setAttribute('content', c);
 }
 
-/* ═══ Section navigation ═════════════════════════════════════════════════ */
-let activeSection = 'home';
-function showSection(id) {
-  const el = document.getElementById('section-' + id);
-  if (!el) return;
-  document.querySelectorAll('.section').forEach(function (s) { s.classList.toggle('active', s === el); });
-  document.querySelectorAll('.nav-tab').forEach(function (t) {
-    const on = t.dataset.section === id;
-    t.classList.toggle('active', on);
-    if (on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
-  });
-  activeSection = id;
-  window.scrollTo(0, 0);   // instant on purpose: scrollTo({behavior:'smooth'}) is a silent no-op in some webviews
+/* ═══ Colorblind Mode ═════════════════════════════════════════════════════════ */
+function monoIsOn() { return document.documentElement.getAttribute('data-mono') === '1'; }
+function toggleMono() {
+  const on = !monoIsOn();
+  if (on) document.documentElement.setAttribute('data-mono', '1');
+  else document.documentElement.removeAttribute('data-mono');
+  lsSet('manhood-mono', on ? '1' : '0');
+  applyThemeMeta();
+  syncMenuLabels();
 }
-document.querySelectorAll('.nav-tab').forEach(function (tab) {
-  tab.addEventListener('click', function () { closeHeaderMenu(); showSection(tab.dataset.section); });
-});
+function syncMenuLabels() {
+  const theme = themeById(currentTheme());
+  const themeItem = document.getElementById('themeMenuItem');
+  if (themeItem) themeItem.querySelector('.header-menu-label').textContent = 'Theme · ' + theme.name;
+  const monoItem = document.getElementById('monoMenuItem');
+  if (monoItem) {
+    const on = monoIsOn();
+    monoItem.querySelector('.header-menu-label').textContent = on ? 'Colorblind Mode: On' : 'Colorblind Mode';
+    monoItem.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  if (typeof syncRailLabels === 'function') syncRailLabels();
+}
 
-/* ═══ Header menu ════════════════════════════════════════════════════════ */
-function toggleHeaderMenu(e) {
-  if (e) e.stopPropagation();
+/* ═══ Header menu ═════════════════════════════════════════════════════════════ */
+function isHeaderMenuOpen() {
   const m = document.getElementById('headerMenu');
+  return !!(m && m.classList.contains('open'));
+}
+function _setMenuExpanded(open) {
+  const btn = document.getElementById('header-menu-btn');
+  if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function toggleHeaderMenu() {
+  const m = document.getElementById('headerMenu');
+  if (!m) return;
   const open = m.classList.toggle('open');
-  document.getElementById('menuBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+  _setMenuExpanded(open);
+  if (open) syncMenuLabels();
 }
 function closeHeaderMenu() {
   const m = document.getElementById('headerMenu');
-  if (!m.classList.contains('open')) return false;
-  m.classList.remove('open');
-  document.getElementById('menuBtn').setAttribute('aria-expanded', 'false');
-  return true;
+  if (m) m.classList.remove('open');
+  _setMenuExpanded(false);
 }
-document.addEventListener('click', function (e) {
-  const m = document.getElementById('headerMenu');
-  if (m.classList.contains('open') && !m.contains(e.target)) closeHeaderMenu();
-});
-
-/* ═══ Theme ══════════════════════════════════════════════════════════════ */
-function currentTheme() { return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
-function applyTheme(t) {
-  document.documentElement.setAttribute('data-theme', t);
-  const meta = document.getElementById('metaThemeColor');   // browser chrome follows the header surface
-  if (meta) meta.setAttribute('content', t === 'light' ? '#FBF7EE' : '#1A1713');
-  // The menu item names the theme you would switch TO.
-  document.getElementById('themeMenuLabel').textContent = t === 'light' ? 'Dark theme' : 'Light theme';
-  document.getElementById('themeMenuIcon').setAttribute('href', t === 'light' ? '#i-moon' : '#i-sun');
-}
-function toggleTheme() {
-  const t = currentTheme() === 'light' ? 'dark' : 'light';
-  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
-  applyTheme(t);
-}
-if (window.matchMedia) {
-  // Follow the system setting until the user has picked a theme themselves.
-  const mq = window.matchMedia('(prefers-color-scheme: light)');
-  const follow = function (e) {
-    let stored = null;
-    try { stored = localStorage.getItem(THEME_KEY); } catch (_) {}
-    if (stored !== 'light' && stored !== 'dark') applyTheme(e.matches ? 'light' : 'dark');
-  };
-  if (mq.addEventListener) mq.addEventListener('change', follow); else if (mq.addListener) mq.addListener(follow);
+function _onDocumentClick(e) {
+  const menu = document.getElementById('headerMenu');
+  const btn = document.getElementById('header-menu-btn');
+  if (!menu || !menu.classList.contains('open')) return;
+  if (menu.contains(e.target)) return;
+  if (btn && btn.contains(e.target)) return;
+  closeHeaderMenu();
 }
 
-/* ═══ Bottom sheet ═══════════════════════════════════════════════════════
-   One shared sheet. EVERY exit (X, backdrop, Escape, pull-down) goes through
-   closeSheet(), so when autosaving fields arrive their flush lives there. */
-let _sheetOpener = null;
-function openSheet(opts, opener) {
-  const ov = document.getElementById('sheet');
-  _sheetOpener = opener || document.activeElement;
-  document.getElementById('sheetEyebrow').textContent = opts.eyebrow || '';
-  document.getElementById('sheetTitle').textContent = opts.title || '';
-  const body = document.getElementById('sheetBody');
-  body.innerHTML = opts.html || '';
-  body.scrollTop = 0;
-  ov.classList.add('open');
-  ov.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-  _fitSheets();
-  document.getElementById('sheetClose').focus({ preventScroll: true });
+/* ═══ Tabs ════════════════════════════════════════════════════════════════════ */
+let activeSection = 'home';
+function goToTab(name) {
+  if (typeof name !== 'string' || !/^[a-z][a-z0-9-]*$/.test(name)) return;
+  const tab = document.querySelector('.nav-tab[data-section="' + name + '"]');
+  const sec = document.getElementById('section-' + name);
+  if (!tab || !sec) return;                           // unknown names are ignored
+  document.querySelectorAll('.nav-tab').forEach(function (t) {
+    t.classList.remove('active');
+    t.removeAttribute('aria-current');
+  });
+  document.querySelectorAll('.section').forEach(function (s) { s.classList.remove('active'); });
+  tab.classList.add('active');
+  tab.setAttribute('aria-current', 'page');
+  sec.classList.add('active');
+  activeSection = name;
+  lsSet('manhood-tab', name);
+  closeHeaderMenu();
+  window.scrollTo(0, 0);                              // never behavior:'smooth' — a silent no-op in some webviews
+  _revealSelected(sec);
+  try { document.dispatchEvent(new CustomEvent('mj:tab', { detail: { name: name } })); } catch (e) {}
 }
-function closeSheet() {
-  const ov = document.getElementById('sheet');
-  if (!ov.classList.contains('open')) return false;
-  ov.classList.remove('open');
-  ov.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-  _fitSheets();
-  const back = _sheetOpener; _sheetOpener = null;
-  if (back && document.contains(back) && typeof back.focus === 'function') back.focus({ preventScroll: true });
-  return true;
+function getActiveTab() { return activeSection; }
+function initNav() {
+  const nav = document.querySelector('.bottom-nav');
+  nav.addEventListener('click', function (e) {
+    const tab = e.target && e.target.closest ? e.target.closest('.nav-tab[data-section]') : null;
+    if (!tab) return;
+    e.preventDefault();
+    goToTab(tab.getAttribute('data-section'));
+  });
+  // Restore the last tab, except on the very first run (the banner page opens over Home).
+  const last = lsGet('manhood-tab');
+  const first = document.documentElement.classList.contains('mj-onboarding');
+  goToTab(!first && last && document.getElementById('section-' + last) ? last : 'home');
 }
-document.getElementById('sheet').addEventListener('click', function (e) {
-  if (e.target === e.currentTarget) closeSheet();          // backdrop tap
-});
-document.addEventListener('keydown', function (e) {
-  if (e.key !== 'Escape') return;
-  if (closeSheet()) return;
-  if (closeHeaderMenu()) document.getElementById('menuBtn').focus();
-});
 
-/* Pull-down-to-dismiss (lifted from Fellowship Fayetteville). Drags only start
-   on the grab elements, so the sheet body keeps scrolling normally. */
+/* ═══ Bottom sheet ════════════════════════════════════════════════════════════
+   A focused field inside a sheet shrinks the VISUAL viewport while a position:fixed overlay stays
+   on the LAYOUT viewport, so the header slides off screen. _fitSheets pins the overlay to the
+   visual viewport; inline styles are cleared whenever the overlay is not open. */
+let _sheetReturnFocus = null;
+let _sheetCloseTimer = null;
+let _sheetWired = false;
+function _fitSheets() {
+  const vv = window.visualViewport;
+  document.querySelectorAll('.sheet-overlay').forEach(function (ov) {
+    if (!vv || !ov.classList.contains('open')) {
+      ov.style.top = ''; ov.style.bottom = ''; ov.style.height = '';
+      return;
+    }
+    ov.style.top = vv.offsetTop + 'px';
+    ov.style.bottom = 'auto';
+    ov.style.height = vv.height + 'px';
+  });
+}
+/* Pull-down-to-dismiss: grab the header or the handle and drag down. Anything below the header
+   keeps its own scroll — the gesture only starts from the grab zone. */
 function enableSheetDrag(container, grabEls, closeFn) {
   if (!container || !grabEls || !grabEls.length || typeof closeFn !== 'function') return;
   let startY = 0, dy = 0, dragging = false, active = false, pid = null;
@@ -645,46 +2213,554 @@ function enableSheetDrag(container, grabEls, closeFn) {
   container.addEventListener('pointerup', end);
   container.addEventListener('pointercancel', end);
 }
-
-/* Keep an open sheet inside the visible window. iOS raises the keyboard by
-   shrinking the VISUAL viewport while position:fixed stays on the LAYOUT
-   viewport, so without this the sheet header slides off screen. */
-function _fitSheets() {
-  const vv = window.visualViewport;
-  document.querySelectorAll('.sheet-overlay').forEach(function (ov) {
-    if (!vv || !ov.classList.contains('open')) {
-      ov.style.top = ''; ov.style.bottom = ''; ov.style.height = '';
-      return;
+function isSheetOpen() {
+  const ov = document.getElementById('sheet-overlay');
+  return !!(ov && ov.classList.contains('open') && !ov.classList.contains('closing'));
+}
+/* openSheet({ title, html, icon, auto }) — icon is a sprite id; auto sizes the sheet to its content. */
+function openSheet(opts) {
+  opts = opts || {};
+  const ov = document.getElementById('sheet-overlay');
+  const sheet = document.getElementById('sheet');
+  const titleEl = document.getElementById('sheet-title');
+  const body = document.getElementById('sheet-body');
+  if (!ov || !sheet || !titleEl || !body) return;
+  if (_sheetCloseTimer) { clearTimeout(_sheetCloseTimer); _sheetCloseTimer = null; }
+  titleEl.textContent = opts.title || '';
+  document.getElementById('sheet-icon-use').setAttribute('href', '#' + (opts.icon || 'mj-i-info'));
+  sheet.classList.toggle('sheet--auto', !!opts.auto);
+  body.innerHTML = typeof opts.html === 'string' ? opts.html : '';
+  body.scrollTop = 0;
+  sheet.style.transition = ''; sheet.style.transform = '';
+  if (!ov.classList.contains('open')) _sheetReturnFocus = document.activeElement;
+  ov.classList.remove('closing');
+  ov.classList.add('open');
+  ov.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(_fitSheets);
+  try { sheet.focus({ preventScroll: true }); } catch (e) {}
+}
+/* EVERY close path (X, backdrop, Escape, pull-down) funnels through here. When autosaving fields
+   arrive, their flush belongs here, before done(). */
+function closeSheet() {
+  const ov = document.getElementById('sheet-overlay');
+  const sheet = document.getElementById('sheet');
+  if (!ov || !ov.classList.contains('open') || ov.classList.contains('closing')) return;
+  function done() {
+    _sheetCloseTimer = null;
+    ov.classList.remove('open');
+    ov.classList.remove('closing');
+    ov.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    _fitSheets();
+    const back = _sheetReturnFocus;
+    _sheetReturnFocus = null;
+    if (back && typeof back.focus === 'function' && document.contains(back)) {
+      try { back.focus({ preventScroll: true }); } catch (e) {}
     }
-    ov.style.top = vv.offsetTop + 'px';
-    ov.style.bottom = 'auto';
-    ov.style.height = vv.height + 'px';
+  }
+  // Drag-dismiss already slid the sheet off screen: close at once instead of animating twice.
+  const dragged = !!(sheet && sheet.style.transform && sheet.style.transform.indexOf('100%') !== -1);
+  if (dragged || _reduceMotion()) { done(); return; }
+  ov.classList.add('closing');
+  _sheetCloseTimer = setTimeout(done, 220);
+}
+function initSheet() {
+  if (_sheetWired) return;                            // drag + viewport listeners attach ONCE
+  const ov = document.getElementById('sheet-overlay');
+  const sheet = document.getElementById('sheet');
+  if (!ov || !sheet) return;
+  _sheetWired = true;
+  ov.addEventListener('click', function (e) { if (e.target === ov) closeSheet(); });   // backdrop tap
+  const grabEls = ['.sheet-drag', '.sheet-header'].map(function (s) { return sheet.querySelector(s); }).filter(Boolean);
+  enableSheetDrag(sheet, grabEls, closeSheet);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', _fitSheets);
+    window.visualViewport.addEventListener('scroll', _fitSheets);
+  }
+}
+
+/* ═══ Banner page (the theme picker): a full-page overlay ═════════════════════ */
+let _themePageReturnFocus = null;
+function themePageIsOpen() {
+  const p = document.getElementById('theme-page');
+  return !!(p && p.classList.contains('open'));
+}
+function _focusEl(el) {
+  if (!el || typeof el.focus !== 'function') return false;
+  try { el.focus({ preventScroll: true }); } catch (e) { try { el.focus(); } catch (e2) { return false; } }
+  return document.activeElement === el;
+}
+/* aria-pressed + label for every .banner-choose, from the current theme. */
+function syncBannerButtons() {
+  const current = currentTheme();
+  document.querySelectorAll('.banner-choose').forEach(function (btn) {
+    const id = btn.getAttribute('data-banner');
+    const t = themeById(id);
+    const pressed = id === current;
+    const label = pressed ? 'Your banner' : 'Choose ' + (t ? t.name : id);
+    btn.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+    if (btn.getAttribute('data-label') === label) return;
+    btn.setAttribute('data-label', label);
+    btn.innerHTML = (pressed ? icon('mj-i-check') : '') + esc(label);
   });
 }
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', _fitSheets);
-  window.visualViewport.addEventListener('scroll', _fitSheets);
+function openThemePage() {
+  const el = document.getElementById('theme-page');
+  if (!el) return;
+  // remember focus BEFORE the menu closes
+  _themePageReturnFocus = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+  closeHeaderMenu();
+  syncBannerButtons();
+  const body = document.getElementById('theme-body');
+  if (body) body.scrollTop = 0;
+  el.classList.add('open');
+  el.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('mj-overlay-open');
+  let back = document.getElementById('theme-page-back');
+  if (document.documentElement.classList.contains('mj-onboarding')) back = document.getElementById('theme-skip') || back;
+  if (!_focusEl(back)) {
+    // a browser that still reports the overlay hidden mid-transition refuses focus; retry after the slide
+    setTimeout(function () { if (themePageIsOpen()) _focusEl(back); }, 360);
+  }
+}
+function closeThemePage() {
+  const el = document.getElementById('theme-page');
+  if (!el) return;
+  if (document.documentElement.classList.contains('mj-onboarding')) {
+    lsSet('manhood-onboarded', '1');
+    document.documentElement.classList.remove('mj-onboarding');
+  }
+  el.classList.remove('open');
+  el.setAttribute('aria-hidden', 'true');
+  document.documentElement.classList.remove('mj-overlay-open');
+  const target = _themePageReturnFocus;
+  _themePageReturnFocus = null;
+  let restored = false;
+  if (target && document.contains(target) && !el.contains(target)) restored = _focusEl(target);
+  // the remembered element is usually the (now hidden) Theme menu item — fall back to the menu button
+  if (!restored) restored = _focusEl(document.getElementById('header-menu-btn'));
+  if (!restored && document.activeElement && el.contains(document.activeElement)) {
+    try { document.activeElement.blur(); } catch (e) {}
+  }
+}
+function initThemePage() {
+  const el = document.getElementById('theme-page');
+  if (!el) return;
+  el.addEventListener('click', function (e) {
+    const btn = e.target && e.target.closest ? e.target.closest('.banner-choose') : null;
+    if (!btn || btn.getAttribute('aria-pressed') === 'true') return;
+    setTheme(btn.getAttribute('data-banner'));
+  });
+  syncBannerButtons();
 }
 
-/* ═══ Init ═══════════════════════════════════════════════════════════════ */
-function init() {
-  document.getElementById('appTitle').textContent = fill(CONTENT.title);
-  applyTheme(currentTheme());
-  renderHome();
-  ['friday', 'saturday', 'road', 'blessing'].forEach(renderStub);
-  const sc = document.getElementById('sheetContainer');
-  enableSheetDrag(sc, [sc.querySelector('.sheet-drag'), sc.querySelector('.sheet-header')], closeSheet);
+/* ═══ Keyboard — ONE Escape handler for the whole app, outermost layer first ═══
+   sheet → overlay → menu → rail */
+function _onKeydown(e) {
+  if (e.key !== 'Escape') return;
+  if (isSheetOpen()) { closeSheet(); return; }
+  if (themePageIsOpen()) { closeThemePage(); return; }
+  if (isHeaderMenuOpen()) { closeHeaderMenu(); _focusEl(document.getElementById('header-menu-btn')); return; }
+  if (typeof railEscape === 'function') railEscape();
 }
-init();
 
-/* ═══ Service worker ═════════════════════════════════════════════════════ */
-if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
-  window.addEventListener('load', function () {
+/* ═══ Hero slideshow ══════════════════════════════════════════════════════════ */
+let _heroTimer = null;
+function initHeroSlideshow() {
+  if (_heroTimer) { clearTimeout(_heroTimer); _heroTimer = null; }
+  const slides = document.querySelectorAll('#heroSlideshow .hero-slide');
+  if (slides.length < 2) return;                      // a single photo: nothing to cycle
+  if (_reduceMotion()) return;                        // reduced motion: keep the first photo static
+  let idx = 0, advances = 0;
+  for (let i = 0; i < slides.length; i++) if (slides[i].classList.contains('active')) { idx = i; break; }
+  function next() {
+    slides[idx].classList.remove('active');
+    idx = (idx + 1) % slides.length;
+    slides[idx].classList.add('active');
+    advances++;
+    // First full pass: 3s each. After every photo has shown once: 10s.
+    _heroTimer = setTimeout(next, advances < slides.length ? 3000 : 10000);
+  }
+  _heroTimer = setTimeout(next, 3000);
+}
+
+/* ═══ Years ═══════════════════════════════════════════════════════════════════
+   The ACTIVE YEAR is the one every tab opens. It is chosen on the Path tab and remembered. */
+function yearByAge(age) {
+  for (let i = 0; i < CONTENT.years.length; i++) if (CONTENT.years[i].age === age) return CONTENT.years[i];
+  return null;
+}
+let activeAge = (function () {
+  const saved = parseInt(lsGet('manhood-year'), 10);
+  return yearByAge(saved) ? saved : YEAR_DEFAULT_AGE;
+})();
+function activeYear() { return yearByAge(activeAge); }
+function selectYear(age) {
+  if (!yearByAge(age) || age === activeAge) return;
+  activeAge = age;
+  lsSet('manhood-year', String(age));
+  renderAll();
+}
+/* First moment of a written year that is not marked done; null when none are left. */
+function nextMoment(year) {
+  if (!year.written) return null;
+  const done = yearState(year.age).done;
+  for (let i = 0; i < year.moments.length; i++) if (!done[year.moments[i].id]) return year.moments[i];
+  return null;
+}
+function anyMomentDone(year) {
+  const done = yearState(year.age).done;
+  return year.moments.some(function (m) { return !!done[m.id]; });
+}
+
+/* ═══ Shared render pieces ════════════════════════════════════════════════════ */
+function tabHead(eyebrow, title, lead, extra) {
+  return '<div class="tab-head">' +
+    '<div class="eyebrow">' + txt(eyebrow) + '</div>' +
+    '<h1 class="display">' + txt(title) + '</h1>' +
+    '<p class="lead">' + txt(lead) + '</p>' + (extra || '') +
+  '</div>';
+}
+/* The picker strip. tiles: [{ num | icon, title, meta, selected, call }] — call is the onclick source. */
+function pickStrip(id, label, tiles, topic) {
+  return '<div class="pick-strip" id="' + id + '" role="tablist" aria-label="' + esc(label) + '">' +
+    tiles.map(function (t) {
+      return '<button class="pick-tile' + (topic ? ' topic-tile' : '') + '" type="button" role="tab" aria-selected="' + (t.selected ? 'true' : 'false') + '" onclick="' + t.call + '">' +
+        (t.icon ? icon(t.icon) : '<span class="pick-tile-num">' + txt(t.num) + '</span>') +
+        '<span class="pick-tile-title">' + txt(t.title) + '</span>' +
+        (t.meta ? '<span class="pick-tile-meta">' + txt(t.meta) + '</span>' : '') +
+      '</button>';
+    }).join('') +
+  '</div>';
+}
+/* Bring the selected tile of every strip inside el into view (sideways only: never moves the page). */
+function _revealSelected(el) {
+  el.querySelectorAll('.pick-strip').forEach(function (strip) {
+    const tile = strip.querySelector('[aria-selected="true"]');
+    if (!tile || strip.scrollWidth <= strip.clientWidth) return;
+    const left = tile.offsetLeft - strip.offsetLeft;
+    if (left < strip.scrollLeft || left + tile.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollLeft = Math.max(0, left - 16);
+  });
+}
+/* What a tab shows when the active year has not been written yet. */
+function unwrittenPanel(year) {
+  return '<div class="panel empty">' + icon('mj-i-path') +
+    '<div class="eyebrow">Age ' + txt(year.word) + '</div>' +
+    '<h2 class="panel-title">' + txt(year.title) + '</h2>' +
+    '<p>' + txt(CONTENT.draftNote) + '</p>' +
+    '<button class="btn" type="button" onclick="goToTab(\'path\')">Open Path' + icon('mj-i-forward') + '</button>' +
+  '</div>';
+}
+
+/* ═══ Home ════════════════════════════════════════════════════════════════════ */
+function renderHome() {
+  const year = activeYear();
+  let now = '', verse = '';
+  if (year.written) {
+    const m = nextMoment(year);
+    if (m) {
+      now = '<div class="card walk-card">' + icon('mj-i-flame', 'walk-icon') +
+        '<div class="walk-step">' + (anyMomentDone(year) ? 'Up next' : 'Start here') + '</div>' +
+        '<h2 class="walk-title">' + txt(m.title) + '</h2>' +
+        '<p class="walk-desc">' + txt(m.day + ', ' + m.slot) + '</p>' +
+        '<button class="btn btn-house" type="button" onclick="openMoment(\'' + m.id + '\')">Open' + icon('mj-i-forward') + '</button>' +
+      '</div>';
+    } else {
+      now = '<div class="card walk-card">' + icon('mj-i-crown', 'walk-icon') +
+        '<div class="walk-step">Every moment done</div>' +
+        '<h2 class="walk-title">' + txt(year.title) + '</h2>' +
+        '<p class="walk-desc">What’s left is the blessing.</p>' +
+        '<button class="btn btn-house" type="button" onclick="goToTab(\'blessing\')">Open Blessing' + icon('mj-i-forward') + '</button>' +
+      '</div>';
+    }
+    verse = '<div class="panel home-verse"><p class="verse">' + txt(year.verse.text) + '</p><div class="meta">' + txt(year.verse.ref) + '</div></div>';
+  } else {
+    now = '<div class="card walk-card">' + icon('mj-i-path', 'walk-icon') +
+      '<div class="walk-step">' + txt(CONTENT.draft) + '</div>' +
+      '<h2 class="walk-title">' + txt(year.title) + '</h2>' +
+      '<p class="walk-desc">' + txt(year.focus) + '</p>' +
+      '<button class="btn" type="button" onclick="goToTab(\'path\')">Open Path' + icon('mj-i-forward') + '</button>' +
+    '</div>';
+  }
+  const walk = CONTENT.walk.map(function (w, i) {
+    return '<div class="card walk-card">' + icon(w.icon, 'walk-icon') +
+      '<div class="walk-step">' + pad2(i + 1) + '</div>' +
+      '<h2 class="walk-title">' + txt(w.title) + '</h2>' +
+      '<p class="walk-desc">' + txt(w.desc) + '</p>' +
+      '<button class="btn" type="button" onclick="goToTab(\'' + w.tab + '\')">Open ' + txt(w.label) + icon('mj-i-forward') + '</button>' +
+    '</div>';
+  }).join('');
+  document.getElementById('homeBody').innerHTML =
+    '<div class="eyebrow eyebrow--rule">This year · Age ' + txt(year.word) + '</div>' +
+    '<div class="walk-list walk-list--now">' + now + '</div>' + verse +
+    '<div class="eyebrow eyebrow--rule">How to use this app</div>' +
+    '<div class="walk-list">' + walk + '</div>';
+  document.getElementById('homeFoot').innerHTML = txt(CONTENT.privacy) + '<br>' + txt(CONTENT.credit);
+}
+/* Home's "Open" on the up-next card: land on Moments with that moment chosen. */
+function openMoment(id) {
+  lsSet('manhood-moment', id);
+  renderMoments();
+  goToTab('moments');
+}
+
+/* ═══ Path: the seven years ═══════════════════════════════════════════════════ */
+function renderPath() {
+  const t = CONTENT.tabs.path, year = activeYear();
+  const strip = pickStrip('pathYears', 'Years', CONTENT.years.map(function (y) {
+    return { num: String(y.age), title: y.title, meta: y.stage, selected: y.age === activeAge, call: 'selectYear(' + y.age + ')' };
+  }));
+  let panel = '<div class="panel">' +
+    '<div class="eyebrow">Age ' + txt(year.word) + ' · ' + txt(year.stage) + '</div>' +
+    '<h2 class="panel-title">' + txt(year.title) + '</h2>' +
+    '<p>' + txt(year.focus) + '</p>';
+  if (year.written) {
+    panel += '<p>' + txt(year.intro) + '</p>' +
+      '<dl class="facts">' + year.facts.map(function (f) { return '<dt>' + txt(f[0]) + '</dt><dd>' + txt(f[1]) + '</dd>'; }).join('') + '</dl>' +
+    '</div>' +
+    '<div class="panel"><p class="verse">' + txt(year.verse.text) + '</p><div class="meta">' + txt(year.verse.ref) + '</div></div>' +
+    '<div class="acc-list">' + year.days.map(function (d) {
+      return '<div class="acc-card">' +
+        '<button class="acc-head" type="button" aria-expanded="false" onclick="toggleAcc(this)">' +
+          '<span class="acc-icon">' + icon(d.icon) + '</span>' +
+          '<span class="acc-text"><span class="acc-name">' + txt(d.name) + '</span><span class="acc-meta">' + txt(d.title) + '</span></span>' +
+          icon('mj-i-expand', 'ico acc-chevron') +
+        '</button>' +
+        '<div class="acc-body"><ul class="acc-items">' + d.items.map(function (it) {
+          return '<li><b>' + txt(it[0]) + '</b><span>' + txt(it[1]) + '</span></li>';
+        }).join('') + '</ul></div>' +
+      '</div>';
+    }).join('') + '</div>';
+  } else {
+    panel += '<div class="chip-wrap"><span class="chip">' + txt(CONTENT.draft) + '</span></div>' +
+    '</div>' +
+    '<div class="panel"><p>' + txt(CONTENT.draftNote) + '</p></div>';
+  }
+  document.getElementById('pathInner').innerHTML =
+    tabHead(t.eyebrow, t.title, t.lead) + strip + '<div id="pathPanel">' + panel + '</div>';
+}
+function toggleAcc(btn) {
+  const card = btn.closest('.acc-card');
+  if (!card) return;
+  const open = card.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+/* ═══ Moments (the raised centre tab) ═════════════════════════════════════════ */
+function _pick(list, key, prefKey) {
+  // the remembered selection if it still exists in this year, else the first item
+  const saved = lsGet(prefKey);
+  for (let i = 0; i < list.length; i++) if (String(list[i][key]) === saved) return list[i];
+  return list[0];
+}
+function renderMoments() {
+  const t = CONTENT.tabs.moments, year = activeYear();
+  const how = '<button class="btn" type="button" onclick="openHowMoment()">' + icon('mj-i-info') + txt(CONTENT.howMoment.title) + '</button>';
+  const head = tabHead('Age ' + year.word, t.title, t.lead, how);
+  if (!year.written) { document.getElementById('momentsInner').innerHTML = head + unwrittenPanel(year); return; }
+  const cur = _pick(year.moments, 'id', 'manhood-moment');
+  const strip = pickStrip('momentTiles', 'Moments', year.moments.map(function (m, i) {
+    return { num: pad2(i + 1), title: m.title, meta: m.short, selected: m === cur, call: "selectMoment('" + m.id + "')" };
+  }));
+  const panel = '<div class="panel">' +
+      '<div class="eyebrow">' + txt(cur.day + ' · ' + cur.slot) + '</div>' +
+      '<h2 class="panel-title">' + txt(cur.title) + '</h2>' +
+      '<p class="strength"><b>' + txt(cur.feeling) + '.</b> ' + txt(cur.strength) + '</p>' +
+      '<p>' + txt(cur.context) + '</p>' +
+      '<dl class="facts"><dt>Read</dt><dd>' + txt(cur.passage) + '</dd><dt>Go deeper</dt><dd>' + txt(cur.deeper) + '</dd></dl>' +
+    '</div>' +
+    '<div class="panel"><div class="eyebrow">' + txt(CONTENT.soon) + '</div>' +
+      '<p>' + txt(CONTENT.momentSoon) + '</p>' +
+      '<div class="chip-wrap"><span class="chip">Read</span><span class="chip">Ask</span><span class="chip">Share</span><span class="chip">Write</span></div>' +
+    '</div>';
+  document.getElementById('momentsInner').innerHTML = head + strip + '<div id="momentPanel">' + panel + '</div>';
+}
+function selectMoment(id) { lsSet('manhood-moment', id); renderMoments(); _revealSelected(document.getElementById('momentsInner')); }
+function openHowMoment() {
+  const h = CONTENT.howMoment;
+  openSheet({
+    title: fill(h.title), icon: 'mj-i-info', auto: true,
+    html: '<ol class="steps">' + h.steps.map(function (s, i) {
+      return '<li><span class="step-num">' + pad2(i + 1) + '</span><span><b>' + txt(s[0]) + '</b><span class="step-text">' + txt(s[1]) + '</span></span></li>';
+    }).join('') + '</ol><p class="reading">' + txt(h.foot) + '</p>'
+  });
+}
+
+/* ═══ Road: question decks ════════════════════════════════════════════════════ */
+function renderRoad() {
+  const t = CONTENT.tabs.road, year = activeYear();
+  const head = tabHead('Age ' + year.word, t.title, t.lead);
+  if (!year.written) { document.getElementById('roadInner').innerHTML = head + unwrittenPanel(year); return; }
+  let idx = parseInt(lsGet('manhood-deck'), 10);
+  if (!(idx >= 0 && idx < year.decks.length)) idx = 0;
+  const deck = year.decks[idx];
+  const strip = pickStrip('deckTiles', 'Decks', year.decks.map(function (d, i) {
+    return { num: 'Deck ' + (i + 1), title: d.title, meta: d.meta, selected: i === idx, call: 'selectDeck(' + i + ')' };
+  }));
+  const panel = '<div class="panel panel--flush">' +
+      '<div class="panel-head"><div class="eyebrow">Deck ' + (idx + 1) + ' · ' + txt(deck.meta) + '</div>' +
+      '<h2 class="panel-title">' + txt(deck.title) + '</h2></div>' +
+      '<div class="row-list">' + deck.questions.map(function (q, i) {
+        return '<div class="list-row"><span class="row-num">' + pad2(i + 1) + '</span><span class="row-title row-title--q">' + txt(q) + '</span></div>';
+      }).join('') + '</div>' +
+    '</div>';
+  document.getElementById('roadInner').innerHTML = head + strip + '<div id="deckPanel">' + panel + '</div>';
+}
+function selectDeck(i) { lsSet('manhood-deck', String(i)); renderRoad(); _revealSelected(document.getElementById('roadInner')); }
+
+/* ═══ Blessing: blessing, ceremony, the men, the journal ══════════════════════ */
+function renderBlessing() {
+  const t = CONTENT.tabs.blessing, year = activeYear();
+  const head = tabHead('Age ' + year.word, t.title, t.lead);
+  if (!year.written) { document.getElementById('blessingInner').innerHTML = head + unwrittenPanel(year); return; }
+  const cur = _pick(year.topics, 'id', 'manhood-topic');
+  const strip = pickStrip('topicTiles', 'Blessing topics', year.topics.map(function (p) {
+    return { icon: p.icon, title: p.title, meta: p.meta, selected: p === cur, call: "selectTopic('" + p.id + "')" };
+  }), true);
+  let panel = '<div class="panel">' +
+      '<div class="eyebrow">' + txt(cur.meta) + '</div>' +
+      '<h2 class="panel-title">' + txt(cur.title) + '</h2>' +
+      cur.text.map(function (p) { return '<p>' + txt(p) + '</p>'; }).join('') +
+      '<div class="chip-wrap"><span class="chip">' + txt(CONTENT.soon) + '</span></div>' +
+    '</div>';
+  if (cur.rows) {
+    panel += '<div class="panel panel--flush"><div class="row-list row-list--bare">' + cur.rows.map(function (r, i) {
+      return '<div class="list-row"><span class="row-num">' + pad2(i + 1) + '</span><span class="row-title">' + txt(r) + '</span></div>';
+    }).join('') + '</div></div>';
+  }
+  document.getElementById('blessingInner').innerHTML = head + strip + '<div id="topicPanel">' + panel + '</div>';
+}
+function selectTopic(id) { lsSet('manhood-topic', id); renderBlessing(); _revealSelected(document.getElementById('blessingInner')); }
+
+function renderAll() {
+  renderHome(); renderPath(); renderMoments(); renderRoad(); renderBlessing();
+  const sec = document.getElementById('section-' + activeSection);
+  if (sec) _revealSelected(sec);
+}
+
+/* ═══ Service worker ══════════════════════════════════════════════════════════ */
+function registerSW() {
+  if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol)) return;
+  const go = function () {
     navigator.serviceWorker.register('sw.js').catch(function (e) { console.warn('SW reg failed', e); });
     // Self-heal: sibling apps on this origin can wipe our cache (see sw.js). Ask for a refill on every load.
     navigator.serviceWorker.ready.then(function (reg) {
       if (reg.active) reg.active.postMessage('manhood-ensure-cache');
     }).catch(function () {});
+  };
+  if (document.readyState === 'complete') go();
+  else window.addEventListener('load', go, { once: true });
+}
+
+/* ═══ Init ════════════════════════════════════════════════════════════════════ */
+function init() {
+  renderAll();
+  document.addEventListener('click', _onDocumentClick);
+  initNav();
+  initSheet();
+  initThemePage();
+  document.addEventListener('keydown', _onKeydown);
+  applyThemeMeta();
+  syncMenuLabels();
+  initHeroSlideshow();
+  registerSW();
+  if (typeof initRail === 'function') initRail();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+
+/* ═══ Desktop layer: the navigation rail ══════════════════════════════════════
+   At iPad size and up (MJ_DESK_MQ: ≥ 744 px wide AND ≥ 500 px tall, so a phone turned sideways
+   stays on the phone layout) CSS re-lays the bottom nav as a left rail and hides the top bar.
+   This script owns only the rail's state:
+     html.mj-rail-open     expanded (256 px). Below 1024 px it floats over the page with a scrim
+                           (modal, never remembered, closes on a pick); from 1024 px it pushes
+                           the page (remembered).
+     'manhood-rail' '1'|'0' the last explicit choice in push mode. With no choice, the rail opens
+                           on landscape windows ≥ 1200 px and stays collapsed otherwise. The head
+                           script applies the same rule before first paint.
+   Phones never reach any of this: every entry point checks isDesk(). */
+var MJ_DESK_MQ = '(min-width: 744px) and (min-height: 500px)';
+var _railMode = null;
+function isDesk() { return !!(window.matchMedia && window.matchMedia(MJ_DESK_MQ).matches); }
+function _railModeNow() { return !isDesk() ? 'phone' : (window.innerWidth >= 1024 ? 'push' : 'modal'); }
+function railIsOpen() { return document.documentElement.classList.contains('mj-rail-open'); }
+function _railWanted() {
+  var p = lsGet('manhood-rail');
+  if (p === '1') return true;
+  if (p === '0') return false;
+  return window.innerWidth >= 1200 && window.innerWidth > window.innerHeight;
+}
+function setRail(open, remember) {
+  document.documentElement.classList.toggle('mj-rail-open', !!open);
+  if (remember) lsSet('manhood-rail', open ? '1' : '0');
+  var btn = document.getElementById('railToggle');
+  if (btn) {
+    var label = open ? 'Collapse navigation' : 'Expand navigation';
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label + ' ( [ )');
+    var ic = document.getElementById('railToggleIcon');
+    if (ic) ic.setAttribute('href', open ? '#mj-i-menu-open' : '#mj-i-menu');
+  }
+}
+function toggleRail() {
+  if (!isDesk()) return;
+  setRail(!railIsOpen(), _railModeNow() === 'push');
+}
+function _syncRailMode() {
+  var mode = _railModeNow();
+  if (mode === _railMode) return;       // only a change of mode re-decides (an iPad keyboard resizing the page must not)
+  _railMode = mode;
+  setRail(mode === 'push' ? _railWanted() : false, false);
+}
+function syncRailLabels() {
+  var theme = document.getElementById('railTheme');
+  if (theme) {
+    var t = 'Theme · ' + themeById(currentTheme()).name;
+    theme.querySelector('.rail-util-label').textContent = t;
+    theme.setAttribute('aria-label', t); theme.setAttribute('title', t);
+  }
+  var mono = document.getElementById('railMono');
+  if (mono) {
+    var on = monoIsOn();
+    var m = on ? 'Colorblind Mode: On' : 'Colorblind Mode';
+    mono.querySelector('.rail-util-label').textContent = m;
+    mono.setAttribute('aria-label', m); mono.setAttribute('title', m);
+    mono.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+}
+function railUtil(which) {
+  if (_railModeNow() === 'modal' && railIsOpen()) setRail(false, false);
+  if (which === 'theme') openThemePage();
+  else if (which === 'mono') toggleMono();
+}
+/* The rail's share of the ONE Escape handler (the last, innermost-chrome layer). */
+function railEscape() {
+  if (isDesk() && _railModeNow() === 'modal' && railIsOpen()) setRail(false, false);
+}
+function initRail() {
+  setRail(railIsOpen(), false);          // the head script may already have opened it; sync the button
+  _railMode = _railModeNow();
+  if (_railMode !== 'push' && railIsOpen()) setRail(false, false);
+  syncRailLabels();
+  var nav = document.querySelector('.bottom-nav');
+  if (nav) nav.addEventListener('click', function (e) {
+    // a pick from the floating (modal) rail closes it; the pushed rail stays as it is
+    if (_railModeNow() === 'modal' && railIsOpen() && e.target.closest && e.target.closest('.nav-tab, .rail-brand')) setRail(false, false);
+  });
+  var scrim = document.getElementById('railScrim');
+  if (scrim) scrim.addEventListener('click', function () { setRail(false, false); });
+  window.addEventListener('resize', _syncRailMode);
+  document.addEventListener('keydown', function (e) {
+    if (!isDesk()) return;
+    if (e.key !== '[' || e.metaKey || e.ctrlKey || e.altKey) return;
+    var t = e.target, tag = t && t.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
+    if (document.querySelector('.page-overlay.open, .sheet-overlay.open')) return;
+    e.preventDefault();
+    toggleRail();
   });
 }
 </script>

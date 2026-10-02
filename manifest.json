@@ -1,12 +1,12 @@
 {
-  "name": "Sixteen",
-  "short_name": "Sixteen",
-  "description": "A two-day father-son weekend, ending in a blessing.",
+  "name": "Manhood Journey",
+  "short_name": "The Journey",
+  "description": "A father and his son, one marked year at a time, from twelve to eighteen.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#100E0B",
-  "theme_color": "#100E0B",
+  "background_color": "#EDE3CB",
+  "theme_color": "#16324A",
   "icons": [
     {
       "src": "assets/icon-192.png",
