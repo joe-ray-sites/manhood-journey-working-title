@@ -15,8 +15,9 @@
       document.documentElement.setAttribute('data-mono', '1');
     }
     /* Splash + onboarding. First run (no 'manhood-onboarded') always gets the splash and lands on
-       Choose Your Banner; afterwards the splash plays once per calendar day ('manhood-splash-date')
-       and lands on the last tab. A cache clear resets neither (they are localStorage). */
+       the profile page (names + what the app is for); afterwards the splash plays once per calendar
+       day ('manhood-splash-date') and lands on the last tab. Every user starts on The Son banner.
+       A cache clear resets none of this (it is localStorage). */
     var onboarded = localStorage.getItem('manhood-onboarded') === '1';
     var d = new Date(), today = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
     if (!onboarded || localStorage.getItem('manhood-splash-date') !== today) document.documentElement.classList.add('mj-splash');
@@ -604,6 +605,7 @@ button.chip:active { border-color: var(--md-sys-color-primary); }
 .steps .step-num { font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; color: var(--md-sys-color-secondary); padding-top: 3px; }
 .steps b { font-family: var(--font-serif); font-size: 18px; font-weight: 600; line-height: 1.25; display: block; }
 .steps + .reading { margin-top: 18px; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .steps span.step-text { font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); display: block; margin-top: 2px; }
 
 /* ── Splash (z 5000). Shown only when the head script set html.mj-splash (namespaced: a bare
@@ -670,7 +672,7 @@ html.mj-splash #splash { display: flex; }
   .splash.still .splash-title { opacity: 1; }
 }
 
-/* ── First-run onboarding: the banner page opens by itself; Back becomes "Skip for now" ── */
+/* ── First-run onboarding: the profile page opens by itself; Back becomes "Skip for now" ── */
 .overlay-skip {
   display: none; margin-left: auto; min-height: 44px; padding: 0 14px;
   background: none; border: 0; cursor: pointer;
@@ -678,7 +680,7 @@ html.mj-splash #splash { display: flex; }
   color: var(--mj-on-chrome); border-radius: 22px;
 }
 .overlay-skip:focus-visible { outline: 2px solid var(--mj-chrome-accent); outline-offset: 2px; }
-html.mj-onboarding #theme-page-back { display: none; }
+html.mj-onboarding #profile-page-back { display: none; }
 html.mj-onboarding .overlay-skip { display: inline-flex; align-items: center; }
 html.mj-onboarding .overlay-app-bar-title { padding-left: 12px; }   /* no Back button beside it on first run */
 
@@ -733,7 +735,7 @@ html.mj-overlay-open body { overflow: hidden; }
   text-overflow: ellipsis;
 }
 /* The scroll body is selected by ID, never by class. */
-#theme-body {
+#theme-body, #moment-body, #profile-body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -743,7 +745,7 @@ html.mj-overlay-open body { overflow: hidden; }
   padding: 28px 16px calc(72px + env(safe-area-inset-bottom, 0px));
 }
 @media (min-width: 600px) {
-  #theme-body { padding-left: 22px; padding-right: 22px; }
+  #theme-body, #moment-body, #profile-body { padding-left: 22px; padding-right: 22px; }
 }
 .overlay-inner { max-width: 720px; margin: 0 auto; }
 
@@ -1163,6 +1165,178 @@ button.list-row:active, a.list-row:active { background: var(--md-sys-color-surfa
   .home-hero-bg::before, .list-row { transition: none; }
 }
 
+/* ── Moments › browse: one card per written year; the rest listed as drafts ── */
+.exp-list { display: grid; gap: 12px; margin-bottom: 18px; }
+.exp-card {
+  display: grid; grid-template-columns: 52px minmax(0, 1fr) 24px; column-gap: 14px; align-items: center;
+  width: 100%; padding: 16px 14px 16px 16px; text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.exp-card:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.exp-age {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--mj-chrome); color: var(--mj-chrome-accent);
+  font-family: var(--font-mono); font-size: 18px; font-weight: 600; letter-spacing: 0.04em;
+  box-shadow: var(--md-sys-elevation-1);
+}
+.exp-text { min-width: 0; }
+.exp-title { font-family: var(--font-serif); font-size: 20px; line-height: 1.25; font-weight: 600; display: block; margin-top: 4px; }
+.exp-desc { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); display: block; margin-top: 4px; }
+.exp-meta { display: block; margin-top: 8px; }
+.exp-card > .ico { color: var(--md-sys-color-on-surface-variant); }
+.exp-back { margin-bottom: 14px; min-height: 36px; }
+
+/* ── In-page menu: an experience's own sections, brought INTO the page so the app's global nav
+   stays whole. A sticky pill; the track scrolls sideways on the narrowest phones. The shadow is
+   on the pill and the scrolling is on the track (overflow-x clips vertically too). ── */
+.sub-nav {
+  position: sticky; top: calc(56px + env(safe-area-inset-top, 0px) + 8px); z-index: 20;
+  margin: 0 0 14px; border-radius: 30px;
+  background: var(--md-sys-color-surface);
+  border: 1.5px solid var(--md-sys-color-primary);
+  box-shadow: 0 10px 26px -10px rgba(0,0,0,0.32);
+}
+.sub-nav-track {
+  display: flex; gap: 4px; padding: 4px; border-radius: 30px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; scrollbar-width: none;
+}
+.sub-nav-track::-webkit-scrollbar { display: none; }
+.sub-tab {
+  flex: 1 0 auto; min-height: 44px; padding: 5px 6px; border-radius: 24px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--md-sys-color-on-surface); white-space: nowrap;
+  -webkit-tap-highlight-color: transparent; transition: background 0.15s, color 0.15s;
+}
+.sub-tab[aria-selected="true"] { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.sub-tab:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+
+/* ── Seal: a moment's emblem inside a double ring (the ring is drawn here, the glyph is a sprite symbol) ── */
+.seal {
+  position: relative; flex-shrink: 0;
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid currentColor; color: var(--md-sys-color-primary);
+}
+.seal::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; border: 1px dashed currentColor; opacity: 0.6; }
+.seal svg { width: 62%; height: 62%; display: block; }
+.seal--lg { width: 84px; height: 84px; border-width: 2px; }
+.seal--lg::after { inset: 5px; }
+
+/* ── A weekend's pages ── */
+.wk-hero .panel-title { font-size: 24px; }
+.wk-sub { font-family: var(--font-serif); font-style: italic; font-size: 17px; line-height: 1.4; color: var(--md-sys-color-on-surface-variant); margin: -2px 0 12px; }
+.panel p.wk-sub { font-family: var(--font-serif); font-size: 17px; }
+.rhythm { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+.rhythm > div { background: var(--md-sys-color-surface-container); border-radius: 12px; padding: 10px 10px 11px; }
+.rhythm b { display: block; font-family: var(--font-serif); font-size: 17px; font-weight: 600; line-height: 1.2; }
+.rhythm span { display: block; font-family: var(--font-sans); font-size: 13px; line-height: 1.35; color: var(--md-sys-color-on-surface-variant); margin-top: 3px; }
+.next-card {
+  display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 14px 14px 16px; margin-bottom: 14px; text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.next-card:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.next-text { flex: 1; min-width: 0; }
+.next-title { display: block; font-family: var(--font-serif); font-size: 21px; font-weight: 600; line-height: 1.2; margin-top: 3px; }
+.next-card > .ico { color: var(--md-sys-color-on-surface-variant); }
+
+.day-head { padding: 0 2px 12px; }
+.day-title { font-family: var(--font-serif); font-size: 24px; font-weight: 600; line-height: 1.2; }
+.day-note { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; }
+.timeline { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.tl-row { display: grid; grid-template-columns: 46px minmax(0, 1fr); column-gap: 10px; align-items: center; }
+.tl-time { font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--md-sys-color-secondary); text-align: right; }
+.tl-moment {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 72px; padding: 12px 12px 12px 14px; text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.tl-moment:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.tl-text { flex: 1; min-width: 0; }
+.tl-when { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--md-sys-color-on-surface-variant); }
+.tl-title { display: block; font-family: var(--font-serif); font-size: 18px; font-weight: 600; line-height: 1.25; margin-top: 1px; }
+.tl-feel { display: block; font-family: var(--font-sans); font-size: 14px; color: var(--md-sys-color-on-surface-variant); }
+.tl-moment > .ico { color: var(--md-sys-color-on-surface-variant); }
+.tl-moment.is-done .seal { color: var(--md-sys-color-secondary); }
+.tl-quiet {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 12px 8px 14px; border-radius: 14px; text-align: left;
+  background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface);
+  font-family: var(--font-sans); font-size: 15px; line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+}
+.tl-quiet .ico { width: 20px; height: 20px; color: var(--md-sys-color-primary); }
+.tl-quiet span { flex: 1; min-width: 0; }
+button.tl-quiet:active { background: var(--md-sys-color-surface-variant); }
+@media (hover: hover) { button.tl-quiet:hover { background: var(--md-sys-color-surface-variant); } }
+button.tl-quiet:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+
+/* ── Question decks: a tick per question, and one picked at random ── */
+.deck-block .pick-strip { margin-bottom: 2px; }
+label.list-row { cursor: pointer; }
+.q-check { width: 24px; height: 24px; flex-shrink: 0; margin: 0; accent-color: var(--md-sys-color-primary); cursor: pointer; }
+.list-row.is-asked .row-title { color: var(--md-sys-color-on-surface-variant); text-decoration: line-through; }
+.deck-foot { padding: 14px 18px 18px; border-top: 1px solid var(--md-sys-color-outline-variant); }
+.pick-out { font-family: var(--font-serif); font-size: 19px; line-height: 1.45; color: var(--md-sys-color-on-surface); margin-top: 12px; min-height: 1px; }
+.pick-out:empty { margin-top: 0; }
+
+/* ── Writing fields: 16px floor (iOS zooms below it and a Home Screen app never zooms back) ── */
+.field-label { display: block; font-family: var(--font-sans); font-size: 14px; line-height: 1.45; color: var(--md-sys-color-on-surface-variant); margin: 0 0 8px; }
+textarea.field, input.field {
+  display: block; width: 100%;
+  padding: 12px 14px; border-radius: 12px;
+  background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface);
+  border: 1.5px solid var(--md-sys-color-outline);
+  font-family: var(--font-serif); font-size: 17px; line-height: 1.55;
+  -webkit-appearance: none; appearance: none;
+}
+textarea.field { min-height: 132px; resize: vertical; }
+input.field { min-height: 48px; }
+input.field--short { width: 148px; }
+.field:focus { outline: 2px solid var(--md-sys-color-primary); outline-offset: 1px; border-color: var(--md-sys-color-primary); }
+.field::placeholder { color: var(--md-sys-color-on-surface-variant); opacity: 0.8; }
+.save-status { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-sys-color-secondary); min-height: 16px; margin-top: 6px; }
+.prompt { margin-bottom: 14px; }
+.prompt .panel-title { margin-bottom: 4px; }
+.fine { font-family: var(--font-sans); font-size: 13px; line-height: 1.6; color: var(--md-sys-color-on-surface-variant); margin: 4px 2px 0; }
+
+/* ── The moment page (full-page overlay) ── */
+.mo-head { text-align: center; padding: 2px 0 6px; }
+.mo-head .seal { margin: 0 auto 14px; }
+.mo-head .guide-display { margin-bottom: 10px; }
+.mo-context { font-family: var(--font-sans); font-size: 16px; line-height: 1.65; color: var(--md-sys-color-on-surface-variant); margin-top: 14px; }
+.block { margin-top: 26px; }
+.block > .eyebrow--rule { padding: 0 0 12px; }
+.scripture { font-family: var(--font-serif); font-size: 19px; line-height: 1.65; color: var(--md-sys-color-on-surface); }
+.scripture sup { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--md-sys-color-secondary); margin: 0 3px 0 2px; line-height: 0; }
+.scripture + .meta { margin-top: 10px; }
+.ask { font-family: var(--font-serif); font-size: 21px; line-height: 1.4; font-weight: 600; color: var(--md-sys-color-on-surface); }
+.share { font-family: var(--font-sans); font-size: 16px; line-height: 1.65; color: var(--md-sys-color-on-surface); }
+.mo-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.watch { margin: 26px 0 0; padding: 16px 18px; border-radius: 16px; }
+.watch-ep { font-family: var(--font-serif); font-size: 17px; font-weight: 600; line-height: 1.35; margin: 6px 0 4px; }
+.watch p { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); }
+.watch .field-label { margin-top: 12px; }
+.watch a { display: inline-block; margin-top: 12px; font-family: var(--font-sans); font-size: 15px; font-weight: 600; }
+.deeper { margin-top: 26px; }
+.entry .panel-title { font-size: 18px; margin-bottom: 2px; }
+.entry .tl-when { margin-bottom: 8px; }
+.entry-empty { font-style: italic; }
+.later { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-top: 8px; font-family: var(--font-sans); font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface); }
+
+/* ── Profile page ── */
+.form-row { margin-top: 16px; }
+.form-row .field-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-sys-color-secondary); margin-bottom: 6px; }
+.profile-preview { font-family: var(--font-serif); font-style: italic; font-size: 17px; line-height: 1.5; color: var(--md-sys-color-on-surface); margin-top: 16px; min-height: 26px; }
+.profile-go { margin-top: 22px; }
+#profile-body .steps { margin: 0 0 6px; }
+#profile-body .eyebrow--rule { padding: 26px 0 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sub-tab, .tl-quiet { transition: none; }
+}
+.wk .eyebrow--rule, .deeper > .eyebrow--rule { padding-left: 0; padding-right: 0; }
+.deeper > .eyebrow--rule { padding: 0 0 12px; }
+.exp-text .eyebrow { display: block; }
+
 /* ══ DESKTOP LAYER ══════════════════════════════════════════════════════
    Everything in this block applies ONLY at iPad size and up:
      @media (min-width: 744px) and (min-height: 500px)
@@ -1302,6 +1476,11 @@ button.list-row:active, a.list-row:active { background: var(--md-sys-color-surfa
   .home-verse { margin: 16px 16px 0; }
   .home-foot { max-width: 1000px; padding: 28px 32px 56px; }
 
+  /* ── Moments: browse cards two across; an experience's pages keep a reading measure ── */
+  .sub-nav { top: calc(env(safe-area-inset-top, 0px) + 16px); max-width: 620px; }
+  .exp-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .wk { max-width: 760px; }
+
   /* ── Sheets become centred dialogs ── */
   .sheet-overlay { align-items: center; padding: 24px; }
   .sheet-drag { display: none; }
@@ -1368,7 +1547,8 @@ button.list-row:active, a.list-row:active { background: var(--md-sys-color-surfa
 
   /* Path, Moments, Road, Blessing — a list on the left (sticky), the chosen item on the right */
   .section-inner:has(> .pick-strip) { display: grid; grid-template-columns: 220px minmax(0, 1fr); column-gap: 36px; align-items: start; }
-  .section-inner:has(> .pick-strip) > .tab-head { grid-column: 1 / -1; }
+  .section-inner:has(> .pick-strip) > .tab-head, .section-inner:has(> .pick-strip) > .exp-back { grid-column: 1 / -1; }
+  .section-inner:has(> .pick-strip) > .exp-back { justify-self: start; }
   .section-inner > .pick-strip {
     grid-column: 1; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px);
     display: flex; flex-direction: column; flex-wrap: nowrap; gap: 8px; padding: 0; margin: 0;
@@ -1513,6 +1693,15 @@ html[data-mono="1"] button.list-row:hover { background: transparent; box-shadow:
 /* Hero: the tint is a colour wash; in mono the scrim alone carries legibility. */
 html[data-mono="1"] .home-hero-bg::before { opacity: 0; }
 html[data-mono="1"] .hero-eyebrow { color: #FFFFFF; }
+/* Moments, the weekend pages, fields */
+html[data-mono="1"] .sub-nav { border-color: #000000; box-shadow: none; }
+html[data-mono="1"] .exp-age { box-shadow: none; }
+html[data-mono="1"] .rhythm > div,
+html[data-mono="1"] .tl-quiet { background: transparent; border: 1px solid #000000; }
+html[data-mono="1"] button.tl-quiet:active,
+html[data-mono="1"] button.tl-quiet:hover { background: transparent; box-shadow: inset 0 0 0 1px #000000; }
+html[data-mono="1"] .tl-moment.is-done .seal { color: #000000; }
+html[data-mono="1"] .watch { border: 1px solid #000000; }
 @media (min-width: 744px) and (min-height: 500px) {
   /* in the rail Moments is an ordinary item: undo the raised disc, keep the black-on-white active glyph */
   html[data-mono="1"] .nav-tab--feature .nav-icon,
@@ -1551,6 +1740,16 @@ html[data-mono="1"] .hero-eyebrow { color: #FFFFFF; }
   <symbol id="mj-i-crown" viewBox="0 0 24 24"><path fill="currentColor" d="M3 18h18v2.500H3zM3 6.500l4.500 4.500L12 4.500l4.500 6.500L21 6.500 19.500 16h-15z"/></symbol>
   <symbol id="mj-i-men" viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.660 0 2.990-1.340 2.990-3S17.660 5 16 5c-1.660 0-3 1.340-3 3s1.340 3 3 3zm-8 0c1.660 0 2.990-1.340 2.990-3S9.660 5 8 5C6.340 5 5 6.340 5 8s1.340 3 3 3zm0 2c-2.330 0-7 1.170-7 3.500V19h14v-2.500c0-2.330-4.670-3.500-7-3.500zm8 0c-.290 0-.620.020-.970.050 1.160.840 1.970 1.970 1.970 3.450V19h6v-2.500c0-2.330-4.670-3.500-7-3.500z"/></symbol>
   <symbol id="mj-i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M18 2H6c-1.100 0-2 .900-2 2v16c0 1.100.900 2 2 2h12c1.100 0 2-.900 2-2V4c0-1.100-.900-2-2-2zM6 4h5v8l-2.500-1.500L6 12V4z"/></symbol>
+  <symbol id="mj-i-chevron" viewBox="0 0 24 24"><path fill="currentColor" d="M10 6L8.590 7.410 13.170 12l-4.580 4.590L10 18l6-6z"/></symbol>
+  <symbol id="mj-i-person" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c2.210 0 4-1.790 4-4s-1.790-4-4-4-4 1.790-4 4 1.790 4 4 4zm0 2c-2.670 0-8 1.340-8 4v2h16v-2c0-2.660-5.330-4-8-4z"/></symbol>
+  <symbol id="mj-i-open" viewBox="0 0 24 24"><path fill="currentColor" d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.100 0 2-.900 2-2v-7h-2v7zM14 3v2h3.590l-9.830 9.830 1.410 1.410L19 6.410V10h2V3h-7z"/></symbol>
+  <symbol id="mj-i-flag" viewBox="0 0 24 24"><path fill="currentColor" d="M6 21V3h2l11 4.750L8 12.500V21z"/></symbol>
+  <symbol id="mj-s-warrior" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M26 74C28 52 42 38 60 38"/><path d="M33 78C39 60 51 50 65 50"/><path d="M60 38C70 37 73 47 65 50"/></g><circle cx="76" cy="31" r="6" fill="currentColor"/></symbol>
+  <symbol id="mj-s-poet" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 26V74H66C66 52 54 34 32 26Z"/><path d="M41 37V74M49 44V74M57 55V74"/></g></symbol>
+  <symbol id="mj-s-hunted" viewBox="0 0 100 100"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M18 74L39 32L51 49L61 37L82 74Z"/><path fill="currentColor" d="M42 74C42 60 58 60 58 74Z"/></symbol>
+  <symbol id="mj-s-friend" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M41 31L60 50L41 69L22 50Z"/><path d="M59 31L78 50L59 69L40 50Z"/></g></symbol>
+  <symbol id="mj-s-broken" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M50 76C28 61 23 45 32 35C39 28 48 31 50 40C52 31 61 28 68 35C77 45 72 61 50 76Z"/><path d="M50 40L44 51L55 57L49 68"/></g></symbol>
+  <symbol id="mj-s-ahead" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 58H80"/><path d="M36 58A14 14 0 0 1 64 58"/><path d="M50 36V30M33 43L29 39M67 43L71 39"/><path d="M41 78L47 64M59 78L53 64"/></g></symbol>
 </svg>
 
 <!-- ── Splash (html.mj-splash only: first run and once per calendar day) ── -->
@@ -1573,8 +1772,8 @@ html[data-mono="1"] .hero-eyebrow { color: #FFFFFF; }
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var onboarding = root.classList.contains('mj-onboarding');
   document.body.style.overflow = 'hidden';
-  // First run lands on Choose Your Banner (opened underneath before the splash fades); later loads land on the app.
-  function land() { if (onboarding && typeof openThemePage === 'function') openThemePage(); }
+  // First run lands on the profile page (opened underneath before the splash fades); later loads land on the app.
+  function land() { if (onboarding && typeof openProfilePage === 'function') openProfilePage(); }
   function done() {
     splash.classList.add('hide');
     document.body.style.overflow = '';
@@ -1602,9 +1801,12 @@ html[data-mono="1"] .hero-eyebrow { color: #FFFFFF; }
   </span>
 </header>
 
-<!-- ── Header menu: Theme (opens the full-page banner picker) + Colorblind Mode.
+<!-- ── Header menu: Profile (names) + Theme (opens the full-page banner picker) + Colorblind Mode.
      "Download the App" joins these once the app is live (it needs screenshots of the live site). ── -->
 <div class="header-menu" id="headerMenu" role="menu" aria-label="App menu">
+  <button class="header-menu-item" id="profileMenuItem" type="button" role="menuitem" aria-haspopup="dialog" onclick="openProfilePage()">
+    <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-person"/></svg><span class="header-menu-label">Profile</span>
+  </button>
   <button class="header-menu-item" id="themeMenuItem" type="button" role="menuitem" aria-haspopup="dialog" onclick="openThemePage()">
     <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-palette"/></svg><span class="header-menu-label">Theme · The Son</span>
   </button>
@@ -1695,6 +1897,9 @@ html[data-mono="1"] .hero-eyebrow { color: #FFFFFF; }
   </button>
   <!-- Desktop layer only: the header menu's items live at the foot of the rail -->
   <div class="rail-foot">
+    <button class="rail-util" id="railProfile" type="button" aria-haspopup="dialog" aria-label="Profile" title="Profile" onclick="railUtil('profile')">
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-person"/></svg><span class="rail-util-label">Profile</span>
+    </button>
     <button class="rail-util" id="railTheme" type="button" aria-haspopup="dialog" onclick="railUtil('theme')">
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-palette"/></svg><span class="rail-util-label">Theme · The Son</span>
     </button>
@@ -1720,15 +1925,14 @@ html[data-mono="1"] .hero-eyebrow { color: #FFFFFF; }
   </div>
 </div>
 
-<!-- ── "Choose Your Banner": the theme picker, a full-page overlay. Opened from the menu's Theme item
-     (openThemePage) and by itself on first run; closed by Back / Skip / Escape (closeThemePage). ── -->
+<!-- ── "Choose Your Banner": the theme picker, a full-page overlay. Opened only from the menu's Theme
+     item (openThemePage); closed by Back / Escape (closeThemePage). Everyone starts on The Son. ── -->
 <div id="theme-page" class="page-overlay" role="dialog" aria-modal="true" aria-labelledby="theme-page-title" aria-hidden="true">
   <div class="overlay-app-bar">
     <button class="icon-btn" id="theme-page-back" type="button" onclick="closeThemePage()" aria-label="Back">
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-back"/></svg>
     </button>
     <span class="overlay-app-bar-title">Choose Your Banner</span>
-    <button class="overlay-skip" id="theme-skip" type="button" onclick="closeThemePage()">Skip for now</button>
   </div>
   <div id="theme-body">
     <div class="overlay-inner">
@@ -1803,6 +2007,58 @@ html[data-mono="1"] .hero-eyebrow { color: #FFFFFF; }
   </div>
 </div>
 
+<!-- ── A moment, full page: opened by openMomentPage(id) from a weekend's timeline or its up-next card;
+     closed by Back / Escape (closeMomentPage, which also flushes the note being written). ── -->
+<div id="moment-page" class="page-overlay" role="dialog" aria-modal="true" aria-labelledby="moment-page-title" aria-hidden="true">
+  <div class="overlay-app-bar">
+    <button class="icon-btn" id="moment-page-back" type="button" onclick="closeMomentPage()" aria-label="Back">
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-back"/></svg>
+    </button>
+    <span class="overlay-app-bar-title" id="moment-page-bar">Moment</span>
+  </div>
+  <div id="moment-body">
+    <div class="overlay-inner" id="moment-inner"></div>
+  </div>
+</div>
+
+<!-- ── Profile: the father's and the son's names, with a short word on what the app is for.
+     It is the FIRST thing a new user sees (opened by the splash on first run, with "Skip for now"),
+     and afterwards lives in the menu. Closed by Back / Done / Skip / Escape (closeProfilePage). ── -->
+<div id="profile-page" class="page-overlay" role="dialog" aria-modal="true" aria-labelledby="profile-page-title" aria-hidden="true">
+  <div class="overlay-app-bar">
+    <button class="icon-btn" id="profile-page-back" type="button" onclick="closeProfilePage()" aria-label="Back">
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#mj-i-back"/></svg>
+    </button>
+    <span class="overlay-app-bar-title" id="profile-page-bar">Profile</span>
+    <button class="overlay-skip" id="profile-skip" type="button" onclick="closeProfilePage()">Skip for now</button>
+  </div>
+  <div id="profile-body">
+    <div class="overlay-inner">
+      <div class="crest-medallion" aria-hidden="true"><svg focusable="false"><use href="#mj-mark"/></svg></div>
+      <div class="guide-eyebrow" id="profile-eyebrow">Profile</div>
+      <h1 class="guide-display" id="profile-page-title">Father and son</h1>
+      <p class="guide-lead">A boy doesn’t become a man by accident. This app is a companion for a father who means to walk his son there on purpose, one marked year at a time, from twelve to eighteen.</p>
+      <ol class="steps">
+        <li><span class="step-num">01</span><span><b>One experience a year</b><span class="step-text">A weekend, a drive or a day the two of you set apart, built around a handful of conversations.</span></span></li>
+        <li><span class="step-num">02</span><span><b>You go first</b><span class="step-text">Each conversation gives you a few verses, one real question, and a piece of your own story to tell.</span></span></li>
+        <li><span class="step-num">03</span><span><b>A blessing, said out loud</b><span class="step-text">You write it ahead of time, then say it to him in your own voice.</span></span></li>
+      </ol>
+      <div class="eyebrow eyebrow--rule">Who is this for?</div>
+      <div class="form-row">
+        <label class="field-label" for="profile-dad">Father’s name</label>
+        <input class="field" id="profile-dad" data-profile="dad" type="text" maxlength="40" autocomplete="off" autocapitalize="words" enterkeyhint="next" placeholder="What he calls you, or your first name">
+      </div>
+      <div class="form-row">
+        <label class="field-label" for="profile-son">Son’s name</label>
+        <input class="field" id="profile-son" data-profile="son" type="text" maxlength="40" autocomplete="off" autocapitalize="words" enterkeyhint="done" placeholder="His first name">
+      </div>
+      <p class="profile-preview" id="profile-preview" aria-live="polite"></p>
+      <button class="btn btn-house btn-block profile-go" id="profile-go" type="button" onclick="closeProfilePage()">Done</button>
+      <p class="banner-outro">The names appear all through the app, and you can change them here any time from the menu. Names, notes and blessings stay on this phone. Nothing is sent anywhere.</p>
+    </div>
+  </div>
+</div>
+
 <script>
 'use strict';
 /* Manhood Journey — app script. Plain functions, no framework, no build step.
@@ -1818,6 +2074,8 @@ html[data-mono="1"] .hero-eyebrow { color: #FFFFFF; }
      manhood-tab          last tab
      manhood-year         the active year (12–18): the year every tab opens
      manhood-moment / manhood-deck / manhood-topic   last selection in each tab
+     manhood-moments-open '1' = Moments was left inside an experience, not on its browse page
+     manhood-sub          last section of a weekend's in-page menu (home fri sat bless journal)
      manhood-rail         desktop rail, '1' open | '0' collapsed
      manhood_profile      { names } shared by every year
      manhood_y<age>__state    ONE year's data (plan, done, notes, blessing, oath…)
@@ -1837,6 +2095,7 @@ const CONTENT = {
   soon: "Built next",
   momentSoon: "The passage to read aloud, the question, {dad}’s story to share, and a place to write a few words.",
   draft: "Draft outline",
+  draftShort: "Draft",
   draftNote: "This year isn’t written yet. The title and focus above are a working outline drawn from the research, there to be rewritten.",
   walk: [
     { tab: "path", icon: "mj-i-path", label: "Path", title: "Seven years, one path",
@@ -1851,7 +2110,10 @@ const CONTENT = {
   tabs: {
     path: { eyebrow: "Twelve to eighteen", title: "Seven years, one path",
       lead: "One marked experience for each year. Choose a year to see what it holds. The year you choose is the one the other tabs open." },
-    moments: { title: "The conversations",
+    moments: { browse: { eyebrow: "Moments", title: "Choose your moment",
+        lead: "Every year has its own marked experience. Browse them here and step into the one you’re living now.",
+        draftsLabel: "Still to be written", draftsNote: "These years have a working title and nothing more yet." },
+      title: "The conversations",
       lead: "One moment per slot. A few verses, a real question, and {dad} going first each time. Nothing to finish, nothing to get right." },
     road: { title: "Questions for the road",
       lead: "Whoever’s not driving reads. Whoever’s driving answers first." },
@@ -1877,8 +2139,159 @@ const CONTENT = {
       focus: "The definition of manhood, presented for the first time among family and friends." },
     { age: 14, word: "fourteen", title: "The Hard Road", stage: "Formation", written: false,
       focus: "From ease to difficulty. Learning to choose the hard thing, with his father beside him." },
-    { age: 15, word: "fifteen", title: "The Larger Story", stage: "Formation", written: false,
-      focus: "From the whole story to a part in it. He learns the story he was born into." },
+    { age: 15, word: "fifteen", name: "Fifteen", title: "A Weekend with David", stage: "Formation", written: true, engine: "weekend",
+      focus: "{son}’s weekend with David: two days, three rounds of golf, and six moments from one man’s life.",
+      sub: "{son}’s weekend with David",
+      intro: "Two days on the course with a shepherd who became a king. Six short stops along the way, each one a few verses and one honest conversation. There is no finish line here and no way to get it wrong.",
+      heart: "David could drop a giant and still weep in the open. He was afraid, sad, angry, grieving, ashamed and hopeful, sometimes all in one week, and Scripture hides none of it. The strong man and the feeling man turn out to be the same man.",
+      verse: { ref: "Psalm 18:33–34", text: "He makes my feet like deer’s feet, and sets me on my high places. He teaches my hands to war, so that my arms bend a bow of bronze." },
+      facts: [["Shape", "Two days, Friday and Saturday"], ["Rounds", "Three, with questions for the walk"], ["Moments", "Six, from the life of David"]],
+      rhythm: [["Read", "A few verses, aloud"], ["Ask", "One question, talked through"], ["Share", "{dad} tells some of his own story"]],
+      days: [
+        { id: "fri", name: "Friday", title: "The drive, two rounds, and dinner", icon: "mj-i-flag", items: [
+          ["9:00", "The Warrior, on the drive out."], ["11:00", "Golf, first round."], ["1:00", "The Poet, over lunch."],
+          ["4:00", "The Hunted, on the cart. Then the second round."], ["7:15", "The Friend, at dinner. Then the blessing."]
+        ] },
+        { id: "sat", name: "Saturday", title: "A last round, then home", icon: "mj-i-wheel", items: [
+          ["Early", "The Broken Man, over morning coffee."], ["8:30", "Golf, third round."], ["Noon", "Lunch at the clubhouse."], ["1:30", "Looking Ahead, on the drive home."]
+        ] }
+      ],
+      timeline: {
+        fri: { name: "Friday", note: "The drive, two rounds, and dinner.", rows: [
+          ["9:00", "m", "warrior"], ["11:00", "g", 0], ["1:00", "m", "poet"], ["4:00", "m", "hunted"], ["4:00", "g", 1], ["7:15", "m", "friend"] ] },
+        sat: { name: "Saturday", note: "A last round, then home.", rows: [
+          ["Early", "m", "broken"], ["8:30", "g", 2], ["Noon", "t", "Lunch at the clubhouse"], ["1:30", "m", "ahead"] ] }
+      },
+      watchTitle: "House of David on Prime Video",
+      watchLink: ["Find it on Prime Video", "https://www.amazon.com/s?k=House+of+David&i=instant-video"],
+      moments: [
+        { id: "warrior", seal: "mj-s-warrior", title: "The Warrior", dayKey: "fri", day: "Friday", when: "Drive out", slot: "the drive out", feeling: "Fear",
+          context: "The whole army has been frozen for forty days. The one who steps forward is the boy who brought lunch. He isn’t guessing at his chances: he has been in tight places before, and he remembers who got him out.",
+          strength: "Brave is not the same as unafraid. David’s knees could shake and he still walked down into the valley.",
+          passage: "1 Samuel 17:32–37",
+          verses: [
+            [32, "David said to Saul, “Let no man’s heart fail because of him. Your servant will go and fight with this Philistine.”"],
+            [33, "Saul said to David, “You are not able to go against this Philistine to fight with him; for you are but a youth, and he a man of war from his youth.”"],
+            [34, "David said to Saul, “Your servant was keeping his father’s sheep; and when a lion or a bear came and took a lamb out of the flock,"],
+            [35, "I went out after him, struck him, and rescued it out of his mouth. When he arose against me, I caught him by his beard, struck him, and killed him."],
+            [36, "Your servant struck both the lion and the bear. This uncircumcised Philistine shall be as one of them, since he has defied the armies of the living God.”"],
+            [37, "David said, “The LORD, who delivered me out of the paw of the lion and out of the paw of the bear, will deliver me out of the hand of this Philistine.” Saul said to David, “Go! The LORD will be with you.”"]
+          ],
+          ask: "Do you think David was scared walking out there? What is the difference between having no fear and having courage?",
+          share: "Tell him about something that frightened you, and what you did next. Let him hear that fear and courage can sit in the same chest. Then name one moment you watched him be brave. Every boy is quietly asking whether he has what it takes. Give him your answer.",
+          watch: { ep: "Season 1, Episode 8: “David and Goliath – Part 2”", cue: "The season’s closing scene, where David walks out to meet Goliath.", ts: "46:23" },
+          deeper: [["Read all of 1 Samuel 17", "https://www.biblegateway.com/passage/?version=WEB&search=1+Samuel+17"], ["Watch the BibleProject overview of 1 Samuel", "https://www.youtube.com/results?search_query=BibleProject+1+Samuel+overview"]] },
+        { id: "poet", seal: "mj-s-poet", title: "The Poet", dayKey: "fri", day: "Friday", when: "Lunch", slot: "lunch", feeling: "Sorrow",
+          context: "Half the songbook of Israel carries David’s name. Some of those songs shout for joy. Others, like this one, begin with a man asking God how much longer he is supposed to hurt.",
+          strength: "The giant-killer also wrote this. Telling God the truth about his pain took more courage than keeping quiet would have.",
+          passage: "Psalm 13",
+          verses: [
+            [1, "How long, LORD? Will you forget me forever? How long will you hide your face from me?"],
+            [2, "How long shall I take counsel in my soul, having sorrow in my heart every day? How long shall my enemy triumph over me?"],
+            [3, "Behold, and answer me, LORD, my God. Give light to my eyes, lest I sleep in death;"],
+            [4, "lest my enemy say, “I have prevailed against him;” lest my adversaries rejoice when I fall."],
+            [5, "But I trust in your loving kindness. My heart rejoices in your salvation."],
+            [6, "I will sing to the LORD, because he has been good to me."]
+          ],
+          ask: "If you could say one thing to God with no filter, what would it be?",
+          share: "Tell him about a stretch of your life that sounded like the first verse, and how it felt to finally say so. What carried you toward verse five?",
+          watch: { ep: "Season 1, Episode 2: “Deep Calls to Deep”", cue: "David at his music, with the loss of his mother shown in flashback." },
+          deeper: [["Watch the BibleProject overview of Psalms", "https://www.youtube.com/results?search_query=BibleProject+Psalms+overview"], ["Read Psalm 142, another prayer from a hard place", "https://www.biblegateway.com/passage/?version=WEB&search=Psalm+142"]] },
+        { id: "hunted", seal: "mj-s-hunted", title: "The Hunted", dayKey: "fri", day: "Friday", when: "On the cart, before the 4:00 round", slot: "on the cart before the 4:00 round", feeling: "Anger",
+          context: "Saul wants David dead and hunts him through the wilderness for years. David writes this prayer from inside a cave. In a cave like it, Saul walks in alone and unguarded, and David lets him walk back out.",
+          strength: "He never pretended to be calm. He carried the anger and the fear to God first, and that is where the restraint came from.",
+          passage: "Psalm 57:1–3",
+          verses: [
+            [1, "Be merciful to me, God, be merciful to me, for my soul takes refuge in you. Yes, in the shadow of your wings, I will take refuge, until disaster has passed."],
+            [2, "I cry out to God Most High, to God who accomplishes my requests for me."],
+            [3, "He will send from heaven, and save me, he rebukes the one who is pursuing me. God will send out his loving kindness and his truth."]
+          ],
+          ask: "Where does your anger go when it rises? What would it look like to hold it in check on the course this afternoon?",
+          share: "Anger is not the sin. The swing that follows can be. Tell him about a time you had the chance to hit back and didn’t, or one where you did and wish you hadn’t.",
+          watch: { ep: "Season 2, Episode 6: “Forged in Fire”", cue: "Saul’s suspicion of David hardens, and the hunt begins to close in." },
+          deeper: [["Read the cave story in 1 Samuel 24", "https://www.biblegateway.com/passage/?version=WEB&search=1+Samuel+24"]] },
+        { id: "friend", seal: "mj-s-friend", title: "The Friend", dayKey: "fri", day: "Friday", when: "Dinner", slot: "dinner", feeling: "Grief", blessing: true,
+          context: "Jonathan was heir to the throne David would one day sit on, and he was David’s closest friend anyway. When Jonathan fell in battle, David did not stay composed. He wrote a lament and had the nation learn it.",
+          strength: "The hardest man in Israel cried for his friend where everyone could see. Love that deep is a kind of strength.",
+          passage: "2 Samuel 1:25–27",
+          verses: [
+            [25, "How the mighty have fallen in the middle of the battle! Jonathan was slain on your high places."],
+            [26, "I am distressed for you, my brother Jonathan. You have been very pleasant to me. Your love to me was wonderful, surpassing the love of women."],
+            [27, "How the mighty have fallen, and the weapons of war have perished!"]
+          ],
+          ask: "Who is a Jonathan to you? Do guys ever actually tell a friend what he means to them?",
+          share: "Tell him about a friend who stayed when it cost something, and a time you grieved, or said out loud what someone meant to you. When the moment is right, turn to the blessing.",
+          watch: { ep: "Season 2, Episode 1: “A Tale of Two Swords”", cue: "After the fight, Jonathan hands David his own sword, the scene from 1 Samuel 18:4." },
+          deeper: [["Read David and Jonathan in 1 Samuel 18–20", "https://www.biblegateway.com/passage/?version=WEB&search=1+Samuel+18-20"], ["Read the whole lament, 2 Samuel 1:17–27", "https://www.biblegateway.com/passage/?version=WEB&search=2+Samuel+1:17-27"]] },
+        { id: "broken", seal: "mj-s-broken", title: "The Broken Man", dayKey: "sat", day: "Saturday", when: "Morning coffee", slot: "morning coffee", feeling: "Regret",
+          context: "As king, David took a woman who was not his and arranged a death to hide it. When the prophet Nathan named what he had done, David did not argue. This psalm is what he prayed next.",
+          strength: "Most men bury the thing they are ashamed of. David looked straight at his and asked to be made clean. That honesty was the road back.",
+          passage: "Psalm 51:10–12",
+          verses: [
+            [10, "Create in me a clean heart, O God. Renew a right spirit within me."],
+            [11, "Don’t throw me from your presence, and don’t take your Holy Spirit from me."],
+            [12, "Restore to me the joy of your salvation. Uphold me with a willing spirit."]
+          ],
+          ask: "Why is saying “I was wrong” so hard? What do you think starting over with God actually looks like?",
+          share: "At whatever depth is right for him, tell him about a time you failed badly and how you came back from it. One bad hole does not write the scorecard. The next tee is always waiting.",
+          watch: { none: "The show has not reached this part of David’s life yet." },
+          deeper: [["Read the full story in 2 Samuel 11–12", "https://www.biblegateway.com/passage/?version=WEB&search=2+Samuel+11-12"], ["Read all of Psalm 51", "https://www.biblegateway.com/passage/?version=WEB&search=Psalm+51"]] },
+        { id: "ahead", seal: "mj-s-ahead", title: "Looking Ahead", dayKey: "sat", day: "Saturday", when: "Drive home", slot: "the drive home", feeling: "Hope",
+          context: "A warrior, a poet, a fugitive, a friend, a man who failed. You have spent two days with all of them, and they were all one person.",
+          strength: "He felt every one of these things, and God still called him a man after his own heart.",
+          passage: "Psalm 18:31–34",
+          verses: [
+            [31, "For who is God, except the LORD? Who is a rock, besides our God,"],
+            [32, "the God who arms me with strength, and makes my way perfect?"],
+            [33, "He makes my feet like deer’s feet, and sets me on my high places."],
+            [34, "He teaches my hands to war, so that my arms bend a bow of bronze."]
+          ],
+          ask: "Which David will you remember? Which of his feelings is the hardest one for you to let anyone see?",
+          share: "Paint him a picture of the man you believe he is becoming: strong, and with a heart that is alive. A son needs to hear his father describe that man out loud.",
+          watch: { ep: "Season 1, Episode 3: “The Anointing”", cue: "Samuel passes over the older brothers and anoints the youngest. God saw the king before anyone else did." },
+          deeper: [["Listen to an episode of the Wild at Heart podcast", "https://www.youtube.com/results?search_query=Wild+at+Heart+podcast+John+Eldredge"]] }
+      ],
+      roadTitle: "On the course",
+      roadRule: "Questions for the walk between shots. Take turns asking. Whoever lost the last hole answers first.",
+      decks: [
+        { num: "Round 1", title: "Warm-up", meta: "Fri 11:00", questions: [
+          "You get one round on any course on earth. Which one?",
+          "What’s the luckiest shot you’ve ever seen, yours or someone else’s?",
+          "One song gets added to the drive-home playlist. What is it?",
+          "Which three people, living or dead, fill out your dream foursome?",
+          "Name one thing you’re already better at than your dad.",
+          "What’s the hardest you laughed this year?" ] },
+        { num: "Round 2", title: "Who you are", meta: "Fri 4:00", questions: [
+          "Where are you when you feel most like yourself?",
+          "Who do you admire, and what exactly are they good at?",
+          "What’s the best thing about being fifteen? The hardest?",
+          "What are you working toward that you haven’t told anyone yet?",
+          "What’s something people get wrong about you?",
+          "When were you proud of yourself this year and kept it quiet?" ] },
+        { num: "Round 3", title: "What’s ahead", meta: "Sat 8:30", questions: [
+          "Pick one skill to be really good at by eighteen.",
+          "What would you like to try, even though it makes you nervous?",
+          "Where should the two of us go together one day?",
+          "What do you hope is true of you at twenty-five?",
+          "What does your dad do that you’d want to do as a father?",
+          "What’s the best memory you have of the two of us?" ] }
+      ],
+      bless: {
+        intro: "For {dad}, at Friday dinner. Write it here beforehand, then say it to him in your own voice. A handful of true sentences is enough.",
+        prompts: [
+          ["what", "What I see in you", "What you notice in him that he may not have noticed himself."],
+          ["proud", "What I’m proud of", "Who he is, more than what he has done."],
+          ["pray", "What I’m praying for you at fifteen", "The man you are asking God to make of {son}."],
+          ["verse", "A verse for you", "One verse to send with him."]
+        ]
+      },
+      journalLead: "Every word written over the weekend, gathered here.",
+      later: ["Wild at Heart, by John Eldredge", "Fathered by God, by John Eldredge", "The Intentional Father, by Jon Tyson", "The Wild at Heart podcast"],
+      topics: [
+        { id: "blessing", title: "The Blessing", meta: "Four prompts", icon: "mj-i-edit" },
+        { id: "journal", title: "The Journal", meta: "Keepsake", icon: "mj-i-book" }
+      ]
+    },
     { age: 16, word: "sixteen", title: "The Road and the Sword", stage: "Commissioning", written: true,
       focus: "{son}’s weekend: the road, the hard thing, and the sword.",
       intro: "Two days, one drive you make yourself, four conversations, and one evening with men who have your back. Nothing to finish, nothing to get right. A few verses, a real question, and your dad going first each time.",
@@ -1970,7 +2383,9 @@ const YEAR_DEFAULT_AGE = 16;
 
 /* ═══ Profile + per-year state ════════════════════════════════════════════════ */
 const PROFILE_KEY = 'manhood_profile';
-const PROFILE_DEFAULT = { v: 1, names: { son: "Asa", dad: "Joe", mom: "" } };
+const PROFILE_DEFAULT = { v: 1, names: { son: "", dad: "", mom: "" } };
+/* What a name reads as until the profile page has been filled in. */
+const NAME_FALLBACK = { son: "your son", dad: "Dad", mom: "Mom" };
 const YEAR_STATE_DEFAULT = {
   v: 1,
   plan: { dates: "", destination: "", hardThing: "", skill: "", responsibility: "", word: "", sword: "", song: "", momRole: "", vigil: true },
@@ -1980,7 +2395,8 @@ const YEAR_STATE_DEFAULT = {
   men: [],
   bless: { see: "", proud: "", two: "", name: "", verse: "" },
   oath: "",
-  ceremonyStep: 0
+  ceremonyStep: 0,
+  ts: {}
 };
 function clone(o) { return JSON.parse(JSON.stringify(o)); }
 function isPlainObject(x) { return !!x && typeof x === 'object' && !Array.isArray(x); }
@@ -2022,7 +2438,14 @@ function esc(s) {
 }
 function fill(s) {
   const n = profile.names || {};
-  return String(s).replace(/\{(son|dad|mom)\}/g, function (_, k) { return n[k] || PROFILE_DEFAULT.names[k] || ''; });
+  return String(s).replace(/\{(son|dad|mom)\}/g, function (_, k, at, whole) {
+    const v = String(n[k] || '').trim();
+    if (v) return v;
+    // no name yet: "your son" / "Dad", capitalised when it opens the string or a sentence
+    const fb = NAME_FALLBACK[k];
+    const before = whole.slice(0, at).replace(/\s+$/, '');
+    return (!before || /[.!?]$/.test(before)) ? fb.charAt(0).toUpperCase() + fb.slice(1) : fb;
+  });
 }
 function txt(s) { return esc(fill(s)); }
 function icon(id, cls) { return '<svg class="' + (cls || 'ico') + '" aria-hidden="true" focusable="false"><use href="#' + id + '"/></svg>'; }
@@ -2135,8 +2558,11 @@ function goToTab(name) {
   sec.classList.add('active');
   activeSection = name;
   lsSet('manhood-tab', name);
+  flushSave();
   closeHeaderMenu();
   window.scrollTo(0, 0);                              // never behavior:'smooth' — a silent no-op in some webviews
+  // a field in another tab may have changed what this one shows (the same blessing lives in two places)
+  if (name === 'home') renderHome(); else if (name === 'moments') renderMoments(); else if (name === 'blessing') renderBlessing();
   _revealSelected(sec);
   try { document.dispatchEvent(new CustomEvent('mj:tab', { detail: { name: name } })); } catch (e) {}
 }
@@ -2280,17 +2706,98 @@ function initSheet() {
   }
 }
 
-/* ═══ Banner page (the theme picker): a full-page overlay ═════════════════════ */
-let _themePageReturnFocus = null;
-function themePageIsOpen() {
-  const p = document.getElementById('theme-page');
-  return !!(p && p.classList.contains('open'));
+/* ═══ Autosave ════════════════════════════════════════════════════════════════
+   There is no Save button anywhere. A field writes into the in-memory state on every keystroke and
+   the state is stored ~400 ms later; flushSave() stores at once and is called on blur, on every
+   close path, on every tab or sub-page change, and when the page is hidden. */
+let _saveTimer = null, _saveAge = null, _profileDirty = false, _saveField = null;
+function queueSave(age, field) {
+  if (age != null) _saveAge = age;
+  if (field) _saveField = field;
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(flushSave, 400);
 }
+function flushSave() {
+  if (_saveTimer) { clearTimeout(_saveTimer); _saveTimer = null; }
+  let ok = true, wrote = false;
+  if (_saveAge != null) { ok = saveYear(_saveAge) && ok; _saveAge = null; wrote = true; }
+  if (_profileDirty) { ok = saveProfile() && ok; _profileDirty = false; wrote = true; }
+  if (wrote && _saveField && document.contains(_saveField)) {
+    const status = _saveField.parentNode.querySelector('.save-status');
+    if (status) {
+      status.textContent = ok ? 'Saved' : 'Couldn’t save on this phone';
+      clearTimeout(status._t);
+      if (ok) status._t = setTimeout(function () { status.textContent = ''; }, 1400);
+    }
+  }
+  _saveField = null;
+}
+function _onFieldInput(e) {
+  const t = e.target;
+  if (!t || !t.hasAttribute) return;
+  if (t.hasAttribute('data-profile')) {
+    profile.names[t.getAttribute('data-profile')] = t.value;
+    _profileDirty = true;
+    queueSave(null, null);
+    _profilePreview();
+    return;
+  }
+  const year = activeYear(), st = yearState(year.age);
+  if (t.hasAttribute('data-note')) st.notes[t.getAttribute('data-note')] = t.value;
+  else if (t.hasAttribute('data-bless')) st.bless[t.getAttribute('data-bless')] = t.value;
+  else if (t.hasAttribute('data-ts')) st.ts[t.getAttribute('data-ts')] = t.value;
+  else return;
+  queueSave(year.age, t);
+}
+function _onFieldChange(e) {
+  const t = e.target;
+  if (!t || !t.hasAttribute || !t.hasAttribute('data-ask')) return;
+  const year = activeYear(), key = t.getAttribute('data-ask');
+  yearState(year.age).asked[key] = !!t.checked;
+  saveYear(year.age);
+  // the same question can be on screen in two places (the Road tab and a weekend's Home): keep both in step
+  document.querySelectorAll('[data-ask="' + key + '"]').forEach(function (box) {
+    box.checked = t.checked;
+    const row = box.closest('.list-row');
+    if (row) row.classList.toggle('is-asked', t.checked);
+  });
+}
+
+/* ═══ Full-page overlays (shared by the banner page, the profile page and a moment) ═══ */
 function _focusEl(el) {
   if (!el || typeof el.focus !== 'function') return false;
   try { el.focus({ preventScroll: true }); } catch (e) { try { el.focus(); } catch (e2) { return false; } }
   return document.activeElement === el;
 }
+function overlayIsOpen(id) {
+  const p = document.getElementById(id);
+  return !!(p && p.classList.contains('open'));
+}
+function _showOverlay(el, focusTarget) {
+  el.classList.add('open');
+  el.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('mj-overlay-open');
+  if (!_focusEl(focusTarget)) {
+    // a browser that still reports the overlay hidden mid-transition refuses focus; retry after the slide
+    setTimeout(function () { if (el.classList.contains('open')) _focusEl(focusTarget); }, 360);
+  }
+}
+function _hideOverlay(el, returnTo) {
+  el.classList.remove('open');
+  el.setAttribute('aria-hidden', 'true');
+  if (!document.querySelector('.page-overlay.open')) document.documentElement.classList.remove('mj-overlay-open');
+  let restored = false;
+  if (returnTo && document.contains(returnTo) && !el.contains(returnTo)) restored = _focusEl(returnTo);
+  // the remembered element is often a menu item that is hidden again — fall back to the menu button
+  if (!restored) restored = _focusEl(document.getElementById('header-menu-btn'));
+  if (!restored && document.activeElement && el.contains(document.activeElement)) {
+    try { document.activeElement.blur(); } catch (e) {}
+  }
+}
+
+/* ═══ Banner page (the theme picker) — reached from the menu; every user starts on The Son ═══ */
+let _themePageReturnFocus = null;
+function themePageIsOpen() { return overlayIsOpen('theme-page'); }
 /* aria-pressed + label for every .banner-choose, from the current theme. */
 function syncBannerButtons() {
   const current = currentTheme();
@@ -2314,35 +2821,14 @@ function openThemePage() {
   syncBannerButtons();
   const body = document.getElementById('theme-body');
   if (body) body.scrollTop = 0;
-  el.classList.add('open');
-  el.setAttribute('aria-hidden', 'false');
-  document.documentElement.classList.add('mj-overlay-open');
-  let back = document.getElementById('theme-page-back');
-  if (document.documentElement.classList.contains('mj-onboarding')) back = document.getElementById('theme-skip') || back;
-  if (!_focusEl(back)) {
-    // a browser that still reports the overlay hidden mid-transition refuses focus; retry after the slide
-    setTimeout(function () { if (themePageIsOpen()) _focusEl(back); }, 360);
-  }
+  _showOverlay(el, document.getElementById('theme-page-back'));
 }
 function closeThemePage() {
   const el = document.getElementById('theme-page');
   if (!el) return;
-  if (document.documentElement.classList.contains('mj-onboarding')) {
-    lsSet('manhood-onboarded', '1');
-    document.documentElement.classList.remove('mj-onboarding');
-  }
-  el.classList.remove('open');
-  el.setAttribute('aria-hidden', 'true');
-  document.documentElement.classList.remove('mj-overlay-open');
   const target = _themePageReturnFocus;
   _themePageReturnFocus = null;
-  let restored = false;
-  if (target && document.contains(target) && !el.contains(target)) restored = _focusEl(target);
-  // the remembered element is usually the (now hidden) Theme menu item — fall back to the menu button
-  if (!restored) restored = _focusEl(document.getElementById('header-menu-btn'));
-  if (!restored && document.activeElement && el.contains(document.activeElement)) {
-    try { document.activeElement.blur(); } catch (e) {}
-  }
+  _hideOverlay(el, target);
 }
 function initThemePage() {
   const el = document.getElementById('theme-page');
@@ -2355,11 +2841,56 @@ function initThemePage() {
   syncBannerButtons();
 }
 
+/* ═══ Profile: the father's and the son's names ═══════════════════════════════
+   The first thing a new user sees (the splash opens it while html.mj-onboarding is set), and a
+   menu item afterwards. The fields autosave; closing re-renders every tab so the names take
+   effect everywhere at once. */
+let _profileReturnFocus = null;
+function _profilePreview() {
+  const el = document.getElementById('profile-preview');
+  if (!el) return;
+  const n = profile.names || {};
+  el.textContent = ((n.dad || '').trim() || (n.son || '').trim()) ? fill('{son}’s journey, with {dad} going first.') : '';
+}
+function openProfilePage() {
+  const el = document.getElementById('profile-page');
+  if (!el) return;
+  _profileReturnFocus = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+  closeHeaderMenu();
+  const first = document.documentElement.classList.contains('mj-onboarding');
+  document.getElementById('profile-page-bar').textContent = first ? 'Welcome' : 'Profile';
+  document.getElementById('profile-eyebrow').textContent = first ? 'Welcome' : 'Profile';
+  document.getElementById('profile-page-title').textContent = first ? 'Manhood Journey' : 'Father and son';
+  document.getElementById('profile-go').textContent = first ? 'Begin' : 'Done';
+  document.getElementById('profile-dad').value = profile.names.dad || '';
+  document.getElementById('profile-son').value = profile.names.son || '';
+  _profilePreview();
+  document.getElementById('profile-body').scrollTop = 0;
+  _showOverlay(el, document.getElementById(first ? 'profile-skip' : 'profile-page-back'));
+}
+function closeProfilePage() {
+  const el = document.getElementById('profile-page');
+  if (!el || !el.classList.contains('open')) return;
+  ['dad', 'son'].forEach(function (k) { profile.names[k] = String(profile.names[k] || '').trim(); });
+  _profileDirty = true;
+  flushSave();
+  if (document.documentElement.classList.contains('mj-onboarding')) {
+    lsSet('manhood-onboarded', '1');
+    document.documentElement.classList.remove('mj-onboarding');
+  }
+  const target = _profileReturnFocus;
+  _profileReturnFocus = null;
+  _hideOverlay(el, target);
+  renderAll();                                        // the names appear in every tab
+}
+
 /* ═══ Keyboard — ONE Escape handler for the whole app, outermost layer first ═══
    sheet → overlay → menu → rail */
 function _onKeydown(e) {
   if (e.key !== 'Escape') return;
   if (isSheetOpen()) { closeSheet(); return; }
+  if (overlayIsOpen('moment-page')) { closeMomentPage(); return; }
+  if (overlayIsOpen('profile-page')) { closeProfilePage(); return; }
   if (themePageIsOpen()) { closeThemePage(); return; }
   if (isHeaderMenuOpen()) { closeHeaderMenu(); _focusEl(document.getElementById('header-menu-btn')); return; }
   if (typeof railEscape === 'function') railEscape();
@@ -2498,12 +3029,6 @@ function renderHome() {
     '<div class="walk-list">' + walk + '</div>';
   document.getElementById('homeFoot').innerHTML = txt(CONTENT.privacy) + '<br>' + txt(CONTENT.credit);
 }
-/* Home's "Open" on the up-next card: land on Moments with that moment chosen. */
-function openMoment(id) {
-  lsSet('manhood-moment', id);
-  renderMoments();
-  goToTab('moments');
-}
 
 /* ═══ Path: the seven years ═══════════════════════════════════════════════════ */
 function renderPath() {
@@ -2547,18 +3072,80 @@ function toggleAcc(btn) {
   btn.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 
-/* ═══ Moments (the raised centre tab) ═════════════════════════════════════════ */
+/* ═══ Moments (the raised centre tab) ═════════════════════════════════════════
+   Three layers:
+     1. the BROWSE page — one card per written year; choosing one makes it the active year
+     2. the experience — a weekend with its own in-page menu (engine: 'weekend'), or the
+        conversations page (sixteen)
+     3. a moment, full page (the #moment-page overlay; weekend years only)
+   'manhood-moments-open' remembers whether the tab was left on the browse page or inside. */
+let momentsOpen = lsGet('manhood-moments-open') === '1';
+function openExperience(age) {
+  const y = yearByAge(age);
+  if (!y || !y.written) return;
+  flushSave();
+  activeAge = age;
+  lsSet('manhood-year', String(age));
+  momentsOpen = true;
+  lsSet('manhood-moments-open', '1');
+  renderAll();
+  if (activeSection === 'moments') window.scrollTo(0, 0);
+}
+function closeExperience() {
+  flushSave();
+  momentsOpen = false;
+  lsSet('manhood-moments-open', '0');
+  renderMoments();
+  window.scrollTo(0, 0);
+}
+function momentById(year, id) {
+  const list = year.moments || [];
+  for (let i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+  return null;
+}
+function seal(id, large) {
+  return '<span class="seal' + (large ? ' seal--lg' : '') + '" aria-hidden="true"><svg focusable="false"><use href="#' + id + '"/></svg></span>';
+}
+function momentsBrowse() {
+  const b = CONTENT.tabs.moments.browse;
+  const cards = CONTENT.years.filter(function (y) { return y.written; }).map(function (y) {
+    const done = y.moments.filter(function (m) { return !!yearState(y.age).done[m.id]; }).length;
+    const meta = y.moments.length + ' moments' + (done ? ' · ' + done + ' done' : '');
+    return '<button class="card exp-card" type="button" onclick="openExperience(' + y.age + ')">' +
+      '<span class="exp-age" aria-hidden="true">' + y.age + '</span>' +
+      '<span class="exp-text">' +
+        '<span class="eyebrow">Age ' + txt(y.word) + ' · ' + txt(y.stage) + '</span>' +
+        '<span class="exp-title">' + txt(y.title) + '</span>' +
+        '<span class="exp-desc">' + txt(y.focus) + '</span>' +
+        '<span class="meta exp-meta">' + esc(meta) + '</span>' +
+      '</span>' + icon('mj-i-chevron') +
+    '</button>';
+  }).join('');
+  const rows = CONTENT.years.filter(function (y) { return !y.written; }).map(function (y) {
+    return '<div class="list-row"><span class="row-num">' + y.age + '</span><span class="row-title">' + txt(y.title) + '</span><span class="chip">' + txt(CONTENT.draftShort) + '</span></div>';
+  }).join('');
+  return tabHead(b.eyebrow, b.title, b.lead) +
+    '<div class="exp-list">' + cards + '</div>' +
+    '<div class="panel panel--flush"><div class="panel-head"><div class="eyebrow">' + txt(b.draftsLabel) + '</div><p>' + txt(b.draftsNote) + '</p></div>' +
+    '<div class="row-list">' + rows + '</div></div>';
+}
+/* The remembered selection if it still exists in this year, else the first item. */
 function _pick(list, key, prefKey) {
-  // the remembered selection if it still exists in this year, else the first item
   const saved = lsGet(prefKey);
   for (let i = 0; i < list.length; i++) if (String(list[i][key]) === saved) return list[i];
   return list[0];
 }
 function renderMoments() {
-  const t = CONTENT.tabs.moments, year = activeYear();
+  const el = document.getElementById('momentsInner'), year = activeYear();
+  if (!momentsOpen || !year.written) { el.innerHTML = momentsBrowse(); return; }
+  el.innerHTML = '<button class="chip exp-back" type="button" onclick="closeExperience()">' + icon('mj-i-back') + 'All moments</button>' +
+    (year.engine === 'weekend' ? weekendPage(year) : conversationsPage(year));
+  _revealSubTab();
+}
+/* Sixteen: the four conversations — a picker strip with the chosen moment's panel below it. */
+function conversationsPage(year) {
+  const t = CONTENT.tabs.moments;
   const how = '<button class="btn" type="button" onclick="openHowMoment()">' + icon('mj-i-info') + txt(CONTENT.howMoment.title) + '</button>';
-  const head = tabHead('Age ' + year.word, t.title, t.lead, how);
-  if (!year.written) { document.getElementById('momentsInner').innerHTML = head + unwrittenPanel(year); return; }
   const cur = _pick(year.moments, 'id', 'manhood-moment');
   const strip = pickStrip('momentTiles', 'Moments', year.moments.map(function (m, i) {
     return { num: pad2(i + 1), title: m.title, meta: m.short, selected: m === cur, call: "selectMoment('" + m.id + "')" };
@@ -2574,7 +3161,235 @@ function renderMoments() {
       '<p>' + txt(CONTENT.momentSoon) + '</p>' +
       '<div class="chip-wrap"><span class="chip">Read</span><span class="chip">Ask</span><span class="chip">Share</span><span class="chip">Write</span></div>' +
     '</div>';
-  document.getElementById('momentsInner').innerHTML = head + strip + '<div id="momentPanel">' + panel + '</div>';
+  return tabHead('Age ' + year.word, t.title, t.lead, how) + strip + '<div id="momentPanel">' + panel + '</div>';
+}
+
+/* ── A weekend: its own sections, brought into the page as a sticky in-page menu ── */
+const WK_SUBS = [['home', 'Home'], ['fri', 'Friday'], ['sat', 'Saturday'], ['bless', 'Blessing'], ['journal', 'Journal']];
+function wkSub() {
+  const s = lsGet('manhood-sub');
+  for (let i = 0; i < WK_SUBS.length; i++) if (WK_SUBS[i][0] === s) return s;
+  return 'home';
+}
+function selectSub(key) {
+  flushSave();
+  lsSet('manhood-sub', key);
+  renderMoments();
+  window.scrollTo(0, 0);
+}
+function _revealSubTab() {
+  const track = document.querySelector('#momentsInner .sub-nav-track');
+  const tab = track && track.querySelector('[aria-selected="true"]');
+  if (!tab || track.scrollWidth <= track.clientWidth) return;
+  const left = tab.offsetLeft - track.offsetLeft;
+  if (left < track.scrollLeft || left + tab.offsetWidth > track.scrollLeft + track.clientWidth) track.scrollLeft = Math.max(0, left - 12);
+}
+function weekendPage(year) {
+  const sub = wkSub();
+  const tabs = WK_SUBS.map(function (s) {
+    return '<button class="sub-tab" type="button" role="tab" aria-selected="' + (s[0] === sub ? 'true' : 'false') + '" onclick="selectSub(\'' + s[0] + '\')">' + s[1] + '</button>';
+  }).join('');
+  const page = (sub === 'fri' || sub === 'sat') ? wkDay(year, sub)
+    : sub === 'bless' ? blessWriter(year, 'm')
+    : sub === 'journal' ? journalView(year)
+    : wkHome(year);
+  return '<div class="wk">' + tabHead('Age ' + year.word, year.name, year.sub) +
+    '<div class="sub-nav"><div class="sub-nav-track" role="tablist" aria-label="' + esc(fill(year.name)) + ' sections">' + tabs + '</div></div>' +
+    '<div id="wkPage">' + page + '</div></div>';
+}
+function wkHome(year) {
+  const m = nextMoment(year);
+  const next = m
+    ? '<button class="card next-card" type="button" onclick="openMomentPage(\'' + m.id + '\')">' + seal(m.seal) +
+        '<span class="next-text"><span class="eyebrow">' + (anyMomentDone(year) ? 'Up next' : 'Start here') + ' · ' + txt(m.day + ', ' + m.slot) + '</span>' +
+        '<span class="next-title">' + txt(m.title) + '</span></span>' + icon('mj-i-chevron') + '</button>'
+    : '<button class="card next-card" type="button" onclick="selectSub(\'journal\')">' + seal('mj-s-ahead') +
+        '<span class="next-text"><span class="eyebrow">Every moment is done</span>' +
+        '<span class="next-title">Open the journal</span></span>' + icon('mj-i-chevron') + '</button>';
+  const deck = deckBlock(year, 'courseTiles');
+  return '<div class="panel wk-hero"><p>' + txt(year.intro) + '</p><p>' + txt(year.heart) + '</p></div>' +
+    '<div class="rhythm" aria-label="How each moment works">' + year.rhythm.map(function (r) {
+      return '<div><b>' + txt(r[0]) + '</b><span>' + txt(r[1]) + '</span></div>';
+    }).join('') + '</div>' +
+    next +
+    '<div class="panel"><div class="eyebrow">The weekend’s verse</div><p class="verse">' + txt(year.verse.text) + '</p><div class="meta">' + txt(year.verse.ref) + '</div></div>' +
+    '<div class="deck-block" id="course"><div class="eyebrow eyebrow--rule">' + txt(year.roadTitle) + '</div>' +
+      '<p class="lead">' + txt(year.roadRule) + '</p>' + deck.strip + deck.panel + '</div>';
+}
+function wkDay(year, key) {
+  const d = year.timeline[key], st = yearState(year.age);
+  const rows = d.rows.map(function (r) {
+    let what;
+    if (r[1] === 'm') {
+      const m = momentById(year, r[2]), done = !!st.done[m.id];
+      what = '<button class="card tl-moment' + (done ? ' is-done' : '') + '" type="button" onclick="openMomentPage(\'' + m.id + '\')">' + seal(m.seal) +
+        '<span class="tl-text"><span class="tl-when">' + txt(m.when) + '</span><span class="tl-title">' + txt(m.title) + '</span><span class="tl-feel">' + txt(m.feeling) + '</span></span>' +
+        (done ? '<span class="chip">' + icon('mj-i-check') + 'Done</span>' : icon('mj-i-chevron')) + '</button>';
+    } else if (r[1] === 'g') {
+      what = '<button class="tl-quiet" type="button" onclick="goRound(' + r[2] + ')">' + icon('mj-i-flag') +
+        '<span>' + txt(year.decks[r[2]].num) + ': questions for the course</span>' + icon('mj-i-chevron') + '</button>';
+    } else {
+      what = '<div class="tl-quiet"><span>' + txt(r[2]) + '</span></div>';
+    }
+    return '<li class="tl-row"><span class="tl-time">' + txt(r[0]) + '</span>' + what + '</li>';
+  }).join('');
+  return '<div class="day-head"><h2 class="day-title">' + txt(d.name) + '</h2><p class="day-note">' + txt(d.note) + '</p></div>' +
+    '<ol class="timeline">' + rows + '</ol>';
+}
+/* A timeline's golf row: land on the weekend's Home with that round chosen, scrolled to the questions. */
+function goRound(i) {
+  flushSave();
+  lsSet('manhood-deck', String(i));
+  lsSet('manhood-sub', 'home');
+  renderRoad();
+  renderMoments();
+  const el = document.getElementById('course');
+  if (!el) return;
+  const bar = document.querySelector('.top-app-bar'), sub = document.querySelector('#momentsInner .sub-nav');
+  const off = (bar && getComputedStyle(bar).display !== 'none' ? bar.offsetHeight : 0) + (sub ? sub.offsetHeight + 16 : 0) + 8;
+  window.scrollTo(0, Math.max(0, el.getBoundingClientRect().top + window.scrollY - off));   // never behavior:'smooth'
+}
+
+/* ── The blessing writer and the journal: used inside a weekend AND on the Blessing tab ── */
+function blessWriter(year, ctx) {
+  const b = year.bless, st = yearState(year.age).bless;
+  return '<div class="panel"><div class="eyebrow">The blessing</div><p>' + txt(b.intro) + '</p></div>' +
+    b.prompts.map(function (p) {
+      const id = 'bless-' + ctx + '-' + p[0];
+      return '<div class="panel prompt"><h2 class="panel-title">' + txt(p[1]) + '</h2>' +
+        '<label class="field-label" for="' + id + '">' + txt(p[2]) + '</label>' +
+        '<textarea class="field" id="' + id + '" data-bless="' + p[0] + '">' + esc(st[p[0]] || '') + '</textarea>' +
+        '<div class="save-status" aria-live="polite"></div></div>';
+    }).join('') +
+    '<p class="fine">' + txt(CONTENT.privacy) + '</p>';
+}
+function journalText(year) {
+  const st = yearState(year.age);
+  let out = fill(year.name + ': ' + year.sub) + '\n\n';
+  year.moments.forEach(function (m) { out += fill(m.title) + ' (' + m.passage + ')\n' + (st.notes[m.id] || '') + '\n\n'; });
+  out += 'The Blessing\n';
+  year.bless.prompts.forEach(function (p) { if (st.bless[p[0]]) out += fill(p[1]) + ': ' + st.bless[p[0]] + '\n'; });
+  return out;
+}
+function _para(s) { return esc(s).replace(/\n/g, '<br>'); }
+function journalView(year) {
+  const st = yearState(year.age);
+  const entries = year.moments.map(function (m) {
+    const n = st.notes[m.id];
+    return '<div class="panel entry"><h2 class="panel-title">' + txt(m.title) + '</h2>' +
+      '<span class="tl-when">' + txt(m.day + ', ' + m.slot + ' · ' + m.passage) + '</span>' +
+      (n ? '<p class="reading">' + _para(n) + '</p>' : '<p class="entry-empty">Nothing written yet.</p>') + '</div>';
+  }).join('');
+  const written = year.bless.prompts.filter(function (p) { return !!st.bless[p[0]]; });
+  const bless = '<div class="panel entry"><h2 class="panel-title">The blessing</h2>' +
+    (written.length ? written.map(function (p) { return '<p class="reading"><b>' + txt(p[1]) + '.</b> ' + _para(st.bless[p[0]]) + '</p>'; }).join('')
+                    : '<p class="entry-empty">Nothing written yet.</p>') + '</div>';
+  return '<div class="panel"><div class="eyebrow">Journal</div><p>' + txt(year.journalLead) + '</p></div>' +
+    entries + bless +
+    '<div class="mo-actions"><button class="btn" type="button" onclick="copyJournal(this)">Copy the whole journal</button></div>' +
+    '<div class="block"><div class="eyebrow eyebrow--rule">For later</div><ul class="later">' +
+      year.later.map(function (t) { return '<li>' + txt(t) + '</li>'; }).join('') + '</ul></div>' +
+    '<p class="fine">' + txt(CONTENT.credit) + '</p>';
+}
+function copyJournal(btn) {
+  const label = 'Copy the whole journal';
+  const done = function (text) { btn.textContent = text; setTimeout(function () { btn.textContent = label; }, 2200); };
+  try {
+    // called straight from the click, with no await before it
+    navigator.clipboard.writeText(journalText(activeYear())).then(function () { done('Copied'); }, function () { done('Copy isn’t available here'); });
+  } catch (e) { done('Copy isn’t available here'); }
+}
+
+/* ── A moment, full page ── */
+let _momentId = null, _momentReturnFocus = null;
+function _block(label, inner) {
+  return '<div class="block"><div class="eyebrow eyebrow--rule">' + label + '</div>' + inner + '</div>';
+}
+function _doneButton(done) {
+  return '<button class="btn' + (done ? '' : ' btn-house') + '" id="moment-done" type="button" aria-pressed="' + (done ? 'true' : 'false') + '" onclick="toggleDone()">' +
+    (done ? icon('mj-i-check') + 'Done' : 'Mark as done') + '</button>';
+}
+function _watchBlock(year, m, st) {
+  const w = m.watch;
+  if (!w) return '';
+  if (w.none) return '<div class="watch wash-metal"><div class="eyebrow">Watch together</div><p>' + txt(w.none) + '</p></div>';
+  return '<div class="watch wash-metal"><div class="eyebrow">Watch together</div>' +
+    '<div class="meta">' + txt(year.watchTitle) + '</div>' +
+    '<div class="watch-ep">' + txt(w.ep) + '</div><p>' + txt(w.cue) + '</p>' +
+    '<label class="field-label" for="moment-ts">Start time, once you’ve found it</label>' +
+    '<input class="field field--short" id="moment-ts" data-ts="' + m.id + '" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 12:30" value="' + esc(st.ts[m.id] || w.ts || '') + '">' +
+    '<div class="save-status" aria-live="polite"></div>' +
+    '<a href="' + esc(year.watchLink[1]) + '" target="_blank" rel="noopener">' + txt(year.watchLink[0]) + '<span class="sr-only"> (opens in a new tab)</span></a></div>';
+}
+function openMomentPage(id) {
+  const el = document.getElementById('moment-page'), year = activeYear(), m = momentById(year, id);
+  if (!el || !m || !m.verses) return;
+  const st = yearState(year.age);
+  _momentId = id;
+  _momentReturnFocus = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+  document.getElementById('moment-page-bar').textContent = fill(m.day + ' · ' + m.when);
+  document.getElementById('moment-inner').innerHTML =
+    '<div class="mo-head">' + seal(m.seal, true) +
+      '<div class="guide-eyebrow">' + txt(m.day + ', ' + m.slot) + '</div>' +
+      '<h1 class="guide-display" id="moment-page-title">' + txt(m.title) + '</h1>' +
+      '<span class="chip">' + txt(m.feeling) + '</span></div>' +
+    '<p class="mo-context">' + txt(m.context) + '</p>' +
+    '<p class="strength">' + txt(m.strength) + '</p>' +
+    _block('Read · out loud', '<div class="scripture">' + m.verses.map(function (v) { return '<sup>' + v[0] + '</sup>' + esc(v[1]); }).join(' ') + '</div><div class="meta">' + txt(m.passage) + '</div>') +
+    _block('Ask', '<p class="ask">' + txt(m.ask) + '</p>') +
+    _block('Share · for ' + txt('{dad}'), '<p class="share">' + txt(m.share) + '</p>') +
+    _block('Write', '<label class="field-label" for="moment-note">A few words to remember this by</label>' +
+      '<textarea class="field" id="moment-note" data-note="' + m.id + '" placeholder="Whatever stayed with you.">' + esc(st.notes[m.id] || '') + '</textarea>' +
+      '<div class="save-status" aria-live="polite"></div>') +
+    '<div class="mo-actions">' +
+      (m.blessing ? '<button class="btn" type="button" onclick="openBlessingFromMoment()">Open the blessing</button>' : '') +
+      _doneButton(!!st.done[m.id]) + '</div>' +
+    _watchBlock(year, m, st) +
+    '<div class="deeper"><div class="eyebrow eyebrow--rule">Go deeper, if you want</div><div class="panel panel--flush"><div class="row-list row-list--bare">' +
+      m.deeper.map(function (d) {
+        return '<a class="list-row" href="' + esc(d[1]) + '" target="_blank" rel="noopener"><span class="row-title row-title--q">' + txt(d[0]) +
+          '<span class="sr-only"> (opens in a new tab)</span></span>' + icon('mj-i-open') + '</a>';
+      }).join('') + '</div></div></div>';
+  document.getElementById('moment-body').scrollTop = 0;
+  _showOverlay(el, document.getElementById('moment-page-back'));
+}
+/* EVERY close path (Back, Escape, "Open the blessing") comes through here, so the note is flushed. */
+function closeMomentPage() {
+  const el = document.getElementById('moment-page');
+  if (!el || !el.classList.contains('open')) return;
+  flushSave();
+  _momentId = null;
+  const target = _momentReturnFocus;
+  _momentReturnFocus = null;
+  _hideOverlay(el, target);
+}
+function toggleDone() {
+  const year = activeYear(), st = yearState(year.age);
+  if (!_momentId) return;
+  st.done[_momentId] = !st.done[_momentId];
+  saveYear(year.age);
+  const btn = document.getElementById('moment-done');
+  if (btn) btn.outerHTML = _doneButton(!!st.done[_momentId]);
+  _focusEl(document.getElementById('moment-done'));
+  renderHome();                                       // the up-next cards and the timeline sit under this page
+  renderMoments();
+}
+function openBlessingFromMoment() {
+  closeMomentPage();
+  selectSub('bless');
+}
+/* Home's up-next button: land inside the active year's experience, on that moment. */
+function openMoment(id) {
+  const year = activeYear();
+  momentsOpen = true;
+  lsSet('manhood-moments-open', '1');
+  if (year.engine === 'weekend') {
+    goToTab('moments');
+    openMomentPage(id);
+  } else {
+    lsSet('manhood-moment', id);
+    goToTab('moments');
+  }
 }
 function selectMoment(id) { lsSet('manhood-moment', id); renderMoments(); _revealSelected(document.getElementById('momentsInner')); }
 function openHowMoment() {
@@ -2587,27 +3402,53 @@ function openHowMoment() {
   });
 }
 
-/* ═══ Road: question decks ════════════════════════════════════════════════════ */
+/* ═══ Road: question decks, a tick per question and one picked at random ══════ */
+function deckIndex(year) {
+  const i = parseInt(lsGet('manhood-deck'), 10);
+  return (i >= 0 && i < year.decks.length) ? i : 0;
+}
+/* Returns { strip, panel } so the Road tab can keep the strip a direct child of its section. */
+function deckBlock(year, stripId) {
+  const idx = deckIndex(year), deck = year.decks[idx], asked = yearState(year.age).asked;
+  const label = function (d, i) { return d.num || ('Deck ' + (i + 1)); };
+  const strip = pickStrip(stripId, 'Decks', year.decks.map(function (d, i) {
+    return { num: label(d, i), title: d.title, meta: d.meta, selected: i === idx, call: 'selectDeck(' + i + ')' };
+  }));
+  const rows = deck.questions.map(function (q, k) {
+    const key = idx + '-' + k, on = !!asked[key];
+    return '<label class="list-row' + (on ? ' is-asked' : '') + '"><input class="q-check" type="checkbox" data-ask="' + key + '"' + (on ? ' checked' : '') + '>' +
+      '<span class="row-title row-title--q">' + txt(q) + '</span></label>';
+  }).join('');
+  const panel = '<div class="panel panel--flush">' +
+      '<div class="panel-head"><div class="eyebrow">' + txt(label(deck, idx) + ' · ' + deck.meta) + '</div>' +
+      '<h2 class="panel-title">' + txt(deck.title) + '</h2></div>' +
+      '<div class="row-list">' + rows + '</div>' +
+      '<div class="deck-foot"><button class="btn" type="button" onclick="pickRandom(this)">Pick one at random</button>' +
+      '<p class="pick-out" aria-live="polite"></p></div>' +
+    '</div>';
+  return { strip: strip, panel: panel };
+}
 function renderRoad() {
   const t = CONTENT.tabs.road, year = activeYear();
-  const head = tabHead('Age ' + year.word, t.title, t.lead);
+  const head = tabHead('Age ' + year.word, year.roadTitle || t.title, year.roadRule || t.lead);
   if (!year.written) { document.getElementById('roadInner').innerHTML = head + unwrittenPanel(year); return; }
-  let idx = parseInt(lsGet('manhood-deck'), 10);
-  if (!(idx >= 0 && idx < year.decks.length)) idx = 0;
-  const deck = year.decks[idx];
-  const strip = pickStrip('deckTiles', 'Decks', year.decks.map(function (d, i) {
-    return { num: 'Deck ' + (i + 1), title: d.title, meta: d.meta, selected: i === idx, call: 'selectDeck(' + i + ')' };
-  }));
-  const panel = '<div class="panel panel--flush">' +
-      '<div class="panel-head"><div class="eyebrow">Deck ' + (idx + 1) + ' · ' + txt(deck.meta) + '</div>' +
-      '<h2 class="panel-title">' + txt(deck.title) + '</h2></div>' +
-      '<div class="row-list">' + deck.questions.map(function (q, i) {
-        return '<div class="list-row"><span class="row-num">' + pad2(i + 1) + '</span><span class="row-title row-title--q">' + txt(q) + '</span></div>';
-      }).join('') + '</div>' +
-    '</div>';
-  document.getElementById('roadInner').innerHTML = head + strip + '<div id="deckPanel">' + panel + '</div>';
+  const deck = deckBlock(year, 'deckTiles');
+  document.getElementById('roadInner').innerHTML = head + deck.strip + '<div class="deck-block" id="deckPanel">' + deck.panel + '</div>';
 }
-function selectDeck(i) { lsSet('manhood-deck', String(i)); renderRoad(); _revealSelected(document.getElementById('roadInner')); }
+function selectDeck(i) {
+  lsSet('manhood-deck', String(i));
+  renderRoad();
+  _revealSelected(document.getElementById('roadInner'));
+  if (momentsOpen && activeYear().engine === 'weekend' && wkSub() === 'home') { renderMoments(); _revealSelected(document.getElementById('momentsInner')); }
+}
+/* Never returns a question already ticked until every question in the deck has been. */
+function pickRandom(btn) {
+  const year = activeYear(), idx = deckIndex(year), deck = year.decks[idx], asked = yearState(year.age).asked;
+  const open = deck.questions.filter(function (q, k) { return !asked[idx + '-' + k]; });
+  const pool = open.length ? open : deck.questions;
+  const out = btn.parentNode.querySelector('.pick-out');
+  if (out) out.textContent = fill(pool[Math.floor(Math.random() * pool.length)]);
+}
 
 /* ═══ Blessing: blessing, ceremony, the men, the journal ══════════════════════ */
 function renderBlessing() {
@@ -2618,12 +3459,17 @@ function renderBlessing() {
   const strip = pickStrip('topicTiles', 'Blessing topics', year.topics.map(function (p) {
     return { icon: p.icon, title: p.title, meta: p.meta, selected: p === cur, call: "selectTopic('" + p.id + "')" };
   }), true);
-  let panel = '<div class="panel">' +
+  let panel = '';
+  if (year.engine === 'weekend') {
+    panel = cur.id === 'journal' ? journalView(year) : blessWriter(year, 'b');
+  } else {
+    panel = '<div class="panel">' +
       '<div class="eyebrow">' + txt(cur.meta) + '</div>' +
       '<h2 class="panel-title">' + txt(cur.title) + '</h2>' +
       cur.text.map(function (p) { return '<p>' + txt(p) + '</p>'; }).join('') +
       '<div class="chip-wrap"><span class="chip">' + txt(CONTENT.soon) + '</span></div>' +
     '</div>';
+  }
   if (cur.rows) {
     panel += '<div class="panel panel--flush"><div class="row-list row-list--bare">' + cur.rows.map(function (r, i) {
       return '<div class="list-row"><span class="row-num">' + pad2(i + 1) + '</span><span class="row-title">' + txt(r) + '</span></div>';
@@ -2661,6 +3507,11 @@ function init() {
   initSheet();
   initThemePage();
   document.addEventListener('keydown', _onKeydown);
+  document.addEventListener('input', _onFieldInput);
+  document.addEventListener('change', _onFieldChange);
+  document.addEventListener('focusout', flushSave);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flushSave(); });
+  window.addEventListener('pagehide', flushSave);
   applyThemeMeta();
   syncMenuLabels();
   initHeroSlideshow();
@@ -2733,7 +3584,8 @@ function syncRailLabels() {
 }
 function railUtil(which) {
   if (_railModeNow() === 'modal' && railIsOpen()) setRail(false, false);
-  if (which === 'theme') openThemePage();
+  if (which === 'profile') openProfilePage();
+  else if (which === 'theme') openThemePage();
   else if (which === 'mono') toggleMono();
 }
 /* The rail's share of the ONE Escape handler (the last, innermost-chrome layer). */
