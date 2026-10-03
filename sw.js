@@ -4,7 +4,7 @@
 // (root sw.js and publish/sw.js must stay byte-identical), or installed phones keep the old build.
 // The cache name is internal: never rename the "manhood-" prefix, that only orphans caches.
 // Never precache large media or the Download-the-App screenshots (assets/install/).
-const CACHE = 'manhood-v4';
+const CACHE = 'manhood-v5';
 const PRECACHE = [
   "./",
   "index.html",
