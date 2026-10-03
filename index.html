@@ -1256,7 +1256,7 @@ button.list-row:active, a.list-row:active { background: var(--md-sys-color-surfa
 .tl-title { display: block; font-family: var(--font-serif); font-size: 18px; font-weight: 600; line-height: 1.25; margin-top: 1px; }
 .tl-feel { display: block; font-family: var(--font-sans); font-size: 14px; color: var(--md-sys-color-on-surface-variant); }
 .tl-moment > .ico { color: var(--md-sys-color-on-surface-variant); }
-.tl-moment.is-done .seal { color: var(--md-sys-color-secondary); }
+.tl-moment.is-done .seal, .next-card.is-done .seal { color: var(--md-sys-color-secondary); }
 .tl-quiet {
   display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 12px 8px 14px; border-radius: 14px; text-align: left;
   background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface);
@@ -1308,6 +1308,7 @@ input.field--short { width: 148px; }
 .scripture { font-family: var(--font-serif); font-size: 19px; line-height: 1.65; color: var(--md-sys-color-on-surface); }
 .scripture sup { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--md-sys-color-secondary); margin: 0 3px 0 2px; line-height: 0; }
 .scripture + .meta { margin-top: 10px; }
+.meta + .scripture { margin-top: 18px; }
 .ask { font-family: var(--font-serif); font-size: 21px; line-height: 1.4; font-weight: 600; color: var(--md-sys-color-on-surface); }
 .share { font-family: var(--font-sans); font-size: 16px; line-height: 1.65; color: var(--md-sys-color-on-surface); }
 .mo-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
@@ -1700,7 +1701,7 @@ html[data-mono="1"] .rhythm > div,
 html[data-mono="1"] .tl-quiet { background: transparent; border: 1px solid #000000; }
 html[data-mono="1"] button.tl-quiet:active,
 html[data-mono="1"] button.tl-quiet:hover { background: transparent; box-shadow: inset 0 0 0 1px #000000; }
-html[data-mono="1"] .tl-moment.is-done .seal { color: #000000; }
+html[data-mono="1"] .tl-moment.is-done .seal, html[data-mono="1"] .next-card.is-done .seal { color: #000000; }
 html[data-mono="1"] .watch { border: 1px solid #000000; }
 @media (min-width: 744px) and (min-height: 500px) {
   /* in the rail Moments is an ordinary item: undo the raised disc, keep the black-on-white active glyph */
@@ -1750,6 +1751,10 @@ html[data-mono="1"] .watch { border: 1px solid #000000; }
   <symbol id="mj-s-friend" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M41 31L60 50L41 69L22 50Z"/><path d="M59 31L78 50L59 69L40 50Z"/></g></symbol>
   <symbol id="mj-s-broken" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M50 76C28 61 23 45 32 35C39 28 48 31 50 40C52 31 61 28 68 35C77 45 72 61 50 76Z"/><path d="M50 40L44 51L55 57L49 68"/></g></symbol>
   <symbol id="mj-s-ahead" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 58H80"/><path d="M36 58A14 14 0 0 1 64 58"/><path d="M50 36V30M33 43L29 39M67 43L71 39"/><path d="M41 78L47 64M59 78L53 64"/></g></symbol>
+  <symbol id="mj-s-sword" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M50 16L44 28V58H56V28Z"/><path d="M34 58H66"/><path d="M50 58V76"/></g><circle cx="50" cy="81" r="4.5" fill="currentColor"/></symbol>
+  <symbol id="mj-s-compass" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="50" cy="50" r="28"/><path d="M50 16V22M50 78V84M16 50H22M78 50H84"/><path d="M43 50L50 72L57 50Z"/></g><path fill="currentColor" d="M50 28L57 50H43Z"/></symbol>
+  <symbol id="mj-s-flame" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M50 18C64 36 70 46 70 60A20 20 0 0 1 30 60C30 46 36 36 50 18Z"/><path d="M50 50C57 58 60 62 60 68A10 10 0 0 1 40 68C40 62 43 58 50 50Z"/></g></symbol>
+  <symbol id="mj-s-dove" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M44 52C34 46 28 38 26 26C36 30 42 38 46 48"/><path d="M56 52C66 46 72 38 74 26C64 30 58 38 54 48"/><path d="M50 60L45 76M50 60L55 76"/></g><circle cx="50" cy="54" r="7" fill="currentColor"/></symbol>
 </svg>
 
 <!-- ── Splash (html.mj-splash only: first run and once per calendar day) ── -->
@@ -2093,7 +2098,6 @@ const CONTENT = {
   privacy: "Everything you write here stays on this phone. Nothing is sent anywhere.",
   credit: "Scripture adapted from the World English Bible.",
   soon: "Built next",
-  momentSoon: "The passage to read aloud, the question, {dad}’s story to share, and a place to write a few words.",
   draft: "Draft outline",
   draftShort: "Draft",
   draftNote: "This year isn’t written yet. The title and focus above are a working outline drawn from the research, there to be rewritten.",
@@ -2315,22 +2319,77 @@ const CONTENT = {
         ] }
       ],
       moments: [
-        { id: "battle", title: "The Battle", day: "Friday", slot: "the drive out", short: "Fri · drive", feeling: "Fear",
-          passage: "1 Samuel 17:45–47", deeper: "Ephesians 6:10–13; the full story in 1 Samuel 17",
+        { id: "battle", seal: "mj-s-sword", title: "The Battle", day: "Friday", when: "Drive out", slot: "the drive out", short: "Fri · drive", feeling: "Fear",
+          context: "A teenage shepherd walks out to face a giant the whole army is afraid of. Goliath has armor and a reputation. David has a sling, a history with God, and the one thing that matters: he knows what the fight is actually about.",
           strength: "Courage isn’t the absence of fear. It’s going anyway, and knowing whose name you go in.",
-          context: "A teenage shepherd walks out to face a giant the whole army is afraid of. Goliath has armor and a reputation. David has a sling, a history with God, and the one thing that matters: he knows what the fight is actually about." },
-        { id: "adventure", title: "The Adventure", day: "Friday", slot: "after the hard thing", short: "Fri · rest", feeling: "Risk",
-          passage: "Joshua 1:9", deeper: "Genesis 2:15; Luke 2:52",
+          passage: "Exodus 15:3 · 1 Samuel 17:45–47 · James 4:7",
+          readings: [
+            { passage: "Exodus 15:3", verses: [
+              [3, "The LORD is a man of war. The LORD is his name."] ] },
+            { passage: "1 Samuel 17:45–47", verses: [
+              [45, "Then David said to the Philistine, “You come to me with a sword, with a spear, and with a javelin; but I come to you in the name of the LORD of Armies, the God of the armies of Israel, whom you have defied."],
+              [46, "Today, the LORD will deliver you into my hand. I will strike you and take your head from off you. I will give the dead bodies of the army of the Philistines today to the birds of the sky and to the wild animals of the earth, that all the earth may know that there is a God in Israel,"],
+              [47, "and that all this assembly may know that the LORD doesn’t save with sword and spear; for the battle is the LORD’s, and he will give you into our hand.”"] ] },
+            { passage: "James 4:7", verses: [
+              [7, "Be subject therefore to God. Resist the devil, and he will flee from you."] ] }
+          ],
+          teach: "Every man has a warrior heart. God put it there, because he has one himself, and because everything worth having you will have to fight for. The enemy’s first move is to tell you there is no war, that it’s just you. His second is to get you to agree with a lie about yourself: I don’t have what it takes. Nobody really needs me. Once you agree, it becomes the lens you see everything through. An agreement can be named, and it can be broken. You take it back out loud, and you hand the fight to God.",
+          ask: "What’s a lie about yourself you’ve caught yourself agreeing with? And what’s actually worth fighting for in your life right now? Not someday. Now.",
+          share: "Tell him about an agreement you made about yourself, maybe at his age, and when you finally broke it. Then tell him one battle you see him already fighting well.",
+          deeper: [["Read the whole story, 1 Samuel 17", "https://www.biblegateway.com/passage/?version=WEB&search=1+Samuel+17"], ["Put on the armor: Ephesians 6:10–13", "https://www.biblegateway.com/passage/?version=WEB&search=Ephesians+6:10-13"], ["The lion that prowls: 1 Peter 5:8–9", "https://www.biblegateway.com/passage/?version=WEB&search=1+Peter+5:8-9"], ["Anger and the foothold: Ephesians 4:26–27", "https://www.biblegateway.com/passage/?version=WEB&search=Ephesians+4:26-27"]] },
+        { id: "adventure", seal: "mj-s-compass", title: "The Adventure", day: "Friday", when: "After the hard thing", slot: "after the hard thing", short: "Fri · rest", feeling: "Risk",
+          context: "Gideon is threshing wheat in a winepress, which is to say hiding, when an angel calls him a mighty man of valor. Joshua has just inherited Moses’ job and a land full of giants, and God tells him three times in nine verses to be strong and courageous. Neither man is told it will be easy. Both are told who is going with them.",
           strength: "The appetite for adventure is God-given. What it needs is a father beside it, calibrating the risk instead of removing it.",
-          context: "Joshua has just inherited Moses’ job and a people to lead into a land full of giants. God doesn’t tell him it’ll be easy. He tells him three times in nine verses to be strong and courageous, and then gives him the only reason that works." },
-        { id: "beauty", title: "The Beauty", day: "Friday", slot: "the fire", short: "Fri · fire", feeling: "Desire",
-          passage: "Proverbs 4:23; 1 Timothy 4:12", deeper: "Song of Songs 8:4; Ephesians 5:25",
+          passage: "Judges 6:11–12 · Joshua 1:9 · 1 John 4:18",
+          readings: [
+            { passage: "Judges 6:11–12", verses: [
+              [11, "The LORD’s angel came and sat under the oak which was in Ophrah, that belonged to Joash the Abiezrite. His son Gideon was beating out wheat in the wine press, to hide it from the Midianites."],
+              [12, "The LORD’s angel appeared to him, and said to him, “The LORD is with you, you mighty man of valor!”"] ] },
+            { passage: "Joshua 1:9", verses: [
+              [9, "Haven’t I commanded you? Be strong and courageous. Don’t be afraid. Don’t be dismayed, for the LORD your God is with you wherever you go."] ] },
+            { passage: "1 John 4:18", verses: [
+              [18, "There is no fear in love; but perfect love casts out fear, because fear has punishment. He who fears is not made perfect in love."] ] }
+          ],
+          teach: "The appetite for adventure isn’t a phase. God put it in you, and it will go somewhere. The question to ask of any risk is whether it is dangerous for nothing or dangerous for good. The guys who got hurt young mostly had the right appetite and nobody beside them to shape it. That is what today was: a hard thing, done together, with someone watching your back. Fathered risk. And the reason a man can take the biggest risks of all is in that last verse. Once you know you are loved, fear loses its grip.",
+          ask: "What’s something you want to try that scares you a little? Is it dangerous for nothing, or dangerous for good? And what did you find out about yourself today?",
+          share: "Your dumbest risk and your best one, and what the difference was. Then the one you’re glad he took this year.",
+          deeper: [["Gideon’s whole story, Judges 6–7", "https://www.biblegateway.com/passage/?version=WEB&search=Judges+6-7"], ["Greater love: John 15:13", "https://www.biblegateway.com/passage/?version=WEB&search=John+15:13"], ["Put in the garden to work it and keep it: Genesis 2:15", "https://www.biblegateway.com/passage/?version=WEB&search=Genesis+2:15"], ["Jesus grew: Luke 2:52", "https://www.biblegateway.com/passage/?version=WEB&search=Luke+2:52"]] },
+        { id: "beauty", seal: "mj-s-flame", title: "The Beauty", day: "Friday", when: "The fire", slot: "the fire", short: "Fri · fire", feeling: "Desire",
+          context: "God promises his people a new heart, flesh instead of stone. Solomon gives his son one instruction above every other. And Paul tells a young leader not to let anyone write him off for being young, but to be the example instead. All three are about the same thing: where your life flows from, and who gets to tell you who you are.",
           strength: "A man with a guarded heart isn’t a man with a locked one. He knows what the strength is for, and he brings it to her instead of taking it from her.",
-          context: "Solomon gives his son one instruction above every other, and Paul tells a young leader not to let anyone write him off for being young — but to be the example instead. Both passages are about the same thing: where your life flows from, and who gets to tell you who you are." },
-        { id: "son", title: "The Son", day: "Saturday", slot: "morning coffee", short: "Sat · coffee", feeling: "Belonging",
-          passage: "Luke 3:21–22; Ephesians 2:10", deeper: "Revelation 2:17; Romans 8:15",
+          passage: "Ezekiel 36:26 · Proverbs 4:23 · 1 Timothy 4:12",
+          readings: [
+            { passage: "Ezekiel 36:26", verses: [
+              [26, "I will also give you a new heart, and I will put a new spirit within you. I will take away the stony heart out of your flesh, and I will give you a heart of flesh."] ] },
+            { passage: "Proverbs 4:23", verses: [
+              [23, "Keep your heart with all diligence, for out of it is the wellspring of life."] ] },
+            { passage: "1 Timothy 4:12", verses: [
+              [12, "Let no man despise your youth; but be an example to those who believe, in word, in your way of life, in love, in spirit, in faith, and in purity."] ] }
+          ],
+          teach: "You have a good heart. That’s the first thing, and it matters, because a guy who believes he’s basically a lustful animal will live like one. God gave you a new heart, and it is worth guarding. The second thing is the lie the whole culture sells: that a girl is the answer to whether you’re a man. She isn’t, and handing her that report card is how good men end up afraid. You go into a woman’s life to offer strength, not to get it. Honor her. Don’t awaken more of her heart than you intend to come through on. And treat every girl like somebody’s daughter, because she is.",
+          ask: "What does it actually look like to treat a girl with honor, beyond being nice? And who gets to decide whether you’re a man?",
+          share: "At whatever altitude is right, tell him one thing you got wrong at his age about girls or desire, and one thing you got right. Then tell him one specific way you fight for {mom}’s heart now.",
+          deeper: [["Present your body: Romans 12:1–2", "https://www.biblegateway.com/passage/?version=WEB&search=Romans+12:1-2"], ["Don’t stir up love until it pleases: Song of Songs 8:4", "https://www.biblegateway.com/passage/?version=WEB&search=Song+of+Songs+8:4"], ["Love her as Christ loved: Ephesians 5:25–33", "https://www.biblegateway.com/passage/?version=WEB&search=Ephesians+5:25-33"], ["For freedom: Galatians 5:1", "https://www.biblegateway.com/passage/?version=WEB&search=Galatians+5:1"]] },
+        { id: "son", seal: "mj-s-dove", title: "The Son", day: "Saturday", when: "Morning coffee", slot: "morning coffee", short: "Sat · coffee", feeling: "Belonging",
+          context: "Jesus hasn’t preached a sermon, healed anyone, or picked a fight with a Pharisee yet. He comes up out of the water and heaven opens, and the Father says who he is before he’s done anything to earn it. Everything Jesus does afterward, he does from that, not for it.",
           strength: "Before Jesus did a single public thing, his Father said two sentences over him. He needed to hear them. So do you.",
-          context: "Jesus hasn’t preached a sermon, healed anyone, or picked a fight with a Pharisee yet. He comes up out of the water and heaven opens, and the Father says who he is before he’s done anything to earn it. Everything Jesus does afterward, he does from that, not for it." }
+          passage: "Luke 3:21–22 · Jeremiah 1:5 · Ephesians 2:10 · Romans 8:15",
+          readings: [
+            { passage: "Luke 3:21–22", verses: [
+              [21, "Now when all the people were baptized, Jesus also had been baptized and was praying. The sky was opened,"],
+              [22, "and the Holy Spirit descended in a bodily form like a dove on him; and a voice came out of the sky, saying “You are my beloved Son. In you I am well pleased.”"] ] },
+            { passage: "Jeremiah 1:5", verses: [
+              [5, "“Before I formed you in the womb, I knew you. Before you were born, I sanctified you. I have appointed you a prophet to the nations.”"] ] },
+            { passage: "Ephesians 2:10", verses: [
+              [10, "For we are his workmanship, created in Christ Jesus for good works, which God prepared before that we would walk in them."] ] },
+            { passage: "Romans 8:15", verses: [
+              [15, "For you didn’t receive the spirit of bondage again to fear, but you received the Spirit of adoption, by whom we cry, “Abba! Father!”"] ] }
+          ],
+          teach: "Every son needs two things from his father: I delight in you, and you have what it takes. Not once. A thousand times, in words and in time. Most of what goes wrong in men comes from never hearing one or both. Tonight I’m going to say them in front of men who will hold me to it. But I want you to hear them from me first, here, with nobody else around. And after that, I want you to know this: David was anointed at fifteen and crowned at thirty. Tonight is the anointing. The road runs a long way past it, and I’m on it with you.",
+          ask: "What do you honestly think I think of you? And what do you think God thinks of you? Where do those two answers come apart?",
+          share: "Say both sentences to him, plainly, in your own words: that you delight in him, and that he has what it takes. This is the rehearsal. Then tell him what tonight will be, what to expect, and that there is nothing he has to perform.",
+          deeper: [["The white stone and the new name: Revelation 2:17", "https://www.biblegateway.com/passage/?version=WEB&search=Revelation+2:17"], ["A new name from the LORD’s own mouth: Isaiah 62:2", "https://www.biblegateway.com/passage/?version=WEB&search=Isaiah+62:2"], ["To know the Father: John 17:3", "https://www.biblegateway.com/passage/?version=WEB&search=John+17:3"], ["He keeps knocking: Revelation 3:20", "https://www.biblegateway.com/passage/?version=WEB&search=Revelation+3:20"]],
+          blessing: true }
       ],
       decks: [
         { title: "Drive Out", meta: "Light", questions: [
@@ -2361,16 +2420,25 @@ const CONTENT = {
           "What do you want your brothers to learn from watching you?",
           "Twenty years from now, what do you hope somebody says about you?" ] }
       ],
+      bless: {
+        intro: "For {dad}, read aloud at the ceremony on Saturday night. Write it here ahead of time. It should be read, not improvised, and short enough to get through without losing the room. Three things it has to hold: I delight in you, you have what it takes, and a name.",
+        prompts: [
+          ["see", "What I see in you", "The things he might not see in himself."],
+          ["proud", "What I’m proud of", "Not just what he has done. Who he is."],
+          ["two", "The two sentences", "That you delight in him. That he has what it takes. Say them plainly."],
+          ["name", "A name, and what I’m asking God for", "The word you’ve been given for him, and the man you’re praying he becomes."],
+          ["verse", "A verse to carry", "One, and why."]
+        ]
+      },
+      journalLead: "Every note from the weekend and the blessing, in one place and in order, to copy out or print as a keepsake.",
+      later: ["Wild at Heart, by John Eldredge", "Fathered by God, by John Eldredge", "The Intentional Father, by Jon Tyson", "Raising a Modern-Day Knight, by Robert Lewis"],
       topics: [
-        { id: "blessing", title: "The Blessing", meta: "Five prompts", icon: "mj-i-edit",
-          text: ["Composed ahead of time, then read aloud at the ceremony. It should be read, not improvised, and short enough to get through without losing the room."],
-          rows: ["What I see in you", "What I’m proud of", "The two sentences", "A name, and what I’m asking God for", "A verse to carry"] },
+        { id: "blessing", title: "The Blessing", meta: "Five prompts", icon: "mj-i-edit" },
         { id: "ceremony", title: "The Ceremony", meta: "Saturday evening", icon: "mj-i-crown",
           text: ["Saturday evening, before the meal. One movement per screen, in large type, with the screen kept awake.", "{dad} leads. {son} sits at the centre, with the men in a circle around him."] },
         { id: "men", title: "The Men", meta: "The round table", icon: "mj-i-men",
           text: ["Three to five men who know {son}. Each one brings a short letter: what I see in you, and one thing I’d tell myself at sixteen."] },
-        { id: "journal", title: "The Journal", meta: "Keepsake", icon: "mj-i-book",
-          text: ["Every note, the blessing and the oath in one place and in order, to copy out or print as a keepsake."] }
+        { id: "journal", title: "The Journal", meta: "Keepsake", icon: "mj-i-book" }
       ]
     },
     { age: 17, word: "seventeen", title: "The Squire’s Year", stage: "Squire", written: false,
@@ -3142,25 +3210,25 @@ function renderMoments() {
     (year.engine === 'weekend' ? weekendPage(year) : conversationsPage(year));
   _revealSubTab();
 }
-/* Sixteen: the four conversations — a picker strip with the chosen moment's panel below it. */
+/* Sixteen: the four conversations — a picker strip, the chosen moment's panel, and the card that opens it full page. */
 function conversationsPage(year) {
-  const t = CONTENT.tabs.moments;
+  const t = CONTENT.tabs.moments, st = yearState(year.age);
   const how = '<button class="btn" type="button" onclick="openHowMoment()">' + icon('mj-i-info') + txt(CONTENT.howMoment.title) + '</button>';
   const cur = _pick(year.moments, 'id', 'manhood-moment');
   const strip = pickStrip('momentTiles', 'Moments', year.moments.map(function (m, i) {
-    return { num: pad2(i + 1), title: m.title, meta: m.short, selected: m === cur, call: "selectMoment('" + m.id + "')" };
+    return { num: pad2(i + 1), title: m.title, meta: st.done[m.id] ? 'Done' : m.short, selected: m === cur, call: "selectMoment('" + m.id + "')" };
   }));
+  const done = !!st.done[cur.id];
   const panel = '<div class="panel">' +
       '<div class="eyebrow">' + txt(cur.day + ' · ' + cur.slot) + '</div>' +
       '<h2 class="panel-title">' + txt(cur.title) + '</h2>' +
       '<p class="strength"><b>' + txt(cur.feeling) + '.</b> ' + txt(cur.strength) + '</p>' +
       '<p>' + txt(cur.context) + '</p>' +
-      '<dl class="facts"><dt>Read</dt><dd>' + txt(cur.passage) + '</dd><dt>Go deeper</dt><dd>' + txt(cur.deeper) + '</dd></dl>' +
+      '<dl class="facts"><dt>Read</dt><dd>' + txt(cur.passage) + '</dd></dl>' +
     '</div>' +
-    '<div class="panel"><div class="eyebrow">' + txt(CONTENT.soon) + '</div>' +
-      '<p>' + txt(CONTENT.momentSoon) + '</p>' +
-      '<div class="chip-wrap"><span class="chip">Read</span><span class="chip">Ask</span><span class="chip">Share</span><span class="chip">Write</span></div>' +
-    '</div>';
+    '<button class="card next-card' + (done ? ' is-done' : '') + '" type="button" onclick="openMomentPage(\'' + cur.id + '\')">' + seal(cur.seal) +
+      '<span class="next-text"><span class="eyebrow">' + (done ? 'Done · open it again' : 'Open this moment') + '</span>' +
+      '<span class="next-title">' + txt(cur.title) + '</span></span>' + icon('mj-i-chevron') + '</button>';
   return tabHead('Age ' + year.word, t.title, t.lead, how) + strip + '<div id="momentPanel">' + panel + '</div>';
 }
 
@@ -3265,7 +3333,7 @@ function blessWriter(year, ctx) {
 }
 function journalText(year) {
   const st = yearState(year.age);
-  let out = fill(year.name + ': ' + year.sub) + '\n\n';
+  let out = fill((year.name || year.title) + (year.sub ? ': ' + year.sub : '')) + '\n\n';
   year.moments.forEach(function (m) { out += fill(m.title) + ' (' + m.passage + ')\n' + (st.notes[m.id] || '') + '\n\n'; });
   out += 'The Blessing\n';
   year.bless.prompts.forEach(function (p) { if (st.bless[p[0]]) out += fill(p[1]) + ': ' + st.bless[p[0]] + '\n'; });
@@ -3323,8 +3391,8 @@ function _watchBlock(year, m, st) {
 }
 function openMomentPage(id) {
   const el = document.getElementById('moment-page'), year = activeYear(), m = momentById(year, id);
-  if (!el || !m || !m.verses) return;
-  const st = yearState(year.age);
+  if (!el || !m || !(m.verses || m.readings)) return;
+  const st = yearState(year.age), readings = m.readings || [{ passage: m.passage, verses: m.verses }];
   _momentId = id;
   _momentReturnFocus = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
   document.getElementById('moment-page-bar').textContent = fill(m.day + ' · ' + m.when);
@@ -3335,7 +3403,10 @@ function openMomentPage(id) {
       '<span class="chip">' + txt(m.feeling) + '</span></div>' +
     '<p class="mo-context">' + txt(m.context) + '</p>' +
     '<p class="strength">' + txt(m.strength) + '</p>' +
-    _block('Read · out loud', '<div class="scripture">' + m.verses.map(function (v) { return '<sup>' + v[0] + '</sup>' + esc(v[1]); }).join(' ') + '</div><div class="meta">' + txt(m.passage) + '</div>') +
+    _block('Read · out loud', readings.map(function (r) {
+      return '<div class="scripture">' + r.verses.map(function (v) { return '<sup>' + v[0] + '</sup>' + esc(v[1]); }).join(' ') + '</div><div class="meta">' + txt(r.passage) + '</div>';
+    }).join('')) +
+    (m.teach ? _block('Say · in your own words', '<p class="share">' + txt(m.teach) + '</p>') : '') +
     _block('Ask', '<p class="ask">' + txt(m.ask) + '</p>') +
     _block('Share · for ' + txt('{dad}'), '<p class="share">' + txt(m.share) + '</p>') +
     _block('Write', '<label class="field-label" for="moment-note">A few words to remember this by</label>' +
@@ -3376,20 +3447,18 @@ function toggleDone() {
 }
 function openBlessingFromMoment() {
   closeMomentPage();
-  selectSub('bless');
+  if (activeYear().engine === 'weekend') { selectSub('bless'); return; }
+  lsSet('manhood-topic', 'blessing');
+  goToTab('blessing');
 }
 /* Home's up-next button: land inside the active year's experience, on that moment. */
 function openMoment(id) {
   const year = activeYear();
   momentsOpen = true;
   lsSet('manhood-moments-open', '1');
-  if (year.engine === 'weekend') {
-    goToTab('moments');
-    openMomentPage(id);
-  } else {
-    lsSet('manhood-moment', id);
-    goToTab('moments');
-  }
+  if (year.engine !== 'weekend') lsSet('manhood-moment', id);
+  goToTab('moments');
+  openMomentPage(id);
 }
 function selectMoment(id) { lsSet('manhood-moment', id); renderMoments(); _revealSelected(document.getElementById('momentsInner')); }
 function openHowMoment() {
@@ -3460,8 +3529,10 @@ function renderBlessing() {
     return { icon: p.icon, title: p.title, meta: p.meta, selected: p === cur, call: "selectTopic('" + p.id + "')" };
   }), true);
   let panel = '';
-  if (year.engine === 'weekend') {
-    panel = cur.id === 'journal' ? journalView(year) : blessWriter(year, 'b');
+  if (cur.id === 'journal' && year.journalLead) {
+    panel = journalView(year);
+  } else if (cur.id === 'blessing' && year.bless) {
+    panel = blessWriter(year, 'b');
   } else {
     panel = '<div class="panel">' +
       '<div class="eyebrow">' + txt(cur.meta) + '</div>' +
@@ -3469,11 +3540,6 @@ function renderBlessing() {
       cur.text.map(function (p) { return '<p>' + txt(p) + '</p>'; }).join('') +
       '<div class="chip-wrap"><span class="chip">' + txt(CONTENT.soon) + '</span></div>' +
     '</div>';
-  }
-  if (cur.rows) {
-    panel += '<div class="panel panel--flush"><div class="row-list row-list--bare">' + cur.rows.map(function (r, i) {
-      return '<div class="list-row"><span class="row-num">' + pad2(i + 1) + '</span><span class="row-title">' + txt(r) + '</span></div>';
-    }).join('') + '</div></div>';
   }
   document.getElementById('blessingInner').innerHTML = head + strip + '<div id="topicPanel">' + panel + '</div>';
 }
